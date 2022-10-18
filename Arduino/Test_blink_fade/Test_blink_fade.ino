@@ -21,10 +21,10 @@
 
   https://www.arduino.cc/en/Tutorial/BuiltInExamples/Blink
 */
-int blink1 = 3;//BLINK
-int blink2 = 4;//BLINK
-int fade1 = 5;//FADE
-int fade2 = 6;//FADE
+int blink1 = 13;//BLINK
+int blink2 = 12;//BLINK
+int fade1 = 11;//FADE
+int fade2 = 10;//FADE
 // the setup function runs once when you press reset or power the board
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
