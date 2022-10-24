@@ -10,7 +10,7 @@
 const char* ssid = "ilGabbibbo";
 const char* password = "P4p3r1ss1m4";
 
-const char *serviceURI = "https://b92c-137-204-20-123.eu.ngrok.io";
+const char *serviceURI = "http://192.168.198.158:8000";//ip del pc per passare da uvicorn
 
 void connectToWifi(const char* ssid, const char* password){
   WiFi.begin(ssid, password);

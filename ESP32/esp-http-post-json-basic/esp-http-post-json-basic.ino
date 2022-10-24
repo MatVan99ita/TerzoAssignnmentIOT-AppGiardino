@@ -6,12 +6,14 @@
  *
  */
 #include <WiFi.h>
-#include <HTTPClient.h>
-
+#include <HTTPClient.h>//*/
+/*#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>//*/
+#include <ArduinoJson.h>
 const char *ssid = "ilGabbibbo";
 const char *password = "P4p3r1ss1m4";
 
-const char *serviceURI = "http://localhost:8000/api/data";
+const char *serviceURI = "http://localhost:8000/";
 
 
 void connectToWifi(const char* ssid, const char* password){
@@ -31,59 +33,66 @@ void setup() {
   connectToWifi(ssid, password);
 }
 
-int sendData(String address, float value, String place){  
+int sendData(String address, float tmp, float light){  
   
-   HTTPClient http;    
-   http.begin(address);
-   http.addHeader("Content-Type", "application/json");
-    
-   String msg = 
-    String("{ \"value\": ") + String(value) + 
-    ", \"place\": \"" + place +"\" }";
-   
-   int retCode = http.POST(msg);   
-   http.end();  
+  WiFiClient client;
+  HTTPClient http;
+  http.addHeader("Content-Type", "application/json");
+  bool test = http.begin(address);
+  if(test){
+    Serial.println("Si è connesso a " + address);
+  } else {
+    Serial.println("attaccati al casso");
+  }
 
-   String payload = http.getString();
-   Serial.println(payload);
-      
-   return retCode;
+  // Create the "analog" array
+
+  Serial.println();
+  String mgs_json = "{ \"temperature\": " + String(tmp) + ", \"light\": " + String(light) +" }";
+  Serial.println(address + " -> " + mgs_json);
+  int retCode = http.POST(mgs_json);
+  int retcode2 = http.GET();
+  http.end();  
+  Serial.print("ERRORI PAZZI SGRAVATI -> POST: ");
+  Serial.print(retCode);
+  Serial.print(" | GET: ");
+  Serial.print(retcode2);
+  Serial.println();
+  return retCode;
 }
 
 int receiveData(String address){
-   HTTPClient http;    
-   http.begin(address);
-   
-   http.addHeader("Content-Type", "application/json");
-   
-   int retCode = http.GET();
-   String payload = http.getString();
-   Serial.print("Payload XD ");
-   Serial.println(payload);
-      
-   http.end();  
-   return retCode;
+  WiFiClient client;
+  HTTPClient http;    
+  http.begin(address);
+  
+  http.addHeader("Content-Type", "application/json");
+  Serial.println("Aggiunti header");
+  int retCode = http.GET();
+  String payload = http.getString();
+  Serial.print("Payload XD ");
+  Serial.println(payload);
+     
+  http.end();  
+  return retCode;
 }
 
 void loop() {
-  if (WiFi.status()== WL_CONNECTED){      
+  if (WiFi.status()== WL_CONNECTED){
+    int temp = random(15,20);
+    int light = random(1, 10);
+    int code = sendData(String(serviceURI)+"items/", temp, light);
 
-    /*int value = random(15,20);
-    int code = sendData(String(serviceURI), value, "banana");
     Serial.print("CODE DELLA RICHIESTA ");
-    Serial.println(code);
-    Serial.print("Address: ");
-    Serial.println(serviceURI);
-    Serial.print("Address string: ");
-    Serial.println(String(serviceURI));*/
+    Serial.println(code);//*/
     
-    int code = receiveData(String(serviceURI));
+    int code2 = receiveData(String(serviceURI) + "api/data/3");
     Serial.print("CODE DELLA RICHIESTA ");
-    Serial.println(code);
+    Serial.println(code2);
     Serial.print("Address: ");
     Serial.println(serviceURI);
     Serial.print("Address string: ");
-    Serial.println(String(serviceURI));
+    Serial.println(String(serviceURI));//*/
     if (code == 200){
        Serial.println("ok");   
      } else {
