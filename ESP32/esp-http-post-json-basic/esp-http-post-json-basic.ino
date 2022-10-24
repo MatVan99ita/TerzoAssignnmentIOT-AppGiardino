@@ -11,7 +11,7 @@
 const char *ssid = "ilGabbibbo";
 const char *password = "P4p3r1ss1m4";
 
-const char *serviceURI = "192.168.198.158:53000";
+const char *serviceURI = "http://localhost:8000/api/data";
 
 
 void connectToWifi(const char* ssid, const char* password){
@@ -34,7 +34,7 @@ void setup() {
 int sendData(String address, float value, String place){  
   
    HTTPClient http;    
-   http.begin(String(address));
+   http.begin(address);
    http.addHeader("Content-Type", "application/json");
     
    String msg = 
@@ -68,16 +68,22 @@ int receiveData(String address){
 void loop() {
   if (WiFi.status()== WL_CONNECTED){      
 
-    int value = random(15,20);
+    /*int value = random(15,20);
     int code = sendData(String(serviceURI), value, "banana");
     Serial.print("CODE DELLA RICHIESTA ");
     Serial.println(code);
     Serial.print("Address: ");
     Serial.println(serviceURI);
     Serial.print("Address string: ");
-    Serial.println(String(serviceURI));
+    Serial.println(String(serviceURI));*/
     
-    code = receiveData(String(serviceURI));
+    int code = receiveData(String(serviceURI));
+    Serial.print("CODE DELLA RICHIESTA ");
+    Serial.println(code);
+    Serial.print("Address: ");
+    Serial.println(serviceURI);
+    Serial.print("Address string: ");
+    Serial.println(String(serviceURI));
     if (code == 200){
        Serial.println("ok");   
      } else {
