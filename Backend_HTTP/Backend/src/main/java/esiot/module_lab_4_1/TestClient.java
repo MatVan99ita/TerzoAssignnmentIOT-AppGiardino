@@ -10,8 +10,8 @@ public class TestClient extends AbstractVerticle {
 	
 	public static void main(String[] args) throws Exception {		
 	
-		String host = "localhost"; // "NUMERIH.ngrok.io";
-		int port = 8080;
+		String host = "192.168.168.158";//"localhost"; // "NUMERIH.ngrok.io";
+		int port = 53001;
 
 		Vertx vertx = Vertx.vertx();
 		

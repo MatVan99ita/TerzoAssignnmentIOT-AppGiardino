@@ -11,7 +11,8 @@
 const char *ssid = "ilGabbibbo";
 const char *password = "P4p3r1ss1m4";
 
-const char *serviceURI = "https://228e-193-207-236-17.eu.ngrok.io/api/data";
+const char *serviceURI = "192.168.198.158:53000";
+
 
 void connectToWifi(const char* ssid, const char* password){
   WiFi.begin(ssid, password);
@@ -33,8 +34,8 @@ void setup() {
 int sendData(String address, float value, String place){  
   
    HTTPClient http;    
-   http.begin(address/* + "/api/data"*/);
-   http.addHeader("Content-Type", "application/json");    
+   http.begin(String(address));
+   http.addHeader("Content-Type", "application/json");
     
    String msg = 
     String("{ \"value\": ") + String(value) + 
@@ -51,17 +52,16 @@ int sendData(String address, float value, String place){
 
 int receiveData(String address){
    HTTPClient http;    
-   http.begin(address/* + "/api/data"*/);
+   http.begin(address);
    
    http.addHeader("Content-Type", "application/json");
    
-   int retCode = http.GET();   
-   
-   http.end();  
-
+   int retCode = http.GET();
    String payload = http.getString();
+   Serial.print("Payload XD ");
    Serial.println(payload);
       
+   http.end();  
    return retCode;
 }
 
@@ -69,13 +69,15 @@ void loop() {
   if (WiFi.status()== WL_CONNECTED){      
 
     int value = random(15,20);
-    int code = sendData(serviceURI, value, "home");
+    int code = sendData(String(serviceURI), value, "banana");
     Serial.print("CODE DELLA RICHIESTA ");
     Serial.println(code);
+    Serial.print("Address: ");
+    Serial.println(serviceURI);
+    Serial.print("Address string: ");
+    Serial.println(String(serviceURI));
     
-    code = receiveData(serviceURI);
-    Serial.print("CODE DELLA RICHIESTA ");
-    Serial.println(code);
+    code = receiveData(String(serviceURI));
     if (code == 200){
        Serial.println("ok");   
      } else {
