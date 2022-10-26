@@ -13,7 +13,7 @@
 const char *ssid = "ilGabbibbo";
 const char *password = "P4p3r1ss1m4";
 
-const char *serviceURI = "http://localhost:8000/";
+const char *serviceURI = "http://192.168.198.158:8000/";
 
 
 void connectToWifi(const char* ssid, const char* password){
@@ -82,21 +82,16 @@ void loop() {
     int temp = random(15,20);
     int light = random(1, 10);
     int code = sendData(String(serviceURI)+"items/", temp, light);
-
-    Serial.print("CODE DELLA RICHIESTA ");
-    Serial.println(code);//*/
-    
-    int code2 = receiveData(String(serviceURI) + "api/data/3");
-    Serial.print("CODE DELLA RICHIESTA ");
-    Serial.println(code2);
-    Serial.print("Address: ");
-    Serial.println(serviceURI);
-    Serial.print("Address string: ");
-    Serial.println(String(serviceURI));//*/
     if (code == 200){
        Serial.println("ok");   
      } else {
        Serial.println(String("error: ") + code);
+     }
+    int code2 = receiveData(String(serviceURI) + "api/data");
+    if (code2 == 200){
+       Serial.println("ok2");   
+     } else {
+       Serial.println(String("error2: ") + code);
      }
     
     delay(5000);
