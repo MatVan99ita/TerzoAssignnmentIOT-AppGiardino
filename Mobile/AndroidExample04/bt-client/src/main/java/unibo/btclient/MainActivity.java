@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if(btAdapter != null && !btAdapter.isEnabled()) {
+        if (btAdapter != null && !btAdapter.isEnabled()) {
             startActivityForResult(
                     new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
                     C.bluetooth.ENABLE_BT_REQUEST
@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_connection_req).setOnClickListener(l -> {
             l.setEnabled(false);
             try {
-                connectToBTServer();
+                unafunzionechenonserve("macomunquelausoperfarefintaserva");
+                //connectToBTServer();
             } catch (BluetoothDeviceNotFound bluetoothDeviceNotFound) {
                 Toast.makeText(this, "Bluetooth device not found !", Toast.LENGTH_LONG)
                         .show();
@@ -61,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
         });*/
     }
 
+    private void unafunzionechenonserve(String s) {
+        boolean b = s == "si" ? true: false;
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -70,16 +75,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode,
                                     @Nullable final Intent data) {
-        if(requestCode == C.bluetooth.ENABLE_BT_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == C.bluetooth.ENABLE_BT_REQUEST && resultCode == RESULT_OK) {
             Log.d(C.APP_LOG_TAG, "Bluetooth enabled!");
         }
 
-        if(requestCode == C.bluetooth.ENABLE_BT_REQUEST && resultCode == RESULT_CANCELED) {
+        if (requestCode == C.bluetooth.ENABLE_BT_REQUEST && resultCode == RESULT_CANCELED) {
             Log.d(C.APP_LOG_TAG, "Bluetooth not enabled!");
         }
     }
 
-    private void connectToBTServer() throws BluetoothDeviceNotFound {
+    /*private void connectToBTServer() throws BluetoothDeviceNotFound {
         final BluetoothDevice serverDevice = BluetoothUtils
                 .getPairedDeviceByName(C.bluetooth.BT_DEVICE_ACTING_AS_SERVER_NAME);
         // !!! Choose the right UUID value
@@ -126,5 +131,6 @@ public class MainActivity extends AppCompatActivity {
                 ));
             }
         }).execute();
-    }
-}*/
+    }*/
+
+}
