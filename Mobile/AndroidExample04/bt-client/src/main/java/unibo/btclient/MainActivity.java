@@ -41,23 +41,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-    }
-}
-
-        /*final BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        if(btAdapter != null && !btAdapter.isEnabled()) {
-            startActivityForResult(
-                new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
-                C.bluetooth.ENABLE_BT_REQUEST
-            );
-        }
-
-        initUI();
-    }
-
-    private void initUI() {
-        findViewById(R.id.connectBtn).setOnClickListener(l -> {
+        findViewById(R.id.bt_connection_req).setOnClickListener(l -> {
             l.setEnabled(false);
             try {
                 connectToBTServer();
@@ -70,11 +54,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.sendBtn).setOnClickListener(l -> {
+        /*findViewById(R.id.sendBtn).setOnClickListener(l -> {
             String message = ((EditText)findViewById(R.id.editText)).getText().toString();
             btChannel.sendMessage(message);
             ((EditText)findViewById(R.id.editText)).setText("");
-        });
+        });*/
     }
 
     @Override
