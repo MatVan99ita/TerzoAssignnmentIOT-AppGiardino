@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        /*final BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         if(btAdapter != null && !btAdapter.isEnabled()) {
             startActivityForResult(
@@ -126,6 +126,6 @@ public class MainActivity extends AppCompatActivity {
                     C.bluetooth.BT_DEVICE_ACTING_AS_SERVER_NAME
                 ));
             }
-        }).execute();
+        }).execute();*/
     }
 }
