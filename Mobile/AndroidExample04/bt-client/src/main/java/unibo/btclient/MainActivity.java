@@ -1,5 +1,7 @@
 package unibo.btclient;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothChannel btChannel;
     private BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
     private UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private UUID u = UUID.randomUUID();
     private BluetoothDevice hc05 = btAdapter.getRemoteDevice("00:14:03:05:F2:D9");
     private boolean ledSwitch = false;
     private BluetoothSocket socket = null;
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.layout_brutto);
+        ConstraintLayout layout = findViewById(R.id.layout_brutto);
         for (int i = 0; i < layout.getChildCount(); i++) {
             View child = layout.getChildAt(i);
             child.setEnabled(false);
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             l.setEnabled(false);
             try {
                 pairDevices();
-            } catch (IOException e) {
+            } catch (IOException | BluetoothDeviceNotFound e) {
                 e.printStackTrace();
             } finally {
                 l.setEnabled(true);
@@ -76,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void switchLed() {
+
+        createDialog("LEDDAMI");
         if(ledSwitch){
             btChannel.sendMessage("0");
         } else {
@@ -84,12 +90,10 @@ public class MainActivity extends AppCompatActivity {
         ledSwitch = !ledSwitch;
     }
 
-    private void pairDevices() throws IOException {
+    private void pairDevices() throws IOException, BluetoothDeviceNotFound {
         if(socket == null || !socket.isConnected()){
-            this.socket = hc05.createInsecureRfcommSocketToServiceRecord(uuid);
-            System.out.println(socket.toString());
-            System.out.println(hc05);
-            System.out.println(btAdapter.toString());
+            this.socket = hc05.createInsecureRfcommSocketToServiceRecord(u);
+            this.connectToBTServer();
         }
     }
 
@@ -112,36 +116,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void connectToBTServer() throws BluetoothDeviceNotFound {
-        final BluetoothDevice serverDevice = BluetoothUtils
-                .getPairedDeviceByName(C.bluetooth.BT_DEVICE_ACTING_AS_SERVER_NAME);
+        final BluetoothDevice serverDevice = BluetoothUtils.getPairedDeviceByName(C.bluetooth.BT_DEVICE_ACTING_AS_SERVER_NAME);
         // !!! Choose the right UUID value
-        final UUID uuid = BluetoothUtils.getEmbeddedDeviceDefaultUuid();
+        //final UUID uuid = BluetoothUtils.getEmbeddedDeviceDefaultUuid();
 //        final UUID uuid = BluetoothUtils.generateUuidFromString(C.bluetooth.BT_SERVER_UUID);
-
-        new ConnectToBluetoothServerTask(serverDevice, uuid, new ConnectionTask.EventListener() {
+        createDialog("IO SONO QUA");
+        new ConnectToBluetoothServerTask(serverDevice, this.u, new ConnectionTask.EventListener() {
             @Override
             public void onConnectionActive(final BluetoothChannel channel) {
-                ((TextView) findViewById(R.id.statusLabel)).setText(String.format(
-                    "Status : connected to server on device %s",
-                    serverDevice.getName()
-                ));
-
-                findViewById(R.id.connectBtn).setEnabled(false);
+                createDialog("Attivo");
+                findViewById(R.id.bt_connection_req).setEnabled(false);
 
                 btChannel = channel;
                 btChannel.registerListener(new RealBluetoothChannel.Listener() {
                     @Override
                     public void onMessageReceived(String receivedMessage) {
-                        ((TextView) findViewById(R.id.chatLabel)).append(String.format(
-                            "> [RECEIVED from %s] %s\n",
-                            btChannel.getRemoteDeviceName(),
-                            receivedMessage
+                        createDialog(String.format(
+                                "> [RECEIVED from %s] %s\n",
+                                btChannel.getRemoteDeviceName(),
+                                receivedMessage
                         ));
                     }
 
                     @Override
                     public void onMessageSent(String sentMessage) {
-                        ((TextView) findViewById(R.id.chatLabel)).append(String.format(
+                        createDialog(String.format(
                                 "> [SENT to %s] %s\n",
                                 btChannel.getRemoteDeviceName(),
                                 sentMessage
@@ -152,11 +151,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onConnectionCanceled() {
-                ((TextView) findViewById(R.id.statusLabel)).setText(String.format(
-                    "Status : unable to connect, device %s not found!",
-                    C.bluetooth.BT_DEVICE_ACTING_AS_SERVER_NAME
-                ));
+                createDialog("Status : unable to connect, device %s not found!");
             }
         }).execute();
     }//*/
+
+    private void createDialog(String testoh){
+        Log.d("MainActivity", testoh);
+    }
 }
