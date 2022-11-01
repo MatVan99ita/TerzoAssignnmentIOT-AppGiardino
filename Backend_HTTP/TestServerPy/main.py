@@ -44,7 +44,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+"""
+La luce è mappata su 8 valori di cui se è sotto 5 accende i led e sotto 2 attiva l'irrigazione
+La temperatura è mappata su 5 valori di cui in base al valore calcolato si determina la velocità di rotazione del servo per Y secondi e poi non potrà essere riattivato per X minuti
 
+Se la temperatura è uguale a 5 e il servo è in pausa si attiva l'alarm mode -> led dell'esp va spento
+"""
 
 @app.get("/")
 async def read_root():
@@ -67,7 +72,36 @@ async def create_item(item: Esp32):
     esp.set_temp(item.get_light())
     return item
 
+@app.post("/esp/temp/{val}")
+async def setTemp(val: float):
+    esp.set_temp(val)
+    #return {"temperatura": esp.get_temp()}
+
+@app.post("/esp/light/{val}")
+async def setLight(val: float):
+    esp.set_light(val)
+    return checkLight(val)
+
+@app.post("/esp/both/{temp}&{light}")
+async def update_item(temp: float, light: float):
+    esp.set_light(temp)
+    esp.set_temp(light)
+    checktmp = checkTemp(temp)
+    checklgt = checkLight(light)
+    return {"irrigazione": checktmp, "illuminazione": checklgt}
 
 @app.get("/esp/data/")
 async def getStronzih():
     return {"temperatura": esp.get_temp(), "lux": esp.get_light()}
+
+
+
+def checkLight(val):
+    if(val < 2):
+        return {"irrigazione": "attiva"}
+    if(val < 5):
+        return {"illuminazione": "accendi"}
+    return {"ok": "ok"}
+
+def checkTemp(val):
+    return {"rotation": 7}
