@@ -84,14 +84,14 @@ async def setLight(val: float):
 
 @app.post("/esp/both/{temp}&{light}")
 async def update_item(temp: float, light: float):
-    esp.set_light(temp)
-    esp.set_temp(light)
+    esp.set_temp(temp)
+    esp.set_light(light)
     checktmp = checkTemp(temp)
     checklgt = checkLight(light)
     return {"irrigazione": checktmp, "illuminazione": checklgt}
 
 @app.get("/esp/data/")
-async def getStronzih():
+async def getSensorData():
     return {"temperatura": esp.get_temp(), "lux": esp.get_light()}
 
 
