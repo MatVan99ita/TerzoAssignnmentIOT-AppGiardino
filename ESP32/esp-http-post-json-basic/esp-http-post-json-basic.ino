@@ -10,6 +10,7 @@
 /*#include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>//*/
 #include <ArduinoJson.h>
+
 const char *ssid = "ilGabbibbo";
 const char *password = "P4p3r1ss1m4";
 
@@ -46,18 +47,13 @@ int sendData(String address, float tmp, float light){
   }
 
   // Create the "analog" array
-
+  
   Serial.println();
-  String mgs_json = "{ \"temperature\": " + String(tmp) + ", \"light\": " + String(light) +" }";
+  String mgs_json = "{ \"temperatura\": " + String(tmp) + ", \"lux\": " + String(light) +" }";
+  String msg = "esp/both/" + String(tmp) + "&" + String(light);
   Serial.println(address + " -> " + mgs_json);
   int retCode = http.POST(mgs_json);
-  int retcode2 = http.GET();
-  http.end();  
-  Serial.print("ERRORI PAZZI SGRAVATI -> POST: ");
-  Serial.print(retCode);
-  Serial.print(" | GET: ");
-  Serial.print(retcode2);
-  Serial.println();
+  http.end();
   return retCode;
 }
 
@@ -81,19 +77,13 @@ void loop() {
   if (WiFi.status()== WL_CONNECTED){
     int temp = random(15,20);
     int light = random(1, 10);
-    int code = sendData(String(serviceURI)+"items/", temp, light);
+    Serial.println(String(temp) + " - " + String(light));
+    int code = sendData(String(serviceURI) + "esp/both/" + String(temp) + "&" + String(light), temp, light);
     if (code == 200){
-       Serial.println("ok");   
+       Serial.println("ok");
      } else {
        Serial.println(String("error: ") + code);
-     }
-    int code2 = receiveData(String(serviceURI) + "api/data");
-    if (code2 == 200){
-       Serial.println("ok2");   
-     } else {
-       Serial.println(String("error2: ") + code);
-     }
-    
+     }    
     delay(5000);
 
   } else {
