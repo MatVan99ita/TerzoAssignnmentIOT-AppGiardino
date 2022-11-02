@@ -94,8 +94,6 @@ async def update_item(temp: float, light: float):
 async def getSensorData():
     return {"temperatura": esp.get_temp(), "lux": esp.get_light()}
 
-
-
 def checkLight(val):
     if(val < 2):
         return {"irrigazione": "attiva"}
