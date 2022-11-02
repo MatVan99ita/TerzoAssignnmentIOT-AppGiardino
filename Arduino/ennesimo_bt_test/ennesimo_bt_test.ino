@@ -9,6 +9,7 @@ void setup() {
   Serial.begin(9600);
   pinMode(13, OUTPUT);
   bt.begin(9600);
+  digitalWrite(13, LOW);
 }
 
 void loop() {
@@ -22,9 +23,9 @@ void loop() {
   delay(400);
 
   if(data == '1')
-      digitalWrite(13, HIGH)
+      digitalWrite(13, HIGH);
     else
-      digitalWrite(13. LOW);
+      digitalWrite(13, LOW);
   
 
   

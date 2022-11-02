@@ -73,7 +73,7 @@ int receiveData(String address){
   return retCode;
 }
 
-void loop() {
+void loop() { /** MANCA SOLO L'ACCENDI SPEGNI DEL LED PER QUANDO IL SISTEMA NON E' IN ALLARME*/
   if (WiFi.status()== WL_CONNECTED){
     int temp = random(15,20);
     int light = random(1, 10);
