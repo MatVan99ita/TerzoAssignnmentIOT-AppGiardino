@@ -93,6 +93,15 @@ async def update_item(temp: float, light: float):
 async def getSensorData():
     return {"temperatura": esp.get_temp(), "lux": esp.get_light()}
 
+@app.post("/py/send/{val}")
+async def pySend(val):
+    return {"arriveto": val}
+
+@app.get("/py/get")
+async def pyGet():
+    return {"banana"}
+
+
 def checkLight(val):
     if(val < 2):
         return {"irrigazione": "attiva"}
@@ -102,3 +111,4 @@ def checkLight(val):
 
 def checkTemp(val):
     return {"rotation": 7}
+
