@@ -1,6 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id=":bt-client:main" external.linked.project.path="$MODULE_DIR$/../../../bt-client" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.type="sourceSet" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="5" platform="JVM 1.8" allPlatforms="JVM [1.8]" useProjectSettings="false">
+        <compilerSettings>
+          <option name="additionalArguments" value="-Xallow-no-source-files" />
+        </compilerSettings>
+        <compilerArguments>
+          <flagArguments>
+            <flagArg name="noReflect" arg="true" />
+            <flagArg name="noStdlib" arg="true" />
+          </flagArguments>
+          <stringArguments>
+            <stringArg name="classpath">
+              <args>
+                <arg>$MODULE_DIR$/../../../bt-client/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/R.jar</arg>
+                <arg>$MODULE_DIR$/../../../bt-lib/build/intermediates/compile_library_classes_jar/debug/classes.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.7.20/eac6656981d9d7156e838467d2d8d79093b1570/kotlin-stdlib-jdk8-1.7.20.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.7.20/2a729aa8763306368e665e2b747abd1dfd29b9d5/kotlin-stdlib-jdk7-1.7.20.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.7.20/726594ea9ba2beb2ee113647fefa9a10f9fabe52/kotlin-stdlib-1.7.20.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.7.20/e15351bdaf9fa06f009be5da7a202e4184f00ae3/kotlin-stdlib-common-1.7.20.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/82e7c6bd7d3210791c5e4f44f67ec5eb/transformed/constraint-layout-2.0.4-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/32402a7a17a1bf9940881c9a32d4e0af/transformed/appcompat-v7-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/a6f150361febf3755994364ccc49afd4/transformed/support-fragment-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/92670bafe97c7ac93663c6974653945d/transformed/animated-vector-drawable-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/c78cb8b5a992aa71d38e63912bb7308a/transformed/support-core-ui-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/d0a6f1fda7692c6d7134bd30007532db/transformed/support-core-utils-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/36cd292ff5bb639769dafebf61d9fb8e/transformed/support-vector-drawable-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/83f1c0daf1a0e21cf88ecdbe14caa2ab/transformed/loader-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/ea70037d45ae2b6f707fb8633a2b5815/transformed/viewpager-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/c105ea44b87d9405d3669f0077c41a61/transformed/coordinatorlayout-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/d01dd6e2f8f57bbb81c7061ea961be90/transformed/drawerlayout-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/4d5806c10cdbd0046095a5735cab7c3a/transformed/slidingpanelayout-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/255b85c5ef78776222db6503f39af294/transformed/customview-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/6dffa257dfac4bea01e48da5f7fd4b03/transformed/swiperefreshlayout-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/8d1857ac2404de04c285de0c6fa09ce6/transformed/asynclayoutinflater-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/f27a0f7555aea7d3d6db6afa088340d7/transformed/support-compat-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/05a70a144f05c79d3f29f282851bc728/transformed/versionedparcelable-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.support/collections/28.0.0/c1bcdade4d3cc2836130424a3f3e4182c666a745/collections-28.0.0.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/c3256cc5e17433a9c1ff0893ae40f48a/transformed/cursoradapter-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/cbdc812faf1d8de8747a1002ad7f9cbe/transformed/runtime-1.1.1-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/1c929aca7d9501a238234849947314eb/transformed/documentfile-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/54a0c0a8ae7ae0183fc43203bd820114/transformed/localbroadcastmanager-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/ca3d250ef7a15346c7d6defa3ccf59be/transformed/print-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/ab2ddf23916581e3aae562f4f5b2c63d/transformed/viewmodel-1.1.1-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/0bb5f04571e22bc37ef1527379c1e6fa/transformed/livedata-1.1.1-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/af7b955d6bc81fbb546ceab59ed0d58f/transformed/livedata-core-1.1.1-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/android.arch.lifecycle/common/1.1.1/207a6efae6a3555e326de41f76bdadd9a239cbce/common-1.1.1.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/7b2e7387a46b02490afae249782a7256/transformed/runtime-1.1.1-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/android.arch.core/common/1.1.1/e55b70d1f5620db124b3e85a7f4bdc7bd48d9f95/common-1.1.1.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/2cfab7410b5b0d9a57df5ca1ade7e807/transformed/interpolator-28.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.support/support-annotations/28.0.0/ed73f5337a002d1fd24339d5fb08c2c9d9ca60d8/support-annotations-28.0.0.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.support.constraint/constraint-layout-solver/2.0.4/aeb283869a1d6e0d4d80db0c4dd151892738fc11/constraint-layout-solver-2.0.4.jar</arg>
+                <arg>$USER_HOME$/AppData/Local/Android/Sdk/platforms/android-28/android.jar</arg>
+                <arg>$USER_HOME$/AppData/Local/Android/Sdk/build-tools/30.0.3/core-lambda-stubs.jar</arg>
+              </args>
+            </stringArg>
+            <stringArg name="destination" arg="$MODULE_DIR$/../../../bt-client/build/tmp/kotlin-classes/debug" />
+            <stringArg name="jvmTarget" arg="1.8" />
+            <stringArg name="moduleName" arg="bt-client_debug" />
+            <stringArg name="apiVersion" arg="1.7" />
+            <stringArg name="languageVersion" arg="1.7" />
+          </stringArguments>
+          <arrayArguments>
+            <arrayArg name="friendPaths" />
+            <arrayArg name="pluginClasspaths" />
+            <arrayArg name="pluginOptions" />
+          </arrayArguments>
+        </compilerArguments>
+      </configuration>
+    </facet>
     <facet type="android" name="Android">
       <configuration>
         <option name="SELECTED_BUILD_VARIANT" value="debug" />
@@ -40,6 +110,11 @@
     <orderEntry type="jdk" jdkName="Android API 28 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="AndroidExample04.bt-lib.main" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.7.20" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.7.20" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.20" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-annotations:28.0.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:collections:28.0.0" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.lifecycle:common:1.1.1" level="project" />
