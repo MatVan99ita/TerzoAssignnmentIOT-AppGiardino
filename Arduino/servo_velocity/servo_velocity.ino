@@ -18,6 +18,9 @@ void loop() {
 
 int pos1 = 0;
 void moveto(int position, int speed){
+  if(speed < 0) speed = 0;
+  else if(speed > 30) speed = 30;
+  
   mapSpeed = map(speed, 0, 30, 30, 0);
 
   for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
