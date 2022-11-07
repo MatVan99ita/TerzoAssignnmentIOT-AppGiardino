@@ -23,14 +23,13 @@ void moveto(int position, int speed){
   
   mapSpeed = map(speed, 0, 30, 30, 0);
 
-  for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(mapSpeed);                       // waits n ms for the servo to reach the position
+  for (pos = 0; pos <= 180; pos += 1) {     // goes from 0 degrees to 180 degrees
+    myservo.write(pos);                     // tell servo to go to position in variable 'pos'
+    delay(mapSpeed);                        // waits n ms for the servo to reach the position
   }
-  for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-    myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(mapSpeed);                       // waits n ms for the servo to reach the position
+  for (pos = 180; pos >= 0; pos -= 1) {     // goes from 180 degrees to 0 degrees
+    myservo.write(pos);                     // tell servo to go to position in variable 'pos'
+    delay(mapSpeed);                        // waits n ms for the servo to reach the position
   }
   
 }
