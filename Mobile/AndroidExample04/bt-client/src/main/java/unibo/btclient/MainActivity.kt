@@ -18,6 +18,15 @@ import android.widget.*
 import java.io.IOException
 import java.util.*
 
+
+/**
+ * TODO:
+ *      • finire le funzioni per i vari btn
+ *      • creare un modo visivo per vedere i led accesi anche dall'app
+ *      • sistemare i messaggi da inviare all'arduino
+ *
+ */
+
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val BLUETOOTH_ON = 1000
