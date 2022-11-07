@@ -9,9 +9,11 @@ import android.app.ProgressDialog
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.os.AsyncTask
+import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.util.Log
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.*
 import java.io.IOException
 import java.util.*
@@ -25,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         private var dispositivi: Set<BluetoothDevice> = HashSet()
         private val hc05: BluetoothDevice = btAdapter.getRemoteDevice(hc05_address);
         private lateinit var adapter: ArrayAdapter<Any?>
-        private var socket: BluetoothSocket = hc05.createRfcommSocketToServiceRecord(mUUID)
+        private var socket: BluetoothSocket? = null
     }
 
     /**Gruppo di bottoni per la luce*/
@@ -98,9 +100,10 @@ class MainActivity : AppCompatActivity() {
         led4 = findViewById(R.id.led4_view)
         irrigazione = findViewById(R.id.irrigation_view)
 
-        led3.setText(fade_amount1)
-        led4.setText(fade_amount2)
-        irrigazione.setText(irrigation_velocity)
+        led3.setText(fade_amount1.toString())
+        led4.setText(fade_amount2.toString())
+        irrigazione.setText(irrigation_velocity.toString())
+
 
         btnBell = findViewById(R.id.alarm_btn)
 
@@ -116,11 +119,12 @@ class MainActivity : AppCompatActivity() {
             child?.isEnabled = false
         }
         this.scan()
-        val btButton: Button = layout.findViewById(R.id.bt_connection_req);
         btnConnection.isEnabled = true
 
         this.addClickEvent()
     }
+
+
 
     /**
      * Funzione per assegnare ai vari bottoni la propria funzione
@@ -149,7 +153,7 @@ class MainActivity : AppCompatActivity() {
      * o usando il nome o il numero della porta
      */
     private fun switchLed(led_num: Int): View.OnClickListener? {
-        val message: String = ""+led_num+"="
+        val message: String = "$led_num="
         if(led_num == 1){
             val led = if(isLed1on) "on" else "off"
             message.plus(led)
@@ -169,14 +173,13 @@ class MainActivity : AppCompatActivity() {
      * @param fade_amount 0 .. 255
      */
     private fun fadeLed(led_num: Int, fade_amount: Int): View.OnClickListener? {
-        val message: String = ""+led_num+"="
+        val message: String = "$led_num="
         val fade = if(fade_amount < 0) 0 else if(fade_amount > 255) 255 else fade_amount
         message.plus(fade);
         if(led_num == 1) fade_amount1 = fade else if(led_num == 2) fade_amount2 = fade
-
         //INVIO DEL FADE
-        updateTextView()
 
+        updateTextView()
         return null
     }
 
@@ -189,37 +192,44 @@ class MainActivity : AppCompatActivity() {
      *
      * penso che faccio una roba del tipo da 0 .. 30 anche qui disattivando i bottoni quando vanno avanti e indietro
      */
-    private fun irrigationStart(velocity: Int): View.OnClickListener? {
-        val message: String = ""+velocity
+    private fun irrigationStart(): View.OnClickListener? {
+        val vel = if(irrigation_velocity < 0) 0 else if(irrigation_velocity > 30) 30 else irrigation_velocity
+        val message: String = "irrigazione=$vel"
+        //INVIO DELL'IRRIGAZIONE
+
         updateTextView()
         return null
+    }
+
+    private fun setIrrigationVel(){
+
     }
 
     /**
      * Funzione per l'allarme
      */
     private fun disableAlarm(){
-
     }
 
     /**
      * Funzione per controllare la disponibilità dei tasti se il sistema è in allarme, non si è ancora connesso o se è connesso
      */
     private fun disableButton(){
-
     }
 
 
     private fun pairDevices() {
         ConnectToDevice(this).execute()
-        val bt_led: Button = findViewById(R.id.led1)
-        bt_led.isEnabled = true
-
+        btnLed1.isEnabled = true
+        if (!btAdapter.isEnabled) {
+            val turnOn = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(turnOn, BLUETOOTH_ON)
+        }
     }
 
     private fun arduinoCommunication(input: String) {
         try{
-            socket.outputStream.write(input.toByteArray())
+            socket?.outputStream?.write(input.toByteArray())
         } catch(e: IOException) {
             e.printStackTrace()
         }
@@ -227,6 +237,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        /*led3.setText(Integer.toString(fade_amount1))
+        led4.setText(Integer.toString(fade_amount2))
+        irrigazione.setText(Integer.toString(irrigation_velocity))*/
+
         if (requestCode == BLUETOOTH_ON && resultCode == RESULT_OK) {
             load()
         }
@@ -242,16 +257,15 @@ class MainActivity : AppCompatActivity() {
         if (!btAdapter.isEnabled) {
             val turnOn = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(turnOn, BLUETOOTH_ON)
-        }/* else {
-            load()
-        }*/
+        }
     }
 
     private fun load() {
         dispositivi = btAdapter.bondedDevices
         adapter.clear()
         for (bt in dispositivi){
-            val s: String = bt.name + " - " + bt.address
+            val s: String = "${ bt.name } - ${ bt.address }"
+            print(s)
             adapter.add(s)
         }
     }
@@ -269,12 +283,12 @@ class MainActivity : AppCompatActivity() {
 
         override fun doInBackground(vararg p0: Void?): String? {
             try {
-                if (!socket.isConnected) {
+                if (!socket?.isConnected!!) {
                     btAdapter = BluetoothAdapter.getDefaultAdapter()
                     val device: BluetoothDevice = btAdapter.getRemoteDevice(hc05_address)
                     socket = device.createInsecureRfcommSocketToServiceRecord(mUUID)
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery()
-                    socket.connect()
+                    socket?.connect()
                 }
             } catch (e: IOException) {
                 connectSuccess = false
