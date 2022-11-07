@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
      * invio della quantità di fade al led specificato
      * @param fade_amount 0 .. 255
      */
-    private fun fadeLed(led_num: Int, fade_amount: Int): Int {
+    private fun fadeLed(led_num: Int, fade_amount: Int) {
         val message: String = ""+led_num+"="
         if(fade_amount < 0) {
             message.plus(0)
@@ -144,7 +144,6 @@ class MainActivity : AppCompatActivity() {
         else {
             message.plus(fade_amount)
         }
-        return fade_amount
     }
 
     /**

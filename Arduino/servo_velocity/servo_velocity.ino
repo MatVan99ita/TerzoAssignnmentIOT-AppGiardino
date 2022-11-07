@@ -13,7 +13,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  moveto(60, 20);
+  moveto(60, 30);
 }
 
 int pos1 = 0;
@@ -23,11 +23,11 @@ void moveto(int position, int speed){
   for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
     // in steps of 1 degree
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(mapSpeed);                       // waits 15 ms for the servo to reach the position
+    delay(mapSpeed);                       // waits n ms for the servo to reach the position
   }
   for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(mapSpeed);                       // waits 15 ms for the servo to reach the position
+    delay(mapSpeed);                       // waits n ms for the servo to reach the position
   }
   
 }
