@@ -159,7 +159,36 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        btnLed3up.setOnClickListener(View.OnClickListener {
+            setLedIntensity(3, "+")
+        })
+        btnLed3down.setOnClickListener(View.OnClickListener {
+            setLedIntensity(3, "-")
+        })
 
+        btnLed4up.setOnClickListener(View.OnClickListener {
+            setLedIntensity(4, "+")
+        })
+        btnLed4down.setOnClickListener(View.OnClickListener {
+            setLedIntensity(4, "-")
+        })
+
+        btnIrrigazione_fast.setOnClickListener(View.OnClickListener {
+            setIrrigationVel("+")
+        })
+        btnIrrigazione_slow.setOnClickListener(View.OnClickListener {
+            setIrrigationVel("-")
+        })
+
+
+    }
+
+    private fun setIrrigationVel(s: String) {
+        when(s){
+            "+" -> if(irrigation_velocity < 30) irrigation_velocity++
+            "-" -> if(irrigation_velocity > 0)  irrigation_velocity--
+        }
+        updateTextView()
     }
 
     /**
@@ -209,16 +238,20 @@ class MainActivity : AppCompatActivity() {
      *
      * penso che faccio una roba del tipo da 0 .. 30 anche qui disattivando i bottoni quando vanno avanti e indietro
      */
-    private fun irrigationStart(): View.OnClickListener? {
+    private fun irrigationStart(){
         val vel = if(irrigation_velocity < 0) 0 else if(irrigation_velocity > 30) 30 else irrigation_velocity
         val message: String = "irrigazione{$vel}"
         //INVIO DELL'IRRIGAZIONE
         arduinoCommunication(message)
         updateTextView()
-        return null
     }
 
-    private fun setIrrigationVel(){
+    private fun setLedIntensity(led: Int, operation: String){
+        when(operation){
+            "+" -> if(led == 3 && fade_amount1 < 30) fade_amount1++ else if(led == 4 && fade_amount2 < 30) fade_amount2++
+            "-" -> if(led == 3 && fade_amount1 > 0)  fade_amount1-- else if(led == 4 && fade_amount2 > 0)  fade_amount2--
+        }
+        updateTextView()
     }
 
     /**
@@ -274,9 +307,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateTextView() {
-        led3.setText(this.fade_amount1)
-        led4.setText(this.fade_amount2)
-        irrigazione.setText(this.irrigation_velocity)
+        led3.setText(this.fade_amount1.toString())
+        led4.setText(this.fade_amount2.toString())
+        irrigazione.setText(this.irrigation_velocity.toString())
     }
 
     private fun scan() {
