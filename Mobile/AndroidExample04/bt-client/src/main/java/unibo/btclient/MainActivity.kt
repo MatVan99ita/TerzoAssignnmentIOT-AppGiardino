@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
     private var isLed2on: Boolean = false
     private var irrigation_velocity: Int = 0
 
+    private lateinit var layout: ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,8 +122,7 @@ class MainActivity : AppCompatActivity() {
         adapter = ArrayAdapter<Any?>(this, android.R.layout.simple_list_item_1)
         //lv!!.adapter = adapter
 
-        val layout: ConstraintLayout = findViewById(R.id.layout_brutto);
-
+        layout = findViewById(R.id.layout_brutto);
         for (el in 0..layout.childCount ){
             val child = layout.getChildAt(el)
             child?.isEnabled = false
@@ -139,8 +139,8 @@ class MainActivity : AppCompatActivity() {
      * Funzione per assegnare ai vari bottoni la propria funzione
      */
     private fun addClickEvent() {
-        btnLed1.setOnClickListener(switchLed(1))
-        btnLed2.setOnClickListener(switchLed(2))
+        btnLed1.setOnClickListener(switchLed(1, btnLed1))
+        btnLed2.setOnClickListener(switchLed(2, btnLed2))
 
         /*btnLed1.setOnClickListener(View.OnClickListener {
             arduinoCommunication("BELIIIN")
@@ -148,7 +148,8 @@ class MainActivity : AppCompatActivity() {
 
         btnConnection.setOnClickListener(View.OnClickListener {
             try {
-                pairDevices();
+                //pairDevices();
+                enable_disable_Buttons()
             } catch (e: IOException) {
                 e.printStackTrace();
             }
@@ -161,19 +162,20 @@ class MainActivity : AppCompatActivity() {
      * Trovare un modo per ricordare se i led sono accesi e da lì inviare i comandi di accensione in base al led scelto
      * o usando il nome o il numero della porta
      */
-    private fun switchLed(led_num: Int): View.OnClickListener? {
-        val message: String = "$led_num="
+    private fun switchLed(led_num: Int, btn: Button): View.OnClickListener? {
+        val message: String = "led{$led_num="
         if(led_num == 1){
-            val led = if(isLed1on) "on" else "off"
+            val led = if(isLed1on) "on}" else "off}"
             message.plus(led)
             isLed1on = !isLed1on
         } else if(led_num == 2){
-            val led = if(isLed2on) "on" else "off"
+            val led = if(isLed2on) "on}" else "off}"
             message.plus(led)
             isLed2on = !isLed2on
         }
-
         //INVIO MESSAGGIO BLUETOOTH
+        //arduinoCommunication(message)
+        //btn.setBackgroundColor("#FFFFF".toInt())
         return null
     }
 
@@ -182,12 +184,13 @@ class MainActivity : AppCompatActivity() {
      * @param fade_amount 0 .. 255
      */
     private fun fadeLed(led_num: Int, fade_amount: Int): View.OnClickListener? {
-        val message: String = "$led_num="
+        val message: String = "fade{$led_num="
         val fade = if(fade_amount < 0) 0 else if(fade_amount > 255) 255 else fade_amount
-        message.plus(fade);
+        message.plus("$fade}");
         if(led_num == 1) fade_amount1 = fade else if(led_num == 2) fade_amount2 = fade
         //INVIO DEL FADE
 
+        arduinoCommunication(message)
         updateTextView()
         return null
     }
@@ -203,15 +206,14 @@ class MainActivity : AppCompatActivity() {
      */
     private fun irrigationStart(): View.OnClickListener? {
         val vel = if(irrigation_velocity < 0) 0 else if(irrigation_velocity > 30) 30 else irrigation_velocity
-        val message: String = "irrigazione=$vel"
+        val message: String = "irrigazione{$vel}"
         //INVIO DELL'IRRIGAZIONE
-
+        arduinoCommunication(message)
         updateTextView()
         return null
     }
 
     private fun setIrrigationVel(){
-
     }
 
     /**
@@ -223,7 +225,14 @@ class MainActivity : AppCompatActivity() {
     /**
      * Funzione per controllare la disponibilità dei tasti se il sistema è in allarme, non si è ancora connesso o se è connesso
      */
-    private fun disableButton(){
+    private fun enable_disable_Buttons(){
+        for (el in 0..layout.childCount ){
+            val child = layout.getChildAt(el)
+            child?.isEnabled = true
+        }
+        btnConnection.isEnabled = false
+        btnBell.isEnabled = false
+
     }
 
 
