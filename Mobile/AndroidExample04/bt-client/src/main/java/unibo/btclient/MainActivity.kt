@@ -139,8 +139,12 @@ class MainActivity : AppCompatActivity() {
      * Funzione per assegnare ai vari bottoni la propria funzione
      */
     private fun addClickEvent() {
-        btnLed1.setOnClickListener(switchLed(1, btnLed1))
-        btnLed2.setOnClickListener(switchLed(2, btnLed2))
+        btnLed1.setOnClickListener(View.OnClickListener {
+            switchLed(1, btnLed1)
+        })
+        btnLed2.setOnClickListener(View.OnClickListener {
+            switchLed(1, btnLed2)
+        })
 
         /*btnLed1.setOnClickListener(View.OnClickListener {
             arduinoCommunication("BELIIIN")
@@ -148,7 +152,7 @@ class MainActivity : AppCompatActivity() {
 
         btnConnection.setOnClickListener(View.OnClickListener {
             try {
-                //pairDevices();
+                pairDevices();
                 enable_disable_Buttons()
             } catch (e: IOException) {
                 e.printStackTrace();
@@ -162,21 +166,22 @@ class MainActivity : AppCompatActivity() {
      * Trovare un modo per ricordare se i led sono accesi e da lì inviare i comandi di accensione in base al led scelto
      * o usando il nome o il numero della porta
      */
-    private fun switchLed(led_num: Int, btn: Button): View.OnClickListener? {
+    private fun switchLed(led_num: Int, btn: Button){
         val message: String = "led{$led_num="
+        var led: String = ""
+
         if(led_num == 1){
-            val led = if(isLed1on) "on}" else "off}"
+            led = if(isLed1on) "on}" else "off}"
             message.plus(led)
             isLed1on = !isLed1on
         } else if(led_num == 2){
-            val led = if(isLed2on) "on}" else "off}"
-            message.plus(led)
+            led = if(isLed2on) "on}" else "off}"
             isLed2on = !isLed2on
         }
+        val msg = "$message$led"
         //INVIO MESSAGGIO BLUETOOTH
-        //arduinoCommunication(message)
+        arduinoCommunication(msg)
         //btn.setBackgroundColor("#FFFFF".toInt())
-        return null
     }
 
     /**
@@ -247,8 +252,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun arduinoCommunication(input: String) {
         try{
-            socket?.outputStream?.write(input.toByteArray())
+            Log.i("BELIN", input.toByteArray().toString())
+            socket!!.outputStream.write(input.toByteArray())
         } catch(e: IOException) {
+
+            Log.i("coomutazzio", "NOH")
             e.printStackTrace()
         }
     }
@@ -301,10 +309,11 @@ class MainActivity : AppCompatActivity() {
 
         override fun doInBackground(vararg p0: Void?): String? {
             try {
-                if (!socket?.isConnected!!) {
+                if (socket == null || !socket?.isConnected!!) {
                     btAdapter = BluetoothAdapter.getDefaultAdapter()
                     val device: BluetoothDevice = btAdapter.getRemoteDevice(hc05_address)
                     socket = device.createInsecureRfcommSocketToServiceRecord(mUUID)
+                    Log.i("CONNESSO", socket.toString())
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery()
                     socket?.connect()
                 }
@@ -315,12 +324,14 @@ class MainActivity : AppCompatActivity() {
             return null
         }
 
+
+
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
             if (!connectSuccess) {
                 Log.i("data", "couldn't connect")
             } else {
-                Log.i("data", "BELIN")
+                Log.i("data", "BELIN"+ socket.toString())
             }
             m_progress.dismiss()
         }
