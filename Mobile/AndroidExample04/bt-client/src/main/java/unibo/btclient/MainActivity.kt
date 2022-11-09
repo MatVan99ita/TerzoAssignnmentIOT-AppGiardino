@@ -1,5 +1,6 @@
 package unibo.btclient
 
+import android.annotation.SuppressLint
 import android.support.v7.app.AppCompatActivity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -7,16 +8,21 @@ import android.os.Bundle
 import android.content.Intent
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothSocket
+import android.content.ContentValues
 import android.content.Context
 import android.os.AsyncTask
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.util.Log
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.*
 import java.io.IOException
+import java.net.URI
+import java.net.URL
 import java.util.*
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
 
 
 /**
@@ -37,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         private val hc05: BluetoothDevice = btAdapter.getRemoteDevice(hc05_address);
         private lateinit var adapter: ArrayAdapter<Any?>
         private var socket: BluetoothSocket? = null
+        private var response: String = ""
     }
 
     /**Gruppo di bottoni per la luce*/
@@ -65,8 +72,12 @@ class MainActivity : AppCompatActivity() {
     private var isLed1on: Boolean = false
     private var isLed2on: Boolean = false
     private var irrigation_velocity: Int = 0
+    lateinit var txt : TextView
 
     private lateinit var layout: ConstraintLayout
+
+    @OptIn(ExperimentalTime::class)
+    private val TEMPO = Duration.convert(5.0, DurationUnit.MINUTES, DurationUnit.MILLISECONDS).toLong()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +97,7 @@ class MainActivity : AppCompatActivity() {
         btnIrrigazione_slow = findViewById(R.id.irrigation_minus)
         btnConnection = findViewById(R.id.bt_connection_req)
         /*
-            * btn.setOnClickListener(new View.OnClickListener() {
+            * btnIrrigazione.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 btn.setEnabled(false);
@@ -104,6 +115,18 @@ class MainActivity : AppCompatActivity() {
             }
             });
             *
+            *
+            *
+            * btn.setOnClickListener(View.OnClickListener { v: View? ->
+            btn.setEnabled(false)
+            Handler().postDelayed({
+
+                // This method will be executed once the timer is over
+                btn.setEnabled(true)
+                Log.d(ContentValues.TAG, "resend1")
+            }, 2000) // set time as per your requirement
+        })
+            *
             * */
 
         led3 = findViewById(R.id.led3_view)
@@ -114,7 +137,7 @@ class MainActivity : AppCompatActivity() {
         led4.setText(fade_amount2.toString())
         irrigazione.setText(irrigation_velocity.toString())
 
-
+        txt = findViewById(R.id.textResponse)
         btnBell = findViewById(R.id.alarm_btn)
 
         //btAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -131,6 +154,9 @@ class MainActivity : AppCompatActivity() {
         btnConnection.isEnabled = true
 
         this.addClickEvent()
+
+        this.httpRequest()
+
     }
 
 
@@ -143,12 +169,8 @@ class MainActivity : AppCompatActivity() {
             switchLed(1, btnLed1)
         })
         btnLed2.setOnClickListener(View.OnClickListener {
-            switchLed(1, btnLed2)
+            switchLed(2, btnLed2)
         })
-
-        /*btnLed1.setOnClickListener(View.OnClickListener {
-            arduinoCommunication("BELIIIN")
-        })*/
 
         btnConnection.setOnClickListener(View.OnClickListener {
             try {
@@ -180,6 +202,19 @@ class MainActivity : AppCompatActivity() {
             setIrrigationVel("-")
         })
 
+        btnIrrigazione.setOnClickListener(View.OnClickListener { v: View? ->
+            btnIrrigazione.setEnabled(false)
+            irrigationStart()
+            Handler().postDelayed({
+                // This method will be executed once the timer is over
+                btnIrrigazione.setEnabled(true)
+                Log.d(ContentValues.TAG, "resend1")
+            }, TEMPO) // set time as per your requirement
+        })
+
+        btnBell.setOnClickListener(View.OnClickListener {
+            disableAlarm()
+        })
 
     }
 
@@ -217,16 +252,11 @@ class MainActivity : AppCompatActivity() {
      * invio della quantità di fade al led specificato
      * @param fade_amount 0 .. 255
      */
-    private fun fadeLed(led_num: Int, fade_amount: Int): View.OnClickListener? {
-        val message: String = "fade{$led_num="
-        val fade = if(fade_amount < 0) 0 else if(fade_amount > 255) 255 else fade_amount
-        message.plus("$fade}");
-        if(led_num == 1) fade_amount1 = fade else if(led_num == 2) fade_amount2 = fade
+    private fun fadeLed(led_num: Int){
+        var message: String = "fade{$led_num="
+        if(led_num == 3) message = "$message$fade_amount1}" else if(led_num == 4) message = "$message$fade_amount2}"
         //INVIO DEL FADE
-
         arduinoCommunication(message)
-        updateTextView()
-        return null
     }
 
 
@@ -243,7 +273,6 @@ class MainActivity : AppCompatActivity() {
         val message: String = "irrigazione{$vel}"
         //INVIO DELL'IRRIGAZIONE
         arduinoCommunication(message)
-        updateTextView()
     }
 
     private fun setLedIntensity(led: Int, operation: String){
@@ -252,12 +281,14 @@ class MainActivity : AppCompatActivity() {
             "-" -> if(led == 3 && fade_amount1 > 0)  fade_amount1-- else if(led == 4 && fade_amount2 > 0)  fade_amount2--
         }
         updateTextView()
+        fadeLed(led)
     }
 
     /**
      * Funzione per l'allarme
      */
     private fun disableAlarm(){
+        arduinoCommunication("disable_alarm{1}")
     }
 
     /**
@@ -370,9 +401,41 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
+    inner class Retriever : AsyncTask<String, String, String>() {
+        override fun doInBackground(vararg args : String?): String {
+            val urlRequest = args[0].toString()
+            var urlResponse = "";
+
+            //Try to extract url
+            try {
+                urlResponse = URL(urlRequest).readText()
+                Log.i("RETRIEVE", "SUCCESS in Retrieve.")
+            } catch (e : Exception) {
+                Log.i("RETRIEVE", "EXCEPTION in Retrieve.")
+                e.printStackTrace()
+            }
+            return urlResponse;
+        }
+
+        //Assigns value to response
+        override fun onPostExecute(result: String?) {
+            response = result.toString() //Result possibly void type
+        }
+    }
+
     private fun createDialog(testoh: String) {
         Log.d("MainActivity", testoh)
     }
 
+
+    private fun httpRequest() {
+        Retriever().execute("https://loclahost:8000/api/data/2")
+
+        //return URL("https://loclahost:8000/api/data/2").readText()
+        Log.i("BANANANANANANANAN", response)
+
+        txt.setText(response)
+    }
 
 }

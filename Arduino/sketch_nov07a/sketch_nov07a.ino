@@ -18,6 +18,8 @@ void loop()
   if (MyBlue.available()) 
     Serial.write(MyBlue.read()); 
   //from termial to bluetooth 
-  if (Serial.available()) 
-    MyBlue.write(Serial.read());
+  if (Serial.available()) {
+    MyBlue.write("ALLARMO"/*Serial.read()*/);
+  }
+
 }
