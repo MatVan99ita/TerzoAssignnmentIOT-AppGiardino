@@ -1,8 +1,12 @@
 
 var xhttp = new XMLHttpRequest();
-var url = "http://localhost:8000/esp/data/"
+var url1 = "http://localhost:8000/esp/data/"
+var url2 = "http://localhost:8000/arduino/status/"
 
-$(document).ready(function(){ setInterval(getSensorData, 5000, url); });
+$(document).ready(function(){
+  setInterval(getSensorData, 1000, url1);
+  setInterval(getStatus, 1000, url2);
+});
 
 
 function getSensorData(url){
@@ -13,6 +17,12 @@ function getSensorData(url){
       $("#demo").append(field + " ");
       console.log(field + " " + i);
     });*/
+  });
+  return ;
+}
+function getStatus(url){
+  $.getJSON(url, function(result){
+    $("#status").html(result["status"]);
   });
   return ;
 }
