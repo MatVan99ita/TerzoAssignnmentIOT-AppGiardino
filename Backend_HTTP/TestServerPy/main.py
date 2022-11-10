@@ -1,3 +1,4 @@
+import string
 from types import new_class
 from typing import Union
 from webbrowser import get
@@ -9,6 +10,7 @@ from pydantic import BaseModel, Json
 class Esp32(BaseModel):
     temperature: float = 0.0
     light: float = 0.0
+    arduino_status = "AUTO"
 
     # getter method
     def get_temp(self):
@@ -21,13 +23,20 @@ class Esp32(BaseModel):
     def set_age(self, x):
         self._age = x
 
-        # setter method
+    def get_status(self):
+        return self.arduino_status
 
+
+    # setter method
     def set_temp(self, x):
         self.temperature = x
 
     def set_light(self, x):
         self.light = x
+
+    def set_status(self, x):
+        self.arduino_status = x
+
 
 
 esp = Esp32()
@@ -93,14 +102,13 @@ async def update_item(temp: float, light: float):
 async def getSensorData():
     return {"temperatura": esp.get_temp(), "lux": esp.get_light()}
 
-@app.post("/py/send/{val}")
-async def pySend(val):
-    return {"arriveto": val}
+@app.get("/arduino/status/")
+async def getStatus():
+    return esp.get_status()
 
-@app.get("/py/get")
-async def pyGet():
-    return {"banana"}
-
+@app.post("/arduino/status/{status}")
+async def setStatus(status):
+    esp.set_status(status)
 
 def checkLight(val):
     if(val < 2):
