@@ -58,7 +58,7 @@ int receiveData(String address){
   http.begin(address+"arduino/status/");
   int retCode = http.GET();
   String payload = http.getString();
-  Serial.print("Payload XD ");
+  Serial.print("Payload - ");
   Serial.println(payload);
   status = payload;
   if(status == "\"ERROR\""){
