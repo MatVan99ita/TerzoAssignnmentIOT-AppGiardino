@@ -1,23 +1,23 @@
 package unibo.btclient
 
 import android.annotation.SuppressLint
-import android.support.v7.app.AppCompatActivity
+import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.os.Bundle
-import android.content.Intent
-import android.app.ProgressDialog
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
+import android.os.Bundle
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.*
 import java.io.IOException
-import java.net.URI
+import java.io.InputStream
 import java.net.URL
 import java.util.*
 import kotlin.time.Duration
@@ -43,8 +43,9 @@ class MainActivity : AppCompatActivity() {
         private val hc05: BluetoothDevice = btAdapter.getRemoteDevice(hc05_address);
         private lateinit var adapter: ArrayAdapter<Any?>
         private var socket: BluetoothSocket? = null
-        private var response: String = ""
     }
+
+    private var response: String = ""
 
     /**Gruppo di bottoni per la luce*/
     private lateinit var btnLed1: Button
@@ -155,7 +156,6 @@ class MainActivity : AppCompatActivity() {
 
         this.addClickEvent()
 
-        this.httpRequest()
 
     }
 
@@ -325,6 +325,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getArduinoStatus(){
+        var buffer = ByteArray(256)
+        val inputStream: InputStream = socket!!.inputStream
+        var bytes: Int
+        try{
+            bytes = inputStream.read(buffer)
+            val readMessage: String = String(buffer, 1, bytes);
+            // Send the obtained bytes to the UI Activity via handler
+            Log.i("logging", readMessage + "");
+            this.response = readMessage
+        } catch (e: IOException) {
+            Log.e("ERROR", e.toString())
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -341,6 +356,7 @@ class MainActivity : AppCompatActivity() {
         led3.setText(this.fade_amount1.toString())
         led4.setText(this.fade_amount2.toString())
         irrigazione.setText(this.irrigation_velocity.toString())
+        this.txt.setText(response)
     }
 
     private fun scan() {
@@ -358,6 +374,8 @@ class MainActivity : AppCompatActivity() {
             print(s)
             adapter.add(s)
         }
+        //this.getArduinoStatus()
+        Log.i("STATUS", response)
     }
 
 
@@ -388,8 +406,6 @@ class MainActivity : AppCompatActivity() {
             return null
         }
 
-
-
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
             if (!connectSuccess) {
@@ -400,42 +416,4 @@ class MainActivity : AppCompatActivity() {
             m_progress.dismiss()
         }
     }
-
-    @SuppressLint("StaticFieldLeak")
-    inner class Retriever : AsyncTask<String, String, String>() {
-        override fun doInBackground(vararg args : String?): String {
-            val urlRequest = args[0].toString()
-            var urlResponse = "";
-
-            //Try to extract url
-            try {
-                urlResponse = URL(urlRequest).readText()
-                Log.i("RETRIEVE", "SUCCESS in Retrieve.")
-            } catch (e : Exception) {
-                Log.i("RETRIEVE", "EXCEPTION in Retrieve.")
-                e.printStackTrace()
-            }
-            return urlResponse;
-        }
-
-        //Assigns value to response
-        override fun onPostExecute(result: String?) {
-            response = result.toString() //Result possibly void type
-        }
-    }
-
-    private fun createDialog(testoh: String) {
-        Log.d("MainActivity", testoh)
-    }
-
-
-    private fun httpRequest() {
-        Retriever().execute("https://loclahost:8000/api/data/2")
-
-        //return URL("https://loclahost:8000/api/data/2").readText()
-        Log.i("BANANANANANANANAN", response)
-
-        txt.setText(response)
-    }
-
 }
