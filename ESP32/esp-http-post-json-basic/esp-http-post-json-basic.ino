@@ -91,43 +91,50 @@ int readTemperature(){
 void setup() {
   Serial.begin(115200);
   //analogReadResolution(12);
+
   pinMode(LED_PIN, OUTPUT);
   pinMode(LM35_PIN, INPUT);
   pinMode(PHOTO_PIN, INPUT);
+
   digitalWrite(LED_PIN, LOW);
   connectToWifi(ssid, password);
 }
 
-void loop() { /** MANCA SOLO L'ACCENDI SPEGNI DEL LED PER QUANDO IL SISTEMA NON E' IN ALLARME*/
+void loop() {
   int temp;
   int light;
   if (WiFi.status()== WL_CONNECTED){
+
+
 #if DEBUG == 1
-  int t1 = random(0, 4095);
-  light = map(random(0, 4095), 0, 4095, 0, 8);
-  int t2 = random(0, 4095);
-  temp = map(random(0, 4095), 0, 4095, 0, 5);
-  Serial.println("LUCE: "+String(t1)+" -> "+String(light));
-  Serial.println("TEMPERATURA: "+String(t2)+" -> "+String(temp));
+    int t1 = random(0, 4095);
+    light = map(random(0, 4095), 0, 4095, 0, 8);
+    int t2 = random(0, 4095);
+    temp = map(random(0, 4095), 0, 4095, 0, 5);
+    Serial.println("LUCE: "+String(t1)+" -> "+String(light));
+    Serial.println("TEMPERATURA: "+String(t2)+" -> "+String(temp));
 #else
-  temp = readTemperature();
-  light = readLight();
-  Serial.println("LUCE: "+String(light));
-  Serial.println("TEMPERATURA: "+String(temp));
+    temp = readTemperature();
+    light = readLight();
+    Serial.println("LUCE: "+String(light));
+    Serial.println("TEMPERATURA: "+String(temp));
 #endif
-  int code = sendData(String(serviceURI), temp, light);
-  if (code == 200){
-    Serial.println("ok");
-  } else {
-    Serial.println(String("error: ") + code);
-  }
-  code = receiveData(String(serviceURI));
-  if (code == 200){
-    Serial.println("ok");
-  } else {
-    Serial.println(String("error: ") + code);
-  }
+
+
+    int code = sendData(String(serviceURI), temp, light);
+    if (code == 200){
+      Serial.println("ok");
+    } else {
+      Serial.println(String("error: ") + code);
+    }
+    code = receiveData(String(serviceURI));
+    if (code == 200){
+      Serial.println("ok");
+    } else {
+      Serial.println(String("error: ") + code);
+    }
     delay(1000);
+
   } else {
     Serial.println("WiFi Disconnected... Reconnect.");
     connectToWifi(ssid, password);
