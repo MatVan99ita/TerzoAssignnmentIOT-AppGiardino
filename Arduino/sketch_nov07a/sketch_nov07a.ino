@@ -21,5 +21,4 @@ void loop()
   if (Serial.available()) {
     MyBlue.write("ALLARMO"/*Serial.read()*/);
   }
-
 }
