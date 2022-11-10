@@ -104,7 +104,7 @@ async def getSensorData():
 
 @app.get("/arduino/status/")
 async def getStatus():
-    return esp.get_status()
+    return {"status": esp.get_status()}
 
 @app.post("/arduino/status/{status}")
 async def setStatus(status):

@@ -18,6 +18,9 @@ def write_read(x):
     data = arduino.readline()
     return data
 
+def readArduinoStatus():
+    return arduino.readline()
+
 
 while True:
     num = input("Enter a number: ")
