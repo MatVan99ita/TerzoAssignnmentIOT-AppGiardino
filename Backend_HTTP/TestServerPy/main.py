@@ -10,24 +10,24 @@ from pydantic import BaseModel, Json
 class Esp32(BaseModel):
     temperature: float = 0.0
     light: float = 0.0
-    arduino_status = "AUTO"
+    arduino_status = "AUTO"         # AUTO       / MANUAL / ERROR
+    irrigation_state = "ATTIVABILE" # ATTIVABILE / PAUSA  / MOVIMENTO
 
-    # getter method
+    # GETTER
     def get_temp(self):
         return self.temperature
 
     def get_light(self):
         return self.light
 
-    # setter method
-    def set_age(self, x):
-        self._age = x
-
     def get_status(self):
         return self.arduino_status
 
+    def get_irrigation_state(self):
+        return self.irrigation_state
 
-    # setter method
+
+    # SETTER
     def set_temp(self, x):
         self.temperature = x
 
@@ -36,6 +36,9 @@ class Esp32(BaseModel):
 
     def set_status(self, x):
         self.arduino_status = x
+
+    def set_irrigation_state(self, x):
+        self.irrigation_state = x
 
 
 
@@ -112,19 +115,26 @@ async def setStatus(status):
 
 @app.get("/arduino/irrigation/")
 async def getIrrigationStatus():
-    return {"status": esp.get_status()}
+    return {"irrigazione": esp.get_irrigation_state()}
 
 @app.post("/arduino/irrigation/{status}")
 async def setIrrigationStatus(status):
-    esp.set_status(status)
+    esp.set_irrigation_state(status)
 
 def checkLight(val):
     if(val < 2):
-        return {"irrigazione": "attiva"}
+        return {"irrigazione": "on", "illuminazione": "on"}
     if(val < 5):
-        return {"illuminazione": "accendi"}
+        return {"irrigazione": "off", "illuminazione": "off"}
     return {"ok": "ok"}
 
 def checkTemp(val):
     return {"rotation": 7}
+
+def checkIrrigation():
+    temp = esp.get_temp()
+    irr = esp.get_irrigation_state()
+    if temp < 5 and irr == "PAUSA":
+        esp.set_status("ERROR")
+    pass
 
