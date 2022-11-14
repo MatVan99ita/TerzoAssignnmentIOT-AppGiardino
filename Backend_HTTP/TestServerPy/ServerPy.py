@@ -37,11 +37,11 @@ def readArduinoStatus():
     try:
         irrigazione = str.split(',')[0].split(':')[1]
         mode = str.split(',')[1].split(':')[1].replace('\r\n', '')
-        request = server + "/arduino/status/" + str
-        r = requests.post(str)
+        request = server + "/arduino/status/" + irrigazione
+        r = requests.post(request)
         print("ok" if r == 200 else "no")
-        request = server + "/arduino/irrigation/" + str
-        r = requests.post(str)
+        request = server + "/arduino/irrigation/" + mode
+        r = requests.post(request)
         print("ok" if r == 200 else "no")
     except:
         print("Error occured: cannot read/send properly")
@@ -54,5 +54,18 @@ def sendCommandToArduino(x):
     except:
         print("Error occured: cand write properly")
 
+
+def readServerStatus():
+    request1 = server + "/arduino/status/"
+    r1 = requests.get(request1)
+
+    request2 = server + "/arduino/irrigation/"
+    r2 = requests.get(request2)
+
+    return r1, r2
+
+
 while True:
     readArduinoStatus()
+    x = (readServerStatus())
+    sendCommandToArduino(x)
