@@ -47,9 +47,6 @@ def readArduinoStatus():
         print("Error occured: cannot read/send properly")
 
 
-    return irrigazione, mode
-
-
 def sendCommandToArduino(x):
     try:
         arduino.write(bytes(x, 'utf-8'))
@@ -58,9 +55,4 @@ def sendCommandToArduino(x):
         print("Error occured: cand write properly")
 
 while True:
-    ir, m = readArduinoStatus()
-    print(ir, m)
-
-
-    # print(r.content)
-    # print(requests.get(str(server + "/py/get")))
+    readArduinoStatus()
