@@ -110,6 +110,14 @@ async def getStatus():
 async def setStatus(status):
     esp.set_status(status)
 
+@app.get("/arduino/irrigation/")
+async def getIrrigationStatus():
+    return {"status": esp.get_status()}
+
+@app.post("/arduino/irrigation/{status}")
+async def setIrrigationStatus(status):
+    esp.set_status(status)
+
 def checkLight(val):
     if(val < 2):
         return {"irrigazione": "attiva"}

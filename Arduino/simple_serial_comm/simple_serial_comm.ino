@@ -1,4 +1,4 @@
-int x;
+String x;
 
 void setup() {
   Serial.begin(115200);
@@ -6,7 +6,8 @@ void setup() {
 }
 
 void loop() {
-  while (!Serial.available());
-  x = Serial.readString().toInt();
-  Serial.print(x + 1);
+  while (!Serial.available()){
+    x = Serial.readString();//.toInt();
+    Serial.println("irrigazione:PAUSA,mode:AUTO");
+  }
 }
