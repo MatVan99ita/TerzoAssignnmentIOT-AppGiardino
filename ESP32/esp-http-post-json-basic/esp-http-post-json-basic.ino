@@ -5,27 +5,28 @@
  * - Going through ngrok
  *
  */
-#include <WiFi.h>
-#include <HTTPClient.h>//*/
 /*#include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>//*/
-#include <ArduinoJson.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include "DHT.h"
 
 #define DEBUG 0
 #define ADC_VREF_mV    3300.0 // in millivolt
 #define ADC_RESOLUTION 4096.0
-#define LM35_PIN 5
-#define PHOTO_PIN 6
-#define LED_PIN 35
+#define DHT11PIN A4
+#define PHOTO_PIN 35 //A7
+#define LED_PIN 26
 
 const char *ssid = "ilGabbibbo";
 const char *password = "P4p3r1ss1m4";
 
-const char *serviceURI = "http://192.168.198.158:8000/";
+const char *serviceURI = "http://192.168.72.158:8000/";
 
 int lightInit = 0;
 String status = "";
 
+DHT dht(DHT11PIN, DHT11);
 
 void connectToWifi(const char* ssid, const char* password){
   WiFi.begin(ssid, password);
@@ -41,12 +42,13 @@ void connectToWifi(const char* ssid, const char* password){
 
 
 int sendData(String address, float tmp, float light){
-  
   WiFiClient client;
   HTTPClient http;
   http.addHeader("Content-Type", "application/json");
+  http.begin(client, address + "esp/both/" + String(tmp) + "&" + String(light));
   http.begin(address + "esp/both/" + String(tmp) + "&" + String(light));
   int retCode = http.POST("");
+  Serial.print(String(retCode));
   http.end();
   return retCode;
 }
@@ -55,8 +57,10 @@ int receiveData(String address){
   WiFiClient client;
   HTTPClient http;    
   http.addHeader("Content-Type", "application/json");
+  http.begin(client, address+"arduino/status/");
   http.begin(address+"arduino/status/");
   int retCode = http.GET();
+  Serial.print(String(retCode));
   String payload = http.getString();
   Serial.print("Payload - ");
   Serial.println(payload);
@@ -91,12 +95,12 @@ int readTemperature(){
 void setup() {
   Serial.begin(115200);
   //analogReadResolution(12);
-
+#if DEBUG == 0
   pinMode(LED_PIN, OUTPUT);
-  pinMode(LM35_PIN, INPUT);
   pinMode(PHOTO_PIN, INPUT);
-
   digitalWrite(LED_PIN, LOW);
+  dht.begin();
+#endif
   connectToWifi(ssid, password);
 }
 
@@ -114,7 +118,7 @@ void loop() {
     Serial.println("LUCE: "+String(t1)+" -> "+String(light));
     Serial.println("TEMPERATURA: "+String(t2)+" -> "+String(temp));
 #else
-    temp = readTemperature();
+    temp = dht.readTemperature();
     light = readLight();
     Serial.println("LUCE: "+String(light));
     Serial.println("TEMPERATURA: "+String(temp));

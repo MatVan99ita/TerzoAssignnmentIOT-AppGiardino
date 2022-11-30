@@ -1,15 +1,15 @@
 /*
- * HTTPClient lib -- simple HTTP GET
+ * HttpClient lib -- simple HTTP GET
  */
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-const char* ssid = "ErCattecolling";
-const char* password = "Porc0D10";
+ char* ssid = "ErCattecolling";
+ char* password = "Porc0D10";
 
-const char *serverPath = "https://b92c-137-204-20-123.eu.ngrok.io/";
+ char *serverPath = "https://b92c-137-204-20-123.eu.ngrok.io/";
 
-void connectToWifi(const char* ssid, const char* password){
+void connectToWifi( char* ssid,  char* password){
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
   while(WiFi.status() != WL_CONNECTED) {
