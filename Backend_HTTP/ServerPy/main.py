@@ -117,6 +117,13 @@ async def setStatus(status):
 async def getIrrigationStatus():
     return {"irrigazione": esp.get_irrigation_state()}
 
+@app.get("/esp/led/")
+async def espLedSet():
+    if(esp.getStatus == "ERROR"):
+        return {"led": "off"}
+    else:
+        return {"led": "on"}
+
 @app.post("/arduino/irrigation/{status}")
 async def setIrrigationStatus(status):
     esp.set_irrigation_state(status)
@@ -137,4 +144,3 @@ def checkIrrigation():
     if temp < 5 and irr == "PAUSA":
         esp.set_status("ERROR")
     pass
-
