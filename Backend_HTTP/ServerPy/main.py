@@ -11,7 +11,7 @@ class Esp32(BaseModel):
     temperature: float = 0.0
     light: float = 0.0
     arduino_status = "AUTO"         # AUTO       / MANUAL / ERROR
-    irrigation_state = "ATTIVABILE" # ATTIVABILE / PAUSA  / MOVIMENTO
+    irrigation_state = "ATTIVABILE" # ATTIVABILE / PAUSA  / MOVIMENTO -> posso modificare la richiesta dal server che una volta inviata la richiesta per l'irrigazione va in pausa automatica senza dover inviare o chiedere nulla
 
     # GETTER
     def get_temp(self):

@@ -31,7 +31,7 @@ def readArduinoStatus():
     str = np.compat.unicode(var, errors='replace')
     irrigazione = ""
     mode = ""
-    """ PATTERN MESSAGGIO 
+    """ PATTERN MESSAGGIO
         irrigazione:<val>,mode:<val>
     """
     try:
@@ -50,9 +50,9 @@ def readArduinoStatus():
 def sendCommandToArduino(x):
     try:
         arduino.write(bytes(x, 'utf-8'))
-        time.sleep(0.05)
+        time.sleep(5000)
     except:
-        print("Error occured: cand write properly")
+        print("Error occured: can't write properly")
 
 
 def readServerStatus():
