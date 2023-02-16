@@ -1,0 +1,54 @@
+Inizio
+    Tempesta:=false; // Variabile di controllo per la pausa dell'irrigazione in caso di temperatura alta
+    While(True) {
+        TaskControlloTemperatura(); // Controlla la temperatura del giardino
+        If (Temperatura > Soglia) {
+            If (IrrigazioneInPausa) {
+                Tempesta:=true; // Attiva la pausa dell'irrigazione
+                TaskBloccoAutomatico(); // Attiva il blocco del sistema
+            }
+            Else {
+                TaskAttivazioneSistemaIrrigazione(); // Attiva l'irrigazione per 10 secondi
+            }
+        }
+        Else {
+            Tempesta:=false; // Disattiva la pausa dell'irrigazione
+        }
+        TaskAttivazioneSistemaIlluminazione(); // Attiva l'illuminazione del giardino durante la notte
+        TaskDisattivazioneSistemaIlluminazione(); // Disattiva l'illuminazione del giardino al mattino
+        If (RichiestaControlloManuale) {
+            TaskControlloManuale(); // Attiva il controllo manuale del sistema
+        }
+        If (RichiestaSbloccoManuale) {
+            TaskSbloccoManuale(); // Disattiva il controllo manuale e riattiva la modalità automatica
+        }
+    }
+Fine
+
+TaskControlloTemperatura()
+    // Controlla la temperatura del giardino ogni minuto
+Fine
+
+TaskAttivazioneSistemaIlluminazione()
+    // Attiva il sistema di illuminazione del giardino all'inizio della notte
+Fine
+
+TaskDisattivazioneSistemaIlluminazione()
+    // Disattiva il sistema di illuminazione del giardino al mattino
+Fine
+
+TaskAttivazioneSistemaIrrigazione()
+    // Attiva il sistema di irrigazione del giardino per 10 secondi
+Fine
+
+TaskBloccoAutomatico()
+    // Attiva il blocco del sistema in caso di temperatura alta e irrigazione in pausa
+Fine
+
+TaskControlloManuale()
+    // Attiva il controllo manuale del sistema
+Fine
+
+TaskSbloccoManuale()
+    // Disattiva il controllo manuale e riattiva la modalità automatica
+Fine

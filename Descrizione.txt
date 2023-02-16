@@ -1,0 +1,34 @@
+Ecco un'architettura task-based per un giardino con sistema di illuminazione e irrigazione che si 
+attivano in modo automatico, con possibilità di controllo manuale tramite un'app per smartphone:
+
+• Task "Attivazione sistema di illuminazione": questo task viene attivato 
+    dal sistema a partire dal tramonto. Il task controlla la luce ambientale e, 
+    se è abbastanza buio, attiva il sistema di illuminazione del giardino per tutta la notte.
+
+• Task "Controllo temperatura": questo task viene eseguito ogni minuto per controllare 
+    la temperatura dell'aria nel giardino. Se la temperatura supera una soglia predefinita, 
+    il sistema attiva il task "Attivazione sistema di irrigazione" solo se non è in pausa.
+
+• Task "Attivazione sistema di irrigazione": questo task attiva il sistema di irrigazione 
+    per un breve periodo di tempo (ad esempio 10 secondi) per raffreddare l'aria e l'ambiente del giardino. 
+    Dopo il periodo di attivazione, il sistema si disattiva e attende un certo 
+    periodo di tempo (ad esempio 5 minuti) prima di riattivarsi, solo se non è in pausa.
+
+• Task "Disattivazione sistema di illuminazione": questo task viene attivato al mattino e spegne 
+    il sistema di illuminazione del giardino.
+
+• Task "Blocco automatico": questo task viene attivato quando la temperatura supera la soglia 
+    predefinita e il sistema di irrigazione è in pausa. In tal caso, il sistema va in blocco e richiede 
+    lo sblocco manuale.
+
+• Task "Controllo manuale": il sistema di controllo centrale è in grado di rilevare la richiesta di 
+    controllo manuale attraverso l'app per smartphone. In caso di richiesta, il controllo viene disattivato 
+    e il sistema di irrigazione e illuminazione del giardino viene messo sotto il controllo dell'utente.
+
+• Task "Sblocco manuale": l'utente può sbloccare il sistema di controllo centrale e riattivare 
+    la modalità automatica attraverso l'app per smartphone.
+
+L'architettura potrebbe essere implementata utilizzando una piattaforma IoT che interagisce con sensori 
+di temperatura, luce e umidità, attuatori di illuminazione e irrigazione, e un microcontrollore 
+o un computer con software di automazione. L'app per smartphone comunica con il sistema di controllo 
+centrale attraverso una connessione Internet sicura per inviare i comandi di controllo.
