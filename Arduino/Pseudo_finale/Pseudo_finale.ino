@@ -95,6 +95,20 @@ void loop{
     if(bt.available() > 0) data = bt.parseInt();
     //data sarà una stringa hardocoddata con i comandi che vengono mandati
     if(data.substr()=="") //esegui comando
+    switch (data.substr())//<- non è così la substring
+    {
+    case "LUCE":
+      /* code */
+      break;
+
+      
+    case "IRRIGAZIONE":
+      /* code */
+      break;
+    
+    default:
+      break;
+    }
     break;
   case 2:
     /* ALARM */
