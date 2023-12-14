@@ -62,7 +62,7 @@ ManualMode(){
 }
 
 
-  CheckManualSignal{
+  CheckManualSignal(){
     while(bt.available() == 0);
 
     if(bt.available() > 0) data = bt.parseInt();
@@ -82,6 +82,28 @@ void setup(){
 
 void loop{
   //attende un eventuale messaggio dall'app per modalità manuale
+  switch (mode)
+  {
+  case 0:
+    CheckLight();
+    CheckTemp();
+    CheckManualSignal();
+    delay(10000);
+    break;
+  case 1:
+    /* MANUAL */
+    if(bt.available() > 0) data = bt.parseInt();
+    //data sarà una stringa hardocoddata con i comandi che vengono mandati
+    if(data.substr()=="") //esegui comando
+    break;
+  case 2:
+    /* ALARM */
+    break;
+  
+  default:
+    break;
+  }
+  
   if(mode==0){
   CheckLight();
   CheckTemp();
