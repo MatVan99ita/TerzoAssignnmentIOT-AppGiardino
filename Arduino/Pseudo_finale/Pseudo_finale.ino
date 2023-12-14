@@ -9,6 +9,10 @@ void setup() {
   // put your setup code here, to run once:
   myservo.attach(9);
   myservo.write(0);
+  
+  Serial.begin(115200);
+  Serial.setTimeout(1);
+  bt.begin(9600);
 }
 
 CheckLight(){
@@ -47,10 +51,26 @@ CheckTemp(){
   }
 
 ManualMode(){
-  
+  //Check segnale bluetooth
+  //Se non c'è chissene
+  //Se c'è bloccare l'auto mode e rendere 
+  //attivabili in modo manuale le task
+  mode = 1
+  if(/*fine manual*/){
+    mode = 0
+  }
 }
 
 
+  CheckManualSignal{
+    while(bt.available() == 0);
+
+    if(bt.available() > 0) data = bt.parseInt();
+    
+    delay(400);
+
+    if(data == '1') mode =  1
+  }
 
 
 void setup(){
@@ -65,7 +85,10 @@ void loop{
   if(mode==0){
   CheckLight();
   CheckTemp();
+  CheckManualSignal();
   delay(10000);
-  }
+  } else if(mode == 2){
+    //ALARM
+  } else {}
 
 }
