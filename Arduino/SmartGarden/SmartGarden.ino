@@ -1,4 +1,8 @@
 
+
+#include "SoftwareSerial.h"
+SoftwareSerial MyBlue(3, 2); // RX | TX 
+
 void setup() 
 {
   Serial.begin(9600); 
