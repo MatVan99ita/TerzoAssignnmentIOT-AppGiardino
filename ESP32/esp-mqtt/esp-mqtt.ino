@@ -4,8 +4,8 @@
 
 /* wifi network info */
 
-const char* ssid = "ErCattecolling";
-const char* password = "Porc0D10";
+const char* ssid = "IlGabbibbo";
+const char* password = "P4p3r1ss1m4";
 
 /* MQTT server address */
 const char* mqtt_server = "broker.mqtt-dashboard.com";
