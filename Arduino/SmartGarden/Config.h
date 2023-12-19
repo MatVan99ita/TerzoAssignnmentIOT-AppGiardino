@@ -1,6 +1,6 @@
 /** configurazione pin */
 /**
- * TODO: 
+ * TODO: impostare i pin
 */
 #define L1_FADE 
 #define L2_FADE 
