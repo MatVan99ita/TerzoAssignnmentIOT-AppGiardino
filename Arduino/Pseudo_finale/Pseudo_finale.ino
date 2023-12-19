@@ -88,6 +88,7 @@ void loop{
     CheckLight();
     CheckTemp();
     CheckManualSignal();
+    
     delay(10000);
     break;
   case 1:

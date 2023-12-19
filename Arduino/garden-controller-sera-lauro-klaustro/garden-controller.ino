@@ -2,15 +2,27 @@
 #include "Arduino.h"
 #include "SoftwareSerial.h"
 #include "Config.h"
+#include "MsgService.h"
+#include "ComunicationTask.h"
+#include "IrrigationTask.h"
+#include "IlluminationTask.h"
 
-#include "SoftwareSerial.h"
-SoftwareSerial MyBlue(3, 2); // RX | TX 
 
-void setup() 
-{
+/**variabili globali*/
+
+Scheduler sched;
+String led_type;
+int led_id;
+bool led_on;
+int value=0;
+
+
+/** setup iniziale */
+void setup(){
+
   sched.init(50);
   
-Task* illuminationTask = new IlluminationTask();
+  Task* illuminationTask = new IlluminationTask();
   illuminationTask->init(50);
   sched.addTask(illuminationTask);
   illuminationTask->setActive(false);
@@ -23,9 +35,13 @@ Task* illuminationTask = new IlluminationTask();
   Task* comunicationTask = new ComunicationTask(irrigationTask,illuminationTask);
   comunicationTask->init(50);
   sched.addTask(comunicationTask);
+
 }
 
-void loop() 
-{ 
+
+
+
+/** loop principale */
+void loop(){
   sched.schedule();
 }
