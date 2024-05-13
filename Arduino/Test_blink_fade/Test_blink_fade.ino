@@ -21,10 +21,10 @@
 
   https://www.arduino.cc/en/Tutorial/BuiltInExamples/Blink
 */
-int blink1 = 13;//BLINK
-int blink2 = 12;//BLINK
-int fade1 = 11;//FADE
-int fade2 = 10;//FADE
+int blink1 = 12;//BLINK
+int blink2 = 11;//BLINK
+int fade1 = 10;//FADE
+int fade2 = 9;//FADE
 // the setup function runs once when you press reset or power the board
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
@@ -50,7 +50,7 @@ void loop() {
 
   Serial.println("banana");
   delay(1000);
-  for (int fadeValue = 255 ; fadeValue >= 0; fadeValue -= 5) {
+  for (int fadeValue = 255 ; fadeValue >= 0; fadeValue -= 9) {
     // sets the value (range from 0 to 255):
     analogWrite(fade1, fadeValue);
     analogWrite(fade2, fadeValue);
