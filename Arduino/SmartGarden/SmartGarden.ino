@@ -6,6 +6,15 @@
 #include "SoftwareSerial.h"
 SoftwareSerial MyBlue(3, 2); // RX | TX 
 
+
+Scheduler sched;
+String led_type;
+int led_id;
+bool led_on;
+int value=0;
+
+
+
 void setup() 
 {
   sched.init(50);

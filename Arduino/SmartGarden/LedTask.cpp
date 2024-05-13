@@ -24,25 +24,23 @@ void LedTask::tick(){
     {
     case CHANGE_ILLUMINATION_STATUS:
         //TODO: agginta controlli per far partire i led
-    if(led_type=="SWITCH")
-    {
-      if(led_id==1){
-        led_switch1->change();
-      } else if(led_id==2) {
-        led_switch2->change();
-      }
-    } else if(led_type == "FADE") {
-      if(led_id==1){
-        led_fade1->fade();
-      } else if (led_id==2) {
-        led_fade2->fade();        
-      } else if (led_id==3) {
-        led_fade1->fade();
-        led_fade2->fade();
-      }
-
-    }
-
+        if(led_type=="SWITCH")
+        {
+          if(led_id==1){
+            led_switch1->change();
+          } else if(led_id==2) {
+            led_switch2->change();
+          }
+        } else if(led_type == "FADE") {
+          if(led_id==1){
+            led_fade1->fade();
+          } else if (led_id==2) {
+            led_fade2->fade();        
+          } else if (led_id==3) {
+            led_fade1->fade();
+            led_fade2->fade();
+          }
+        }
         //Terminazione task
         this->setActive(false);
         break;
