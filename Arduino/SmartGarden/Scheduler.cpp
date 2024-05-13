@@ -13,13 +13,13 @@ void Scheduler::init(int basePeriod){
   long period = 1000l*basePeriod;
   Timer1.initialize(period);
   Timer1.attachInterrupt(timerHandler);
-  nTasks = 0;
+  maxTasks = 0;
 }
 
 bool Scheduler::addTask(Task* task){
-  if (nTasks < MAX_TASKS-1){
-    taskList[nTasks] = task;
-    nTasks++;
+  if (maxTasks < MAX_TASKS-1){
+    taskList[maxTasks] = task;
+    maxTasks++;
     return true;
   } else {
     return false; 
@@ -30,7 +30,7 @@ void Scheduler::schedule(){
   while (!timerFlag){}
   timerFlag = false;
 
-  for (int i = 0; i < nTasks; i++){
+  for (int i = 0; i < maxTasks; i++){
     if (taskList[i]->isActive() && taskList[i]->updateAndCheckTime(basePeriod)){
       taskList[i]->tick();
     }
