@@ -29,24 +29,30 @@ bool Led::change(){
 }
 
 
-void Led::fadeOut(int v){
+int Led::fadeOut(int v){
     analogWrite(pin, v);
     if(v <= 0)
     v = v - FADE_VELOCITY
     if(v <= 0){
-        break;
+        return v;
     }
     sleep(FADE_SLEEP)
     Led::fadeOut(v)
 }
 
 
-voi Led::fadeIn(int v){
+int Led::fadeIn(int v){
     analogWrite(pin, fadeValue);
     v = v + FADE_VELOCITY
     if(v >= 255){
-        break;
+        return v;
     }
     sleep(FADE_SLEEP)
     Led::fadeIn(v)
+}
+
+void fade(){
+  int value = 0;
+  value = fadeIn(value)
+  value = fadeOut(value)
 }

@@ -6,16 +6,16 @@
 #include "Led_fade.h"
 
 class IlluminationTask: public Task {
-  Led_switch* led_s1;
-  Led_switch* led_s2;
-  Led_fade* led_f1;
-  Led_fade* led_f2;
+  Led* led_switch1;
+  Led* led_switch2;
+  Led* led_f1;
+  Led* led_f2;
 
-  enum { CHANGE_ILLUMINATION} state;
+  enum { CHANGE_ILLUMINATION_STATUS } state;
 
 public:
 
-  IlluminationTask();  
+  LedTask();
   void init(int period);  
   void tick();
 };
