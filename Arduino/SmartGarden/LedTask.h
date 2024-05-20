@@ -11,8 +11,6 @@ class IlluminationTask: public Task {
   Led* led_f1;
   Led* led_f2;
 
-  enum { CHANGE_ILLUMINATION_STATUS } state;
-
 public:
 
   LedTask();

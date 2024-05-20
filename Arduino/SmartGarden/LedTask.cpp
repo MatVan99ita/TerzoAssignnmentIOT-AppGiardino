@@ -16,34 +16,31 @@ LedTask::LedTask(){
 
 void LedTask::init(int period){
     Task::init(period)
-    state = CHANGE_ILLUMINATION_STATUS
+  
 }
 
 void LedTask::tick(){
-    switch (state)
-    {
-    case CHANGE_ILLUMINATION_STATUS:
-        //TODO: agginta controlli per far partire i led
-        if(led_type=="SWITCH")
-        {
-          if(led_id==1){
-            led_switch1->change();
-          } else if(led_id==2) {
-            led_switch2->change();
-          }
-        } else if(led_type == "FADE") {
-          if(led_id==1){
-            led_fade1->fade();
-          } else if (led_id==2) {
-            led_fade2->fade();        
-          } else if (led_id==3) {
-            led_fade1->fade();
-            led_fade2->fade();
-          }
-        }
-        //Terminazione task
-        this->setActive(false);
-        break;
+  if(led_type=="led")
+  {
+    if(led_id==1){
+      led_switch1->change();
+    } else if(led_id==2) {
+      led_switch2->change();
+    } else if (led_id==12) {
+      led_switch1->change();
+      led_switch2->change();
     }
+  } else if(led_type == "fade") {
+    if(led_id==3){
+      led_fade1->fade();
+    } else if (led_id==4) {
+      led_fade2->fade();        
+    } else if (led_id==34) {
+      led_fade1->fade();
+      led_fade2->fade();
+    }
+  }
+  //Terminazione task
+  this->setActive(false);
 }
 
