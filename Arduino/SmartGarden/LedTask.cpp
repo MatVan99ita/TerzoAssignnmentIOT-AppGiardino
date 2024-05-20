@@ -2,7 +2,7 @@
 #include "Arduino.h"
 
 #define PIN_LED_SWITCH1 12
-# define PIN_LED_SWITCH2 11
+#define PIN_LED_SWITCH2 11
 #define PIN_LED_FADE1 10
 #define PIN_LED_FADE2 9
 

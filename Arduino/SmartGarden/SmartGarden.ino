@@ -11,7 +11,7 @@ Scheduler sched;
 String led_type;
 int led_id;
 bool led_on;
-int value=0;
+int servo_speed=0;
 
 
 

@@ -10,6 +10,14 @@ from pydantic import BaseModel, Json
 class Esp32(BaseModel):
     temperature: float = 0.0
     light: float = 0.0
+
+    class arduino_status(Enum):
+        AUTO, MANUAL, ERROR
+
+    class irrigation_state(Enum):
+        ATTIVABILE, PAUSA, MOVIMENTO
+    
+
     arduino_status = "AUTO"         # AUTO       / MANUAL / ERROR
     irrigation_state = "ATTIVABILE" # ATTIVABILE / PAUSA  / MOVIMENTO -> posso modificare la richiesta dal server che una volta inviata la richiesta per l'irrigazione va in pausa automatica senza dover inviare o chiedere nulla
 
@@ -141,6 +149,6 @@ def checkTemp(val):
 def checkIrrigation():
     temp = esp.get_temp()
     irr = esp.get_irrigation_state()
-    if temp < 5 and irr == "PAUSA":
+    if temp < 5 and irr == PAUSA:
         esp.set_status("ERROR")
     pass
