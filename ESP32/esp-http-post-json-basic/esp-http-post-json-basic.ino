@@ -15,18 +15,19 @@
 #define ADC_VREF_mV    3300.0 // in millivolt
 #define ADC_RESOLUTION 4096.0
 #define DHT11PIN 32
-#define PHOTO_PIN 35 //A7
+#define PHOTO_PIN 34 //A7
 #define LED_PIN 26
+#define DHT_TYPE DHT11
 
 const char *ssid = "ilGabbibbo";
 const char *password = "P4p3r1ss1m4";
 
-const char *serviceURI = "http://192.168.72.158:8000/";
+const char *serviceURI = "http://192.168.8.158:8000/";
 
 int lightInit = 0;
 String status = "";
 
-DHT dht(DHT11PIN, DHT11);
+DHT dht(DHT11PIN, DHT_TYPE);
 
 void connectToWifi(const char* ssid, const char* password){
   WiFi.begin(ssid, password);
@@ -41,7 +42,7 @@ void connectToWifi(const char* ssid, const char* password){
 }
 
 
-int sendData(String address, float tmp, float light){
+int sendData(String address, int tmp, int light){
   WiFiClient client;
   HTTPClient http;
   http.addHeader("Content-Type", "application/json");
@@ -75,16 +76,13 @@ int receiveData(String address){
 }
 
 int readLight(){
-  return map(analogRead(PHOTO_PIN), 0, 4095, 0, 8);
+  float l = analogRead(PHOTO_PIN);
+  return map(l, 0, 4095, 7, 0);
 }
 
-int readMappedTemperature(){
+int readTemperature(){
   float temp = dht.readTemperature();
   return map(temp, 0, 40, 0, 7);
-}
-
-float readTemperature(){
-  return dht.readTemperature();
 }
 
 void setup() {
@@ -104,23 +102,22 @@ void loop() {
   int temp;
   int light;
   if (WiFi.status()== WL_CONNECTED){
-
-
 #if DEBUG == 1
-    int t1 = random(0, 4095);
-    light = map(random(0, 4095), 0, 4095, 0, 8);
-    int t2 = random(0, 4095);
-    temp = map(random(0, 4095), 0, 4095, 0, 5);
-    Serial.println("LUCE: "+String(t1)+" -> "+String(light));
-    Serial.println("TEMPERATURA: "+String(t2)+" -> "+String(temp));
+    light = map(random(0, 4095), 0, 4095, 0, 7);
+    temp = map(random(0, 4095), 0, 4095, 0, 4);
 #else
-    temp = dht.readTemperature();
+    temp = readTemperature();
     light = readLight();
-    Serial.println("LUCE: "+String(light));
-    Serial.println("TEMPERATURA: "+String(temp));
+    Serial.print("BOTH");
+    Serial.print(temp);
+    Serial.print(" ");
+    Serial.print(dht.readTemperature());
+    Serial.print(" & ");
+    Serial.print(light);
+    Serial.print(" ");
+    Serial.println(analogRead(PHOTO_PIN));
+
 #endif
-
-
     int code = sendData(String(serviceURI), temp, light);
     if (code == 200){
       Serial.println("ok");

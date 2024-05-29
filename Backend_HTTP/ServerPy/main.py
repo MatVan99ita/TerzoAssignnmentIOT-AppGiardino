@@ -9,8 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Json
 
 class Esp32(BaseModel):
-    temperature: float = 0.0
-    light: float = 0.0
+    temperature: int = 0
+    light: int = 0
 
     class arduino_status(Enum):
         AUTO = "AUTO"
@@ -38,6 +38,9 @@ class Esp32(BaseModel):
 
     def get_irrigation_state(self):
         return self.irrigation_state
+    
+    def get_mapped_temp(self):
+        return self.mapped_temp
 
 
     # SETTER
@@ -52,6 +55,9 @@ class Esp32(BaseModel):
 
     def set_irrigation_state(self, x):
         self.irrigation_state = x
+
+    def set_mapped_temp(self, x):
+        self.mapped_temp = x
 
 
 
@@ -97,17 +103,17 @@ async def create_item(item: Esp32):
     return item
 
 @app.post("/esp/temp/{val}")
-async def setTemp(val: float):
+async def setTemp(val: int):
     esp.set_temp(val)
     #return {"temperatura": esp.get_temp()}
 
 @app.post("/esp/light/{val}")
-async def setLight(val: float):
+async def setLight(val: int):
     esp.set_light(val)
     return checkLight(val)
 
 @app.post("/esp/both/{temp}&{light}")
-async def update_item(temp: float, light: float):
+async def update_item(temp: int, light: int):
     esp.set_temp(temp)
     esp.set_light(light)
     checktmp = checkTemp(temp)
