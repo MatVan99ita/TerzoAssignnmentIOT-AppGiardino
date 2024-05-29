@@ -1,16 +1,10 @@
-/*
- * HTTPClient lib --  Performing an HTTP REST to our service
- *
- * Going through ngrok
- *
- */
 #include <WiFi.h>
 #include <HTTPClient.h>
 
 const char* ssid = "ilGabbibbo";
 const char* password = "P4p3r1ss1m4";
 
-const char *serviceURI = "http://192.168.198.158:8000";//ip del pc per passare da uvicorn
+const char *serviceURI = "http://localhost:8000";//ip del pc per passare da uvicorn
 
 void connectToWifi(const char* ssid, const char* password){
   WiFi.begin(ssid, password);

@@ -2,6 +2,7 @@ import string
 from types import new_class
 from typing import Union
 from webbrowser import get
+from enum import Enum
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,10 +13,14 @@ class Esp32(BaseModel):
     light: float = 0.0
 
     class arduino_status(Enum):
-        AUTO, MANUAL, ERROR
+        AUTO = "AUTO"
+        MANUAL = "MANUAL"
+        ERROR = "ERROR"
 
     class irrigation_state(Enum):
-        ATTIVABILE, PAUSA, MOVIMENTO
+        ATTIVABILE = "ATTIVABILE"
+        PAUSA = "PAUSA"
+        MOVIMENTO = "MOVIMENTO"
     
 
     arduino_status = "AUTO"         # AUTO       / MANUAL / ERROR

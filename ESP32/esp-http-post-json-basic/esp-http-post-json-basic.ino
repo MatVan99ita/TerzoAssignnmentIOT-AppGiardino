@@ -14,7 +14,7 @@
 #define DEBUG 0
 #define ADC_VREF_mV    3300.0 // in millivolt
 #define ADC_RESOLUTION 4096.0
-#define DHT11PIN A4
+#define DHT11PIN 32
 #define PHOTO_PIN 35 //A7
 #define LED_PIN 26
 
@@ -78,18 +78,13 @@ int readLight(){
   return map(analogRead(PHOTO_PIN), 0, 4095, 0, 8);
 }
 
-int readTemperature(){
-  // read the ADC value from the temperature sensor
-  int adcVal = analogRead(LM35_PIN);
-  // convert the ADC value to voltage in millivolt
-  float milliVolt = adcVal * (ADC_VREF_mV / ADC_RESOLUTION);//3300.0
-//4096.0
-  // convert the voltage to the temperature in °C
-  float tempC = milliVolt / 10;
-  // convert the °C to °F
-  //float tempF = tempC * 9 / 5 + 32;
-  //NON HO CAPITO SE VA CONVERTITO COMUNQUE O SE POSSO MAPPARE DIRETTAMENTE L'INPUT e quindi mapp l'input
-  return map(analogRead(LM35_PIN), 0, 4095, 0, 5);
+int readMappedTemperature(){
+  float temp = dht.readTemperature();
+  return map(temp, 0, 40, 0, 7);
+}
+
+float readTemperature(){
+  return dht.readTemperature();
 }
 
 void setup() {
@@ -100,6 +95,7 @@ void setup() {
   pinMode(PHOTO_PIN, INPUT);
   digitalWrite(LED_PIN, LOW);
   dht.begin();
+  pinMode(DHT11PIN, INPUT);
 #endif
   connectToWifi(ssid, password);
 }

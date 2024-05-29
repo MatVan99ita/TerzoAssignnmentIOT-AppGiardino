@@ -1,7 +1,7 @@
 
 #include "DHT.h"
 
-#define DHT11PIN A4
+#define DHT11PIN 32
 
 int sensorValue;
 int tempValue;
@@ -18,7 +18,8 @@ void setup()
  
 void loop()
 {
-  sensorValue = analogRead(A7); // read analog input pin 0
+  sensorValue = analogRead(32); // read analog input pin 0
+  Serial.print("AAAAAAAAA");
   Serial.println(sensorValue, DEC); // prints the value read
   // prints a space between the numbers
 
@@ -31,11 +32,12 @@ void loop()
   } else {
     digitalWrite(26, LOW);
   }
-  Serial.println(tempValue);
-  /*Serial.print("Temperature: ");
+  Serial.print("Temperature: ");
   Serial.print(temp);
-  Serial.print("ºC ");
+  Serial.println("ºC ");
+  Serial.println(map(temp, 0, 40, 0, 7));
+  
   Serial.print("Humidity: ");
-  Serial.println(humi);*/
+  Serial.println(humi);
   delay(1000);
 }
