@@ -82,7 +82,7 @@ int readLight(){
 
 int readTemperature(){
   float temp = dht.readTemperature();
-  return map(temp, 0, 40, 0, 7);
+  return map(temp, 0, 40, 0, 4);
 }
 
 void setup() {
