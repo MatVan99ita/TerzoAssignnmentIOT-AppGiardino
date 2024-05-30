@@ -11,3 +11,8 @@ aside > section > ul > li > img{
   float: left;
   margin-right: 5px;
 }
+
+div.color{
+  background-color: gray;
+  position: relative;
+}
