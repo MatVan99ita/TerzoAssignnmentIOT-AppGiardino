@@ -4,7 +4,7 @@
 String content;
 
 SerialService MsgService;
-BluetoothService MsgServiceBT;
+BluetoothService btMsg;
 
 void SerialService::init(){
     Serial.begin(9600);
