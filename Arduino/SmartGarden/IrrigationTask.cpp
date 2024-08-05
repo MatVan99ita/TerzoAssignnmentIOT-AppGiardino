@@ -13,11 +13,11 @@ IrrigationTask::init(int period){
 
 IrrigationTask::tick(){
     switch(servo_state){
-        "Speed":
+        case "Speed":
             this -> servo->setVelocity(servo_speed)
             this -> servo_state = "Irrigation"
             break;
-        "Irrigation":
+        case "Irrigation":
             this -> servo->startRotation()
             this -> servo_state = "Speed"
             break;

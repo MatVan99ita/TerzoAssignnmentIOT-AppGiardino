@@ -21,10 +21,10 @@ void setup()
 {
   sched.init(50);
 
-  Task* illuminationTask = new IlluminationTask();
-  illuminationTask->init(50);
-  sched.addTask(illuminationTask);
-  illuminationTask->setActive(false);
+  Task* ledTask = new LedTask();
+  ledTask->init(50);
+  sched.addTask(ledTask);
+  ledTask->setActive(false);
   
   Task* irrigationTask = new IrrigationTask();
   irrigationTask->init(100);
@@ -32,9 +32,9 @@ void setup()
   irrigationTask->setActive(false);
 
 
-  Task* comunicationTask = new ComunicationTask(irrigationTask,illuminationTask);
-  comunicationTask->init(50);
-  sched.addTask(comunicationTask);
+  Task* commTask = new CommTask(irrigationTask,ledTask);
+  commTask->init(50);
+  sched.addTask(commTask);
 }
 
 void loop() 
