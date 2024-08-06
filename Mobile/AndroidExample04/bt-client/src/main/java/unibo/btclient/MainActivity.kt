@@ -160,7 +160,19 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
+    /**
+    FORMAT:
+    [DEVICE]_[PIN]_[VALUE]
+    DEVICE:
+    LEDB,
+    LEDF,
+    IRRI
+    PIN:
+    Only 1, 2 (or 3 for fading both) for ledf
+    VALUE:
+    Light intensity for fading -> <value>
+    Intensity of irrigation or activation/deactivation -> ON/OFF/<value>
+     */
     /**
      * Funzione per assegnare ai vari bottoni la propria funzione
      */
@@ -231,21 +243,8 @@ class MainActivity : AppCompatActivity() {
      * o usando il nome o il numero della porta
      */
     private fun switchLed(led_num: Int, btn: Button){
-        val message: String = "led{$led_num="
-        var led: String = ""
-
-        if(led_num == 1){
-            led = if(isLed1on) "on}" else "off}"
-            message.plus(led)
-            isLed1on = !isLed1on
-        } else if(led_num == 2){
-            led = if(isLed2on) "on}" else "off}"
-            isLed2on = !isLed2on
-        }
-        val msg = "$message$led"
         //INVIO MESSAGGIO BLUETOOTH
-        arduinoCommunication(msg)
-        //btn.setBackgroundColor("#FFFFF".toInt())
+        arduinoCommunication("LED_B_$led_num")
     }
 
     /**
@@ -253,8 +252,8 @@ class MainActivity : AppCompatActivity() {
      * @param fade_amount 0 .. 255
      */
     private fun fadeLed(led_num: Int){
-        var message: String = "fade{$led_num="
-        if(led_num == 3) message = "$message$fade_amount1}" else if(led_num == 4) message = "$message$fade_amount2}"
+        var message: String = "LEDF_"
+        message += if (led_num == 3) "1_$fade_amount1" else if (led_num == 4) "2_$fade_amount2" else "3_${(fade_amount1+fade_amount2)/2}"
         //INVIO DEL FADE
         arduinoCommunication(message)
     }
@@ -270,7 +269,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun irrigationStart(){
         val vel = if(irrigation_velocity < 0) 0 else if(irrigation_velocity > 30) 30 else irrigation_velocity
-        val message: String = "irrigazione{$vel}"
+        val message: String = "IRRI_1_$vel"
         //INVIO DELL'IRRIGAZIONE
         arduinoCommunication(message)
     }
