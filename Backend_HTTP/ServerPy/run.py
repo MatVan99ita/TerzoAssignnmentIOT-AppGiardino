@@ -8,7 +8,7 @@ from multiprocessing import Process
 
 # os.system("uvicorn --host 0.0.0.0 main:app --reload");
 def runHTTPServer():
-    os.system("uvicorn --host 0.0.0.0 main:app --reload")
+    os.system("py -m uvicorn --host 0.0.0.0 main:app --reload")
 
 
 def runSerialCommunicator():

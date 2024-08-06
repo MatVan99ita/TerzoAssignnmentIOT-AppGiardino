@@ -8,6 +8,8 @@ void setup() {
 void loop() {
   while (!Serial.available()){
     x = Serial.readString();//.toInt();
-    Serial.println("irrigazione:PAUSA,mode:AUTO");
+    Serial.print("MESSAGGIO: ");
+    Serial.println(x);
+    //Serial.println("irrigazione:PAUSA,mode:AUTO");
   }
 }

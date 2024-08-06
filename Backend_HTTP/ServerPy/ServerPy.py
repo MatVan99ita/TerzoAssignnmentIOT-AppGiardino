@@ -5,7 +5,7 @@ import json
 
 import numpy as np
 
-arduino = serial.Serial(port='COM6', baudrate=115200, timeout=.1)
+arduino = serial.Serial(port='COM5', baudrate=115200, timeout=.1)
 server = "http://localhost:8000"
 """
 Far partire prima l'arduino e poi questo
@@ -34,6 +34,7 @@ def readArduinoStatus():
     """ PATTERN MESSAGGIO
         irrigazione:<val>,mode:<val>
     """
+    print("arduino statuuuus: " + str)
     try:
         irrigazione = str.split(',')[0].split(':')[1]
         mode = str.split(',')[1].split(':')[1].replace('\r\n', '')
@@ -48,6 +49,7 @@ def readArduinoStatus():
 
 
 def sendCommandToArduino(x):
+    print("arduino cummand: " + str(x))
     try:
         arduino.write(bytes(x, 'utf-8'))
         time.sleep(5000)
@@ -73,7 +75,7 @@ while True:
     x, y = readServerStatus()
 
     if(x != "ERROR"):
-        print("BANANA ".x)
+        print("BANANA " + str(x) + " " + str(y) + "\n") 
         sendCommandToArduino(x)
     else:
         sendCommandToArduino("ERROR")
