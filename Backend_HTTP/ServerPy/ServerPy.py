@@ -73,6 +73,7 @@ while True:
     x, y = readServerStatus()
 
     if(x != "ERROR"):
+        print("BANANA ".x)
         sendCommandToArduino(x)
     else:
         sendCommandToArduino("ERROR")

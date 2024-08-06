@@ -1,7 +1,3 @@
-/** configurazione pin */
-/**
- * TODO: impostare i pin
-*/
 #define L1_FADE 9
 #define L2_FADE 10
 #define L1_SWITCH 11
