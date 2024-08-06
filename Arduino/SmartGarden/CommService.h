@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include "SoftwareSerial.h"
-#include "Config.h"
 
 class Msg {
   String content;
@@ -37,16 +36,14 @@ class BluetoothService {
     
 public: 
 
+  SoftwareSerial* channel;
   Msg* currentMsg;
   bool msgAvailable;
-
-  void init();  
-
+  
+  void init();
   bool isMsgAvailable();
-  Msg* receiveMsg();  
- 
+  Msg* receiveMsg();
   void sendMsg(const String& msg);
-  SoftwareSerial* channel;
 };
 
 extern SerialService MsgService;

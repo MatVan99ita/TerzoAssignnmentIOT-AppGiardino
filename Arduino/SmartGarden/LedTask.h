@@ -2,19 +2,20 @@
 #define __ILLUMINATIONTASK__
 
 #include "Task.h"
-#include "Led_switch.h"
-#include "Led_fade.h"
+#include "Led.h"
 
-class IlluminationTask: public Task {
-  Led* led_switch1;
-  Led* led_switch2;
+class LedTask: public Task {
+  Led* led_s1;
+  Led* led_s2;
   Led* led_f1;
   Led* led_f2;
 
+  enum {ACTIVE} led_state;
+  int led_id;
 public:
 
   LedTask();
-  void init(int period);  
+  void init(int period);
   void tick();
 };
 

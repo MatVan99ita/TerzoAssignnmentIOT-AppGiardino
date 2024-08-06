@@ -1,25 +1,27 @@
 #include "IrrigationTask.h"
 #include "Arduino.h"
+#include "Config.h"
 
 #define SERVO_PIN 7
 
 IrrigationTask::IrrigationTask(){
-    this -> servo = new Servo(SERVO_PIN)
+    this -> servo = new Servo(SERVO_PIN);
+    this -> servo_state = SPEED;
 }
 
-IrrigationTask::init(int period){
-    Task::init(period)
+void IrrigationTask::init(int period){
+    Task::init(period);
 }
 
-IrrigationTask::tick(){
+void IrrigationTask::tick(){
     switch(servo_state){
-        case "Speed":
-            this -> servo->setVelocity(servo_speed)
-            this -> servo_state = "Irrigation"
+        case SPEED:
+            this -> servo->setVelocity(servo_speed);
+            this -> servo_state = IRRIGATION;
             break;
-        case "Irrigation":
-            this -> servo->startRotation()
-            this -> servo_state = "Speed"
+        case IRRIGATION:
+            this -> servo->startRotation();
+            this -> servo_state = SPEED;
             break;
     }
 }

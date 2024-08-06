@@ -3,12 +3,16 @@
 #include "SoftwareSerial.h"
 #include "Config.h"
 
-#include "SoftwareSerial.h"
+#include "CommService.h"
+#include "CommTask.h"
+#include "LedTask.h"
+#include "IrrigationTask.h"
+
 SoftwareSerial MyBlue(3, 2); // RX | TX 
 
 
 Scheduler sched;
-String led_type;
+String led_type; //LEDB - LEDF
 int led_id;
 bool led_on;
 int servo_speed=0;

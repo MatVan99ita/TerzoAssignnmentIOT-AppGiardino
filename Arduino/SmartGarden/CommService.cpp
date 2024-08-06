@@ -1,5 +1,6 @@
 #include "CommService.h"
 #include "Arduino.h"
+#include "Config.h"
 
 String content;
 
@@ -35,7 +36,7 @@ void SerialService::sendMsg(const String& msg){
 }
 
 void BluetoothService::init(){
-    channel = new SoftwareSerial(BLUE_TXD, BLUE_RXD);
+  channel = new SoftwareSerial(BLUE_TXD, BLUE_RXD);
   channel->begin(9600);
   content.reserve(128);
   

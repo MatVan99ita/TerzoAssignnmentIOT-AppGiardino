@@ -3,7 +3,7 @@
 
 #include "Task.h"
 #include "SoftwareSerial.h"
-#include "MsgService.h"
+#include "CommService.h"
 
 class CommTask: public Task {
   String device;
@@ -11,11 +11,11 @@ class CommTask: public Task {
   Task* IrrigationTask;
   Task* LedTask;
   Msg* msg;
-  enum { CHEK_NEW_MESSAGE, EVALUATE_MESSAGE} state;
+  enum { CHECK_NEW_MESSAGE, EVALUATE_MESSAGE} state;
 
 public:
 
-  CommTask(Task t0, Taskt1);
+  CommTask(Task *t0, Task *t1);
   void init(int period);
   void tick();
 };

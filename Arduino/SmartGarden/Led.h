@@ -7,9 +7,7 @@ class Led{
     void switchOff();
     void switchOn();
     bool change();
-    void fade();
-    int fadeIn(int v);
-    int fadeOut(int v);
+    void fade(int val);
 
   private:
   int pin;
