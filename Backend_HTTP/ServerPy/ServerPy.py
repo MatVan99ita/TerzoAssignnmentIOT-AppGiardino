@@ -71,7 +71,15 @@ def readServerStatus():
 
 
 while True:
-    readArduinoStatus()
+    statuuus = readArduinoStatus()
+    if(statuuus == "AUTO"):
+        #controllo dal server
+        print("Auto")
+    elif (statuuus == "MANUAL"):
+        #controllo manuale da android
+        print("Manual")
+
+    
     x, y = readServerStatus()
 
     if(x != "ERROR"):
