@@ -13,10 +13,6 @@ int led_id;
 bool led_on;
 int servo_speed=0;
 
-/**
- * TODO: Implementare la ComunicationTask e aggiungere tutte le classi di ocmunicazione del BT
-*/
-
 void setup() 
 {
   sched.init(50);
