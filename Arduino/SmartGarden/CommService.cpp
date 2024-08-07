@@ -5,7 +5,7 @@
 String content;
 
 SerialService MsgService;
-BluetoothService btMsg;
+BluetoothService MsgServiceBT;
 
 void SerialService::init(){
     Serial.begin(9600);
@@ -42,7 +42,7 @@ void BluetoothService::init(){
   
   content = "";
   currentMsg = NULL;
-  msgAvailable = false; 
+  msgAvailable = false;
 }
 
 bool BluetoothService::isMsgAvailable(){

@@ -1,6 +1,7 @@
 #include "CommTask.h"
 #include "Config.h"
 
+
 CommTask::CommTask(Task *t0, Task *t1){
   IrrigationTask = t0;
   LedTask = t1;
@@ -52,15 +53,10 @@ void CommTask::init(int period){
       
       Serial.println(buf);
       device = String(strtok(buf,"_"));
-
-      switch (device)
-      {
         
-      case 'ERROR':
+      if(device == "ERROR"){
         MsgServiceBT.sendMsg("ERROR");
-        break;
-        
-      case 'LEDF':
+      } else if(device == "LEDF"){
         led_type=device;
         String fadeLed = String(strtok(NULL, "_"));
         if(fadeLed == '1')
@@ -78,9 +74,7 @@ void CommTask::init(int period){
         }
         servo_speed=String(strtok(NULL, "_")).toInt();
         LedTask->setActive(true);
-        break;
-
-      case 'LEDB':
+      } else if(device == "LEDB"){
         led_type=device;
         MsgServiceBT.sendMsg("Blink of an eye");
         Serial.println("Blink of an eye");
@@ -96,18 +90,20 @@ void CommTask::init(int period){
         Serial.println(isOn);
         if(isOn=="ON")
         {
-          Serial.println("Led $d on", led_id);
+          Serial.print("Led ");
+          Serial.print(led_id);
+          Serial.println(" on");
           led_on = true;
         } else if (isOn=="OFF"){
-          Serial.println("Led $d off", led_id);
+          Serial.print("Led ");
+          Serial.print(led_id);
+          Serial.println(" off");
           led_on = false;
         } else if (isOn==NULL){
           led_on = !led_on;
         }
         LedTask->setActive(true);
-        break;
-
-      case "IRRI":
+      } else if(device == "IRRI"){
         Serial.println("servo");
         String val = String(strtok(NULL, "_"));
         if(val=="ON"){
@@ -119,8 +115,6 @@ void CommTask::init(int period){
           servo_speed=val.toInt();
           IrrigationTask->init(1000-(val.toInt()*50));
         }
-        break;
-
       }
 
       device = "";
