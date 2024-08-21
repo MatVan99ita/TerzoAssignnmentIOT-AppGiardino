@@ -134,9 +134,9 @@ class MainActivity : AppCompatActivity() {
         led4 = findViewById(R.id.led4_view)
         irrigazione = findViewById(R.id.irrigation_view)
 
-        led3.setText(fade_amount1.toString())
-        led4.setText(fade_amount2.toString())
-        irrigazione.setText(irrigation_velocity.toString())
+        led3.text = "$fade_amount1"
+        led4.text = "$fade_amount2"
+        irrigazione.text = "$irrigation_velocity"
 
         txt = findViewById(R.id.textResponse)
         btnBell = findViewById(R.id.alarm_btn)
@@ -177,56 +177,56 @@ class MainActivity : AppCompatActivity() {
      * Funzione per assegnare ai vari bottoni la propria funzione
      */
     private fun addClickEvent() {
-        btnLed1.setOnClickListener(View.OnClickListener {
+        btnLed1.setOnClickListener {
             switchLed(1, btnLed1)
-        })
-        btnLed2.setOnClickListener(View.OnClickListener {
+        }
+        btnLed2.setOnClickListener {
             switchLed(2, btnLed2)
-        })
+        }
 
-        btnConnection.setOnClickListener(View.OnClickListener {
+        btnConnection.setOnClickListener {
             try {
                 pairDevices();
                 enable_disable_Buttons()
             } catch (e: IOException) {
                 e.printStackTrace();
             }
-        })
+        }
 
-        btnLed3up.setOnClickListener(View.OnClickListener {
+        btnLed3up.setOnClickListener {
             setLedIntensity(3, "+")
-        })
-        btnLed3down.setOnClickListener(View.OnClickListener {
+        }
+        btnLed3down.setOnClickListener {
             setLedIntensity(3, "-")
-        })
+        }
 
-        btnLed4up.setOnClickListener(View.OnClickListener {
+        btnLed4up.setOnClickListener {
             setLedIntensity(4, "+")
-        })
-        btnLed4down.setOnClickListener(View.OnClickListener {
+        }
+        btnLed4down.setOnClickListener {
             setLedIntensity(4, "-")
-        })
+        }
 
-        btnIrrigazione_fast.setOnClickListener(View.OnClickListener {
+        btnIrrigazione_fast.setOnClickListener {
             setIrrigationVel("+")
-        })
-        btnIrrigazione_slow.setOnClickListener(View.OnClickListener {
+        }
+        btnIrrigazione_slow.setOnClickListener {
             setIrrigationVel("-")
-        })
+        }
 
-        btnIrrigazione.setOnClickListener(View.OnClickListener { v: View? ->
-            btnIrrigazione.setEnabled(false)
+        btnIrrigazione.setOnClickListener {
+            btnIrrigazione.isEnabled = false
             irrigationStart()
             Handler().postDelayed({
                 // This method will be executed once the timer is over
-                btnIrrigazione.setEnabled(true)
+                btnIrrigazione.isEnabled = true
                 Log.d(ContentValues.TAG, "resend1")
             }, TEMPO) // set time as per your requirement
-        })
+        }
 
-        btnBell.setOnClickListener(View.OnClickListener {
+        btnBell.setOnClickListener {
             disableAlarm()
-        })
+        }
 
     }
 
@@ -244,7 +244,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun switchLed(led_num: Int, btn: Button){
         //INVIO MESSAGGIO BLUETOOTH
-        arduinoCommunication("LED_B_$led_num")
+        arduinoCommunication("LEDB_$led_num")
     }
 
     /**

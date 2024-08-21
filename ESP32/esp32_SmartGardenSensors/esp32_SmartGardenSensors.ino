@@ -22,7 +22,7 @@
 const char *ssid = "ilGabbibbo";
 const char *password = "P4p3r1ss1m4";
 
-const char *serviceURI = "http://192.168.8.158:8000/";
+const char *serviceURI = "http://192.168.221.158:8000/";
 
 int lightInit = 0;
 String status = "";
@@ -49,29 +49,38 @@ int sendData(String address, int tmp, int light){
   http.begin(client, address + "esp/both/" + String(tmp) + "&" + String(light));
   http.begin(address + "esp/both/" + String(tmp) + "&" + String(light));
   int retCode = http.POST("");
-  Serial.print(String(retCode));
+  if(retCode > 0){
+    Serial.print(String(retCode));
+  } else {
+    Serial.println(http.errorToString(retCode));
+  }
   http.end();
   return retCode;
 }
 
 int receiveData(String address){
   WiFiClient client;
-  HTTPClient http;    
+  HTTPClient http;
   http.addHeader("Content-Type", "application/json");
   http.begin(client, address+"arduino/status/");
   http.begin(address+"arduino/status/");
   int retCode = http.GET();
-  Serial.print(String(retCode));
-  String payload = http.getString();
-  Serial.print("Payload - ");
-  Serial.println(payload);
-  status = payload;
-  if(status == "\"ERROR\""){
-    digitalWrite(LED_PIN, LOW);
+  if(retCode > 0){
+    Serial.print(String(retCode));
+    String payload = http.getString();
+    Serial.print("Payload - ");
+    Serial.println(payload);
+    status = payload;
+    if(status == "\"ERROR\""){
+      digitalWrite(LED_PIN, LOW);
+    } else {
+      digitalWrite(LED_PIN, HIGH);
+    } 
   } else {
-    digitalWrite(LED_PIN, HIGH);
+    Serial.println(http.errorToString(retCode));
   }
-  http.end();  
+  
+  http.end(); 
   return retCode;
 }
 

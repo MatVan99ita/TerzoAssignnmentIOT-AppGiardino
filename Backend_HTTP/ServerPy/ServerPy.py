@@ -32,7 +32,7 @@ def readArduinoStatus():
     irrigazione = ""
     mode = ""
     """ PATTERN MESSAGGIO
-        irrigazione:<val>,mode:<val>
+        <DEVICE>_<ID>_<VALUE>
     """
     print("arduino statuuuus: " + str)
     try:

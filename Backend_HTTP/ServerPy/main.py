@@ -102,7 +102,7 @@ async def create_item(item: Esp32):
     esp.set_temp(item.get_light())
     return item
 
-@app.post("/esp/temp/{val}")
+@app.post("/esp/temp/{val}", tags=["esp", "temp"])
 async def setTemp(val: int):
     esp.set_temp(val)
     #return {"temperatura": esp.get_temp()}
