@@ -5,7 +5,7 @@ import json
 from time import sleep
 import numpy as np
 
-TEMP_TRESHOLD = 2
+IRRIG_TRESHOLD = 2
 LIGHT_TRESHOLD = 5
 
 """ N.B.: Far partire prima l'arduino e poi questo """
@@ -84,17 +84,24 @@ while True:
     jStatus = json.loads(irriStatus)
     jEsp = json.loads(espData)
  
-    if(jStatus["temperatura"] < TEMP_TRESHOLD):
-        msg = "IRRI_ON"
-        #if irrigazione = PAUSA -> ERROR
-        #Send irrigazione se non è disattivato altrimenti manda ERROR
-        print("BANANA")
+    if(jStatus["temperatura"] == 5 and irriStatus == "RELOAD"):
+        print("ERROR")
+        sendCommandToArduino("ERROR")
+    else:
+        if(jStatus["lux"] < LIGHT_TRESHOLD): # Fai giochi di luce
+            msg1 = "LEDB_3_ON"
+            msg2 = "LEDF_3_"+(8-jStatus["lux"]) # Valore di luce del fade contrario al buio percepito
+            #sendCommandToArduino(msg1)
+            sleep(1)
+            #sendCommandToArduino(msg2)
+            print("BANANA")
 
-    if(jStatus["lux"] < LIGHT_TRESHOLD):
-        #Fai giochi di luce
-        msg1 = "LEDB_3_ON"
-        msg2 = "LEDF_3_"+jStatus["lux"]
-        print("BANANA")
+        if(jStatus["lux"] < IRRIG_TRESHOLD): # Fai giochi d'acqua
+
+            msg = "IRRI_1_"+jStatus["temperatura"] #<- posso calcolare la velocità anche qui e mnadarla già cacata
+            
+            #sendCommandToArduino(msg)
+            print("BANANA")
 
     #print("BANANA " + jStat + " " + jEsp + "\n") 
 
@@ -106,4 +113,4 @@ while True:
         sendCommandToArduino("ERROR")
     """
     #Piccola pausa di riflessione
-    #sleep(1000)
+    sleep(10)
