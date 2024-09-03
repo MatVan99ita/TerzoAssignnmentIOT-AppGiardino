@@ -83,7 +83,7 @@ while True:
     print("BANANA " + irriStatus + " " + espData + "\n") 
     jStatus = json.loads(irriStatus)
     jEsp = json.loads(espData)
-
+ 
     if(jStatus["temperatura"] < TEMP_TRESHOLD):
         msg = "IRRI_ON"
         #if irrigazione = PAUSA -> ERROR
@@ -93,7 +93,7 @@ while True:
     if(jStatus["lux"] < LIGHT_TRESHOLD):
         #Fai giochi di luce
         msg1 = "LEDB_3_ON"
-        msg2 = "LEDF_3"
+        msg2 = "LEDF_3_"+jStatus["lux"]
         print("BANANA")
 
     #print("BANANA " + jStat + " " + jEsp + "\n") 
