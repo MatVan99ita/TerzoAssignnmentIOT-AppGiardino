@@ -84,21 +84,17 @@ while True:
     jStatus = json.loads(irriStatus)
     jEsp = json.loads(espData)
  
-    if(jStatus["temperatura"] == 5 and irriStatus == "RELOAD"):
+    if(jStatus["temperatura"] == 5 and irriStatus == "RELOAD"): # || PAUSE
         print("ERROR")
         sendCommandToArduino("ERROR")
     else:
         if(jStatus["lux"] < LIGHT_TRESHOLD): # Fai giochi di luce
-            msg1 = "LEDB_3_ON"
-            msg2 = "LEDF_3_"+(8-jStatus["lux"]) # Valore di luce del fade contrario al buio percepito
+            msg1 = "LEDAUTO_"+(jStatus["temperatura"])
             #sendCommandToArduino(msg1)
-            sleep(1)
-            #sendCommandToArduino(msg2)
             print("BANANA")
+        elif(jStatus["lux"] < IRRIG_TRESHOLD): # Fai giochi d'acqua
 
-        if(jStatus["lux"] < IRRIG_TRESHOLD): # Fai giochi d'acqua
-
-            msg = "IRRI_1_"+jStatus["temperatura"] #<- posso calcolare la velocità anche qui e mnadarla già cacata
+            msg = "IRRIAUTO_"+jStatus["temperatura"] #<- posso calcolare la velocità anche qui e mnadarla già cacata
             
             #sendCommandToArduino(msg)
             print("BANANA")

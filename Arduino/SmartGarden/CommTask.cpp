@@ -20,7 +20,7 @@ void CommTask::init(int period){
 /**
     FORMAT:
     [DEVICE]_[PIN]_[servo_speed]
-    DEVICE:
+    DEVICE: cambiare LEDB/F con LED-AUTO LED-MANUAL 
       LEDB,
       LEDF,
       IRRI
@@ -56,7 +56,7 @@ void CommTask::init(int period){
         
       if(device == "ERROR"){
         MsgServiceBT.sendMsg("ERROR");
-      } else if(device == "LEDF"){
+      } else if(device == "LEDAUTO"){
         led_type=device;
         String fadeLed = String(strtok(NULL, "_"));
         if(fadeLed == '1')
