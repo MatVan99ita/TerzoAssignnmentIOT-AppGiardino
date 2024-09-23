@@ -84,6 +84,16 @@ while True:
     jStatus = json.loads(irriStatus)
     jEsp = json.loads(espData)
  
+
+    """
+    N.B.: 
+        Luce -> 0-8
+        Temperatura -> 0-5
+        Se temperatura > 5 e Irrigazione in pausa -> ERRORE
+        Se luce < 5(=Buio) -> Accendi luci, i fade vanno messi in base alla temperatura
+        Se temp < 2 -> Accendi irrigatore con vel equivalente alla temperatura
+    """
+    
     if(jStatus["temperatura"] == 5 and irriStatus == "RELOAD"): # || PAUSE
         print("ERROR")
         sendCommandToArduino("ERROR")

@@ -13,9 +13,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AppCompatActivity
+import android.util.AttributeSet
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
+import unibo.btclient.databinding.ActivityMainBinding
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
@@ -45,58 +49,30 @@ class MainActivity : AppCompatActivity() {
         private var socket: BluetoothSocket? = null
     }
 
+    private lateinit var binding: ActivityMainBinding
     private var response: String = ""
-
-    /**Gruppo di bottoni per la luce*/
-    private lateinit var btnLed1: Button
-    private lateinit var btnLed2: Button
-    private lateinit var btnLed3up: Button
-    private lateinit var btnLed3down: Button
-    private lateinit var btnLed4up: Button
-    private lateinit var btnLed4down: Button
-
-    /**Gruppo di bottoni per l'irrigazione*/
-    private lateinit var btnIrrigazione: Button
-    private lateinit var btnIrrigazione_fast: Button
-    private lateinit var btnIrrigazione_slow: Button
-
-    /**Gruppo di label*/
-    private lateinit var led3: TextView
-    private lateinit var led4: TextView
-    private lateinit var irrigazione: TextView
-
-    private lateinit var btnBell: ImageButton
-    private lateinit var btnConnection: Button
 
     private var fade_amount1: Int = 0
     private var fade_amount2: Int = 0
     private var isLed1on: Boolean = false
     private var isLed2on: Boolean = false
     private var irrigation_velocity: Int = 0
-    lateinit var txt : TextView
 
     private lateinit var layout: ConstraintLayout
 
     @OptIn(ExperimentalTime::class)
     private val TEMPO = Duration.convert(5.0, DurationUnit.MINUTES, DurationUnit.MILLISECONDS).toLong()
 
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        btnLed1 = findViewById(R.id.led1)
-        btnLed2 = findViewById(R.id.led2)
+        binding = ActivityMainBinding.inflate(layoutInflater)
 
-        btnLed3up = findViewById(R.id.led3plus)
-        btnLed3down = findViewById(R.id.led3minus)
+        setContentView(binding.root)
 
-        btnLed4up = findViewById(R.id.led4plus)
-        btnLed4down = findViewById(R.id.led4minus)
-
-        btnIrrigazione = findViewById(R.id.irrigation_onoff)
-        btnIrrigazione_fast = findViewById(R.id.irrigation_plus)
-        btnIrrigazione_slow = findViewById(R.id.irrigation_minus)
-        btnConnection = findViewById(R.id.bt_connection_req)
         /*
             * btnIrrigazione.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,16 +106,9 @@ class MainActivity : AppCompatActivity() {
             *
             * */
 
-        led3 = findViewById(R.id.led3_view)
-        led4 = findViewById(R.id.led4_view)
-        irrigazione = findViewById(R.id.irrigation_view)
-
-        led3.text = "$fade_amount1"
-        led4.text = "$fade_amount2"
-        irrigazione.text = "$irrigation_velocity"
-
-        txt = findViewById(R.id.textResponse)
-        btnBell = findViewById(R.id.alarm_btn)
+        binding.led3View.text = "$fade_amount1"
+        binding.led4View.text = "$fade_amount2"
+        binding.irrigationView.text = "$irrigation_velocity"
 
         //btAdapter = BluetoothAdapter.getDefaultAdapter()
         //lv = findViewById<View>(R.id.listview) as ListView
@@ -152,11 +121,9 @@ class MainActivity : AppCompatActivity() {
             child?.isEnabled = false
         }
         this.scan()
-        btnConnection.isEnabled = true
+        binding.btConnectionReq.isEnabled = true
 
         this.addClickEvent()
-
-
     }
 
 
@@ -177,14 +144,14 @@ class MainActivity : AppCompatActivity() {
      * Funzione per assegnare ai vari bottoni la propria funzione
      */
     private fun addClickEvent() {
-        btnLed1.setOnClickListener {
-            switchLed(1, btnLed1)
+        binding.switch1.setOnClickListener {
+            switchLed(1)
         }
-        btnLed2.setOnClickListener {
-            switchLed(2, btnLed2)
+        binding.switch2.setOnClickListener {
+            switchLed(2)
         }
 
-        btnConnection.setOnClickListener {
+        binding.btConnectionReq.setOnClickListener {
             try {
                 pairDevices();
                 enable_disable_Buttons()
@@ -193,38 +160,38 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        btnLed3up.setOnClickListener {
+        binding.led3plus.setOnClickListener {
             setLedIntensity(3, "+")
         }
-        btnLed3down.setOnClickListener {
+        binding.led3minus.setOnClickListener {
             setLedIntensity(3, "-")
         }
 
-        btnLed4up.setOnClickListener {
+        binding.led4plus.setOnClickListener {
             setLedIntensity(4, "+")
         }
-        btnLed4down.setOnClickListener {
+        binding.led4minus.setOnClickListener {
             setLedIntensity(4, "-")
         }
 
-        btnIrrigazione_fast.setOnClickListener {
+        binding.irrigationPlus.setOnClickListener {
             setIrrigationVel("+")
         }
-        btnIrrigazione_slow.setOnClickListener {
+        binding.irrigationMinus.setOnClickListener {
             setIrrigationVel("-")
         }
 
-        btnIrrigazione.setOnClickListener {
-            btnIrrigazione.isEnabled = false
+        binding.irrigationOnoff.setOnClickListener {
+            binding.irrigationOnoff.isEnabled = false
             irrigationStart()
             Handler().postDelayed({
                 // This method will be executed once the timer is over
-                btnIrrigazione.isEnabled = true
+                binding.irrigationOnoff.isEnabled = true
                 Log.d(ContentValues.TAG, "resend1")
             }, TEMPO) // set time as per your requirement
         }
 
-        btnBell.setOnClickListener {
+        binding.alarmBtn.setOnClickListener {
             disableAlarm()
         }
 
@@ -239,21 +206,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Trovare un modo per ricordare se i led sono accesi e da lì inviare i comandi di accensione in base al led scelto
-     * o usando il nome o il numero della porta
+     * TODO: rivedere i messaggi manuali
      */
-    private fun switchLed(led_num: Int, btn: Button){
+    private fun switchLed(led_num: Int){
         //INVIO MESSAGGIO BLUETOOTH
-        arduinoCommunication("LEDB_$led_num")
+        arduinoCommunication("LEDBM_$led_num")
     }
 
     /**
      * invio della quantità di fade al led specificato
-     * @param fade_amount 0 .. 255
+     * @param fade_amount 0 .. 255 <-> 0 .. 5
      */
     private fun fadeLed(led_num: Int){
-        var message: String = "LEDF_"
-        message += if (led_num == 3) "1_$fade_amount1" else if (led_num == 4) "2_$fade_amount2" else "3_${(fade_amount1+fade_amount2)/2}"
+        var message: String = "LEDFM_"
+        message += if (led_num == 3) "1_$fade_amount1"
+                   else if (led_num == 4) "2_$fade_amount2" else "BAnANA"
         //INVIO DEL FADE
         arduinoCommunication(message)
     }
@@ -269,7 +236,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun irrigationStart(){
         val vel = if(irrigation_velocity < 0) 0 else if(irrigation_velocity > 30) 30 else irrigation_velocity
-        val message: String = "IRRI_1_$vel"
+        val message: String = "IRRIM_$vel"
         //INVIO DELL'IRRIGAZIONE
         arduinoCommunication(message)
     }
@@ -298,15 +265,15 @@ class MainActivity : AppCompatActivity() {
             val child = layout.getChildAt(el)
             child?.isEnabled = true
         }
-        btnConnection.isEnabled = false
-        btnBell.isEnabled = false
+        binding.btConnectionReq.isEnabled = false
+        binding.alarmBtn.isEnabled = false
 
     }
 
 
     private fun pairDevices() {
         ConnectToDevice(this).execute()
-        btnLed1.isEnabled = true
+        binding.switch1.isEnabled = true
         if (!btAdapter.isEnabled) {
             val turnOn = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(turnOn, BLUETOOTH_ON)
@@ -352,10 +319,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateTextView() {
-        led3.setText(this.fade_amount1.toString())
-        led4.setText(this.fade_amount2.toString())
-        irrigazione.setText(this.irrigation_velocity.toString())
-        this.txt.setText(response)
+        binding.led3View.text = this.fade_amount1.toString()
+        binding.led4View.text = this.fade_amount2.toString()
+        binding.irrigationView.text = this.irrigation_velocity.toString()
+        binding.textResponse.text = response
     }
 
     private fun scan() {
@@ -378,11 +345,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private class ConnectToDevice(var context: Context) : AsyncTask<Void, Void, String>() {
+
+    private class ConnectToDevice(val context: Context) : AsyncTask<Void, Void, String>() {
         private var connectSuccess: Boolean = true
         private lateinit var m_progress: ProgressDialog
-
-
         override fun onPreExecute() {
             super.onPreExecute()
             m_progress = ProgressDialog.show(context, "Connecting...", "please wait")
