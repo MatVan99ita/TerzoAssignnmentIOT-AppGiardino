@@ -51,9 +51,9 @@ def readArduinoStatus():
 def sendCommandToArduino(x):
     print("arduino cummand: " + str(x))
     try:
-        arduino.write(bytes(x, 'utf-8'))
-        print("send goku")
-        print(arduino.readline())
+        arduino.write(bytes(x+'\n', 'utf-8'))
+        sleep(0.5)
+        print("sonic sez: " + arduino.readline().decode('utf-8').strip())
         #time.sleep(1)
     except:
         print("Error occured: can't write properly")

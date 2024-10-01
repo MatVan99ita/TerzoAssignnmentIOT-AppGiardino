@@ -34,18 +34,16 @@ void CommTask::init(int period){
     switch (state)
     {
     case CHECK_NEW_MESSAGE:
-      Serial.println("CHECKING MAMMT");
+      MsgService.sendMsg("CHECKING MAMMT");
       if (MsgService.isMsgAvailable()) {
         this->msg = MsgService.receiveMsg();
         this->state = EVALUATE_MESSAGE;
         MsgService.sendMsg("S Ricevuto");
-        Serial.println("S Ricevuto");
       }
       if (MsgServiceBT.isMsgAvailable()) {
         this->msg = MsgServiceBT.receiveMsg();
         this->state = EVALUATE_MESSAGE;
         MsgServiceBT.sendMsg("BT Ricevuto");
-        Serial.println("BT Ricevuto");
       }
       break;
     
