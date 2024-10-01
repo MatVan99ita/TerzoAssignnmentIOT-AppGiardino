@@ -24,13 +24,14 @@ void LedTask::init(int period){
 
 void LedTask::tick(){
   if(led_state == ACTIVE) {
- //<- cabiato in LEDAUTO || LED_AUTO || LED-AUTO -> 
+ //<- cambiato in LEDAUTO
  //accendere o spegnere i led e fare fade degli altri 2 in base al valore del calore
     if(led_type == "LEDAUTO") {
-      led_s1->change
-      led_s2->change
-      led_f1->fade(servo_speed)
-      led_f2->fade(servo_speed)
+      Serial.print("AAAAAAAAAAAAAAAAAAAAAAAa");
+      led_s1->change();
+      led_s2->change();
+      led_f1->fade(servo_speed);
+      led_f2->fade(servo_speed);
     } else if(led_type == "LEDMANUAL"){
       if(led_type == "LEDB")
       {

@@ -22,6 +22,8 @@ bool SerialService::isMsgAvailable(){
 Msg* SerialService::receiveMsg(){
     if (msgAvailable){
     Msg* msg = currentMsg;
+    Serial.print("AVALEIBOL");
+    Serial.println(msg->getContent());
     msgAvailable = false;
     currentMsg = NULL;
     content = "";

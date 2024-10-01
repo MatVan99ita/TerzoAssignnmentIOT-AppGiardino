@@ -22,7 +22,7 @@
 const char *ssid = "ilGabbibbo";
 const char *password = "P4p3r1ss1m4";
 
-const char *serviceURI = "http://192.168.221.158:8000/";
+const char *serviceURI = "http://192.168.79.158:8000/";
 
 int lightInit = 0;
 String status = "";
@@ -117,14 +117,14 @@ void loop() {
 #else
     temp = readTemperature();
     light = readLight();
-    Serial.print("BOTH");
+    /*Serial.print("BOTH");
     Serial.print(temp);
     Serial.print(" ");
     Serial.print(dht.readTemperature());
     Serial.print(" & ");
     Serial.print(light);
     Serial.print(" ");
-    Serial.println(analogRead(PHOTO_PIN));
+    Serial.println(analogRead(PHOTO_PIN));*/
 
 #endif
     int code = sendData(String(serviceURI), temp, light);
