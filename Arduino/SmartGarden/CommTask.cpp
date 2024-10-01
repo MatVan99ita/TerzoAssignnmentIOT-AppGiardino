@@ -128,5 +128,6 @@ void CommTask::init(int period){
 
       default:
         Serial.println("DIFOULT");
+        break;
     }
   }

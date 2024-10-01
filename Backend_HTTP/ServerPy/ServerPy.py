@@ -51,9 +51,10 @@ def readArduinoStatus():
 def sendCommandToArduino(x):
     print("arduino cummand: " + str(x))
     try:
-        arduino.write(x.encode())# bytes(x, 'utf-8'))
-        print(arduino.readline().decode().rstrip())
-        time.sleep(1)
+        arduino.write(bytes(x, 'utf-8'))
+        print("send goku")
+        print(arduino.readline())
+        #time.sleep(1)
     except:
         print("Error occured: can't write properly")
 
@@ -64,8 +65,8 @@ def readServerStatus():
 
     request2 = server + "/esp/data/"
     r2 = requests.get(request2)
-    print(r1.content)
-    print(r2.content)
+    #print(r1.content)
+    #print(r2.content)
 
     return r1.content.decode('utf-8'), r2.content.decode('utf-8')
 
@@ -75,7 +76,7 @@ def initializeSerial():
         try:
             arduino = serial.Serial(port=arduino_port, baudrate=pippoBaud_rate, timeout=time_out)
             print(f"Connesso a {arduino_port}")
-            print(arduino.readline().decode().rstrip())
+            print(arduino.readline())
         except serial.SerialException:
             print(f"Porta {arduino_port} non disponibile, riprovo...")
             time.sleep(2)  # Aspetta 2 secondi prima di riprovare
@@ -85,7 +86,8 @@ while True:
 
     initializeSerial()
 
-    print(arduino.readline().decode().rstrip())
+    print("bio sbrolly")
+    print(arduino.readline())
     """statuuus = readArduinoStatus()
     if(statuuus == "AUTO"):
         #controllo dal server
@@ -132,4 +134,6 @@ while True:
         sendCommandToArduino("ERROR")
     """
     #Piccola pausa di riflessione
-    sleep(10)
+    
+    print(arduino.readline())
+    sleep(1)
