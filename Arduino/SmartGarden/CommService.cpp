@@ -12,7 +12,7 @@ void SerialService::init(){
   content.reserve(128);
   content = "";
   currentMsg = NULL;
-  msgAvailable = false;  
+  msgAvailable = false;
 }
 
 bool SerialService::isMsgAvailable(){
@@ -79,3 +79,6 @@ Msg* BluetoothService::receiveMsg(){
 void BluetoothService::sendMsg(const String& msg){
     channel->println(msg);
 }
+
+
+

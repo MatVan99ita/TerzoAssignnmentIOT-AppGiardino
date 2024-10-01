@@ -82,7 +82,7 @@ void MsgServiceBluetooth::init(){
 
 void MsgServiceBluetooth::sendMsg(const String& msg){
   //Serial.println(msg+"$");  
-  channel->println(msg);  
+  channel->println(msg);
 }
 
 void serialEvent() {

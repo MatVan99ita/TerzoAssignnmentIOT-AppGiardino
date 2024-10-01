@@ -34,7 +34,6 @@ void CommTask::init(int period){
     switch (state)
     {
     case CHECK_NEW_MESSAGE:
-      MsgService.sendMsg("CHECKING MAMMT");
       if (MsgService.isMsgAvailable()) {
         this->msg = MsgService.receiveMsg();
         this->state = EVALUATE_MESSAGE;
