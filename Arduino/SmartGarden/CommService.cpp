@@ -20,6 +20,7 @@ bool SerialService::isMsgAvailable(){
 }
 
 Msg* SerialService::receiveMsg(){
+    serialEvent(); //PAPIZZIAMOCI
     if (msgAvailable){
     Msg* msg = currentMsg;
     this->sendMsg("AVALEIBOL");
@@ -29,6 +30,32 @@ Msg* SerialService::receiveMsg(){
     return msg;  
   } else {
     return NULL;
+  }
+}
+
+
+void serialEvent() {
+  /* reading the content */
+  while (Serial.available()) {
+    char ch = (char) Serial.read();
+    if (ch == '\n'){
+      if (content.length() > 0) {
+        int index = content.indexOf('$');
+        if (index != -1){
+          System.println(content) //PAPIZZIAMOCI
+          /*
+          content = content.substring(0,index);
+          MsgServiceBT.currentMsg = new Msg(content);
+          MsgServiceBT.msgAvailable = true;
+          */
+        } else {
+          MsgService.currentMsg = new Msg(content);
+          MsgService.msgAvailable = true;
+        }
+      }
+    } else {
+      content += ch;
+    }
   }
 }
 

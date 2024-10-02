@@ -74,14 +74,12 @@ void MsgServiceBluetooth::init(){
   channel = new SoftwareSerial(BLUE_TXD, BLUE_RXD);
   channel->begin(9600);
   content.reserve(128);
-  
   content = "";
   currentMsg = NULL;
   msgAvailable = false;  
 }
 
 void MsgServiceBluetooth::sendMsg(const String& msg){
-  //Serial.println(msg+"$");  
   channel->println(msg);
 }
 
@@ -89,7 +87,7 @@ void serialEvent() {
   /* reading the content */
   while (Serial.available()) {
     char ch = (char) Serial.read();
-    if (ch == '\n'){      
+    if (ch == '\n'){
       if (content.length() > 0) {
         int index = content.indexOf('$');        
         if (index != -1){
