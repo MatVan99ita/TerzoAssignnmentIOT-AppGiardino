@@ -8,11 +8,11 @@ SerialService MsgService;
 BluetoothService MsgServiceBT;
 
 void SerialService::init(){
-    Serial.begin(9600);
+  Serial.begin(9600);
   content.reserve(128);
   content = "";
   currentMsg = NULL;
-  msgAvailable = false;
+  msgAvailable = true;
 }
 
 bool SerialService::isMsgAvailable(){
@@ -20,21 +20,21 @@ bool SerialService::isMsgAvailable(){
 }
 
 Msg* SerialService::receiveMsg(){
-    serialEvent(); //PAPIZZIAMOCI
     if (msgAvailable){
-    Msg* msg = currentMsg;
-    this->sendMsg("AVALEIBOL");
-    msgAvailable = false;
-    currentMsg = NULL;
-    content = "";
-    return msg;  
+      Msg* msg = currentMsg;
+      this->sendMsg("AVALEIBOL");
+      //msgAvailable = false;
+      currentMsg = NULL;
+      content = "";
+      return msg;  
   } else {
+    this->sendMsg("not AVALEIBOL");
     return NULL;
   }
 }
 
 
-void serialEvent() {
+void serialEvento() {
   /* reading the content */
   while (Serial.available()) {
     char ch = (char) Serial.read();
@@ -42,7 +42,8 @@ void serialEvent() {
       if (content.length() > 0) {
         int index = content.indexOf('$');
         if (index != -1){
-          System.println(content) //PAPIZZIAMOCI
+          
+          Serial.println(content);
           /*
           content = content.substring(0,index);
           MsgServiceBT.currentMsg = new Msg(content);

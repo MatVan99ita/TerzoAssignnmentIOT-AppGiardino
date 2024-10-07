@@ -21,11 +21,13 @@ void CommTask::init(int period){
     FORMAT:
     [DEVICE]_[PIN]_[servo_speed]
     DEVICE: cambiare LEDB/F con LED-AUTO LED-MANUAL 
-      LEDB,
-      LEDF,
-      IRRI
+      LEDAUTO,
+      LEDMB,
+      LEDMF,
+      IRRIA,
+      IRRIM
     PIN:
-      Only 1, 2 (or 3 for fading both)
+      Only 1, 2 or 3 (=for fading both)
     servo_speed:
       Light intensity for fading -> <servo_speed>
       Intensity of irrigation or activation/deactivation -> ON/OFF/<servo_speed>

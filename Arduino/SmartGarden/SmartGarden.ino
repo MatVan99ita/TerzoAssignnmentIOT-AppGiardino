@@ -1,6 +1,5 @@
 #include "Scheduler.h"
 #include "Arduino.h"
-#include "SoftwareSerial.h"
 #include "Config.h"
 
 #include "CommService.h"
@@ -22,22 +21,32 @@ void setup()
   sched.init(50);
 
   Task* ledTask = new LedTask();
-  ledTask->init(50);
-  sched.addTask(ledTask);
-  ledTask->setActive(false);
-  
   Task* irrigationTask = new IrrigationTask();
-  irrigationTask->init(100);
-  sched.addTask(irrigationTask);
-  irrigationTask->setActive(false);
-
-
   Task* commTask = new CommTask(irrigationTask,ledTask);
+  
+  ledTask->init(50);
+  irrigationTask->init(100);
   commTask->init(50);
+  
+  ledTask->setActive(false);
+  irrigationTask->setActive(false);
+  irrigationTask->setActive(true);
+  
+  sched.addTask(ledTask);
+  sched.addTask(irrigationTask);
   sched.addTask(commTask);
 }
 
-void loop() 
-{ 
+void loop() {
+  if(MsgService.isMsgAvailable()) {
+    Msg* msg = MsgService.receiveMsg();
+    Serial.println("RICEVIUTO");
+    if(msg->getContent() == "recovered") {
+       MsgService.sendMsg("arigagrazie");
+    }else if(msg->getContent() == "refilled") {
+       MsgService.sendMsg("arigatou");
+    }
+    delete msg;
+  }
   sched.schedule();
 }

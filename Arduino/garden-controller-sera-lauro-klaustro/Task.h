@@ -20,7 +20,7 @@ public:
       timeElapsed = 0;
       return true;
     } else {
-      return false; 
+      return false;
     }
   }
 

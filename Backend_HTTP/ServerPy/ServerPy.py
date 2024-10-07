@@ -8,6 +8,8 @@ import numpy as np
 IRRIG_TRESHOLD = 2
 LIGHT_TRESHOLD = 5
 
+msg_sabbiato = False
+
 arduino_port = "COM5"
 pippoBaud_rate = 9600
 time_out = .1
@@ -18,9 +20,9 @@ status = ""
 arduino = None
 
 def write_read(x):
-    #arduino.write(bytes(x, 'utf-8'))
+    arduino.write(bytes(x, 'utf-8'))
     time.sleep(0.05)
-    #data = arduino.readline()
+    data = arduino.readline()
     return data
 
 
@@ -51,13 +53,30 @@ def readArduinoStatus():
 def sendCommandToArduino(x):
     print("arduino cummand: " + str(x))
     try:
-        arduino.write(bytes(x+'\n', 'utf-8'))
+        arduino.write(bytes(x+'\n', "UTF-8"))
         sleep(0.5)
+        msg_sabbiato = True
         print("sonic sez: " + arduino.readline().decode('utf-8').strip())
-        #time.sleep(1)
-    except:
-        print("Error occured: can't write properly")
+    except serial.SerialException as e:
+        print(f"Errore di connessione: {e}")
+    except Exception as e:
+        print(f"Errore generico: {e}")
 
+def readArduinoToTheEnd():
+    start_time = time.time()  # Registra il tempo di inizio
+    while (time.time() - start_time) < 10:  # Continua per 10 secondi
+        try:
+            # Legge la linea dall'Arduino
+            print("sonic sez: " + arduino.readline().decode('utf-8').strip())
+            
+            # Aspetta 0.5 secondi prima di leggere nuovamente
+            time.sleep(0.5)
+
+        except serial.SerialException as e:
+            print(f"Errore di connessione: {e}")
+        except Exception as e:
+            print(f"Errore generico: {e}")
+    msg_sabbiato = False
 
 def readServerStatus():
     request1 = server + "/arduino/status/"
@@ -65,8 +84,6 @@ def readServerStatus():
 
     request2 = server + "/esp/data/"
     r2 = requests.get(request2)
-    #print(r1.content)
-    #print(r2.content)
 
     return r1.content.decode('utf-8'), r2.content.decode('utf-8')
 
@@ -74,36 +91,33 @@ def initializeSerial():
      global arduino
      while arduino is None:
         try:
-            arduino = serial.Serial(port=arduino_port, baudrate=pippoBaud_rate, timeout=time_out)
+            arduino = serial.Serial(
+                port=arduino_port, 
+                baudrate=pippoBaud_rate, 
+                timeout=time_out, 
+                writeTimeout = 2
+            )
             print(f"Connesso a {arduino_port}")
             print(arduino.readline())
         except serial.SerialException:
             print(f"Porta {arduino_port} non disponibile, riprovo...")
             time.sleep(2)  # Aspetta 2 secondi prima di riprovare
 
-
+#MAIN#
 while True:
 
     initializeSerial()
 
-    print("bio sbrolly")
-    print(arduino.readline())
-    """statuuus = readArduinoStatus()
-    if(statuuus == "AUTO"):
-        #controllo dal server
-        print("Auto")
-    elif (statuuus == "MANUAL"):
-        #controllo manuale da android
-        print("Manual")"""
     irriStatus, espData = readServerStatus()
-    #Creazione comando per arduino
-    #<DEVICE>_<ID>_<VALUE>
     
     print("BANANA " + irriStatus + " " + espData + "\n") 
     jStatus = json.loads(irriStatus)
     jEsp = json.loads(espData)
  
 
+    if(msg_sabbiato):
+        readArduinoToTheEnd()
+    
     """
     N.B.: 
         Luce -> 0-8
@@ -118,22 +132,10 @@ while True:
         sendCommandToArduino("ERROR")
     else:
         if(jEsp["lux"] < LIGHT_TRESHOLD): # Fai giochi di luce
-            msg1 = "LEDAUTO_"+str(jEsp["temperatura"])
+            msg1 = "LEDAUTO_1_"+str(jEsp["temperatura"])
             sendCommandToArduino(msg1)
         elif(jEsp["lux"] < IRRIG_TRESHOLD): # Fai giochi d'acqua
             msg = "IRRIAUTO_"+str(jEsp["temperatura"]) #<- posso calcolare la velocità anche qui e mnadarla già cacata
             sendCommandToArduino(msg)
-
-    #print("BANANA " + jStat + " " + jEsp + "\n") 
-
-    """
-    if(x != "ERROR"):
-        print("BANANA " + str(x) + " " + str(y) + "\n") 
-        sendCommandToArduino(x)
-    else:
-        sendCommandToArduino("ERROR")
-    """
-    #Piccola pausa di riflessione
     
-    print(arduino.readline())
     sleep(1)
