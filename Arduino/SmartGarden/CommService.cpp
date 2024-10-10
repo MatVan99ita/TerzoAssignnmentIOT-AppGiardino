@@ -7,49 +7,26 @@ String content;
 SerialService MsgService;
 BluetoothService MsgServiceBT;
 
-void SerialService::init(){
-  Serial.begin(9600);
-  content.reserve(128);
-  content = "";
-  currentMsg = NULL;
-  msgAvailable = true;
-}
-
-bool SerialService::isMsgAvailable(){
-    return msgAvailable;
-}
-
-Msg* SerialService::receiveMsg(){
-    if (msgAvailable){
-      Msg* msg = currentMsg;
-      this->sendMsg("AVALEIBOL");
-      //msgAvailable = false;
-      currentMsg = NULL;
-      content = "";
-      return msg;  
-  } else {
-    this->sendMsg("not AVALEIBOL");
-    return NULL;
-  }
-}
-
-
-void serialEvento() {
+void serialEvent() {
+  Serial.println("PORCODDIO");
   /* reading the content */
   while (Serial.available()) {
+    Serial.println(Serial.read());
     char ch = (char) Serial.read();
     if (ch == '\n'){
       if (content.length() > 0) {
         int index = content.indexOf('$');
         if (index != -1){
           
-          Serial.println(content);
+          Serial.println("c'ho il cazzo storto");
           /*
           content = content.substring(0,index);
           MsgServiceBT.currentMsg = new Msg(content);
           MsgServiceBT.msgAvailable = true;
           */
         } else {
+          
+          Serial.println("CHRI SCARSO SENZA GOLD");
           MsgService.currentMsg = new Msg(content);
           MsgService.msgAvailable = true;
         }
@@ -59,6 +36,38 @@ void serialEvento() {
     }
   }
 }
+
+
+void SerialService::init(){
+  Serial.begin(9600);
+  content.reserve(128);
+  content = "";
+  currentMsg = NULL;
+  msgAvailable = false;
+  serialEvent();
+}
+
+bool SerialService::isMsgAvailable(){
+    return msgAvailable;
+}
+
+Msg* SerialService::receiveMsg(){
+    if (msgAvailable){
+      Msg* msg = currentMsg;
+      Serial.println("AVALEIBOL");
+      Serial.println(msg->getContent());
+      msgAvailable = false;
+      currentMsg = NULL;
+      content = "";
+      return msg;  
+  } else {
+    Serial.println("not AVALEIBOL");
+    return NULL;
+  }
+}
+
+
+
 
 void SerialService::sendMsg(const String& msg){
     Serial.println(msg);

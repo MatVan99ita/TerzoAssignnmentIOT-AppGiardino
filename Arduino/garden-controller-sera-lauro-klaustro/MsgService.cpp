@@ -83,6 +83,7 @@ void MsgServiceBluetooth::sendMsg(const String& msg){
   channel->println(msg);
 }
 
+
 void serialEvent() {
   /* reading the content */
   while (Serial.available()) {

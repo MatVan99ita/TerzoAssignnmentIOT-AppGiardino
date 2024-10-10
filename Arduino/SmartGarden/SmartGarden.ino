@@ -38,7 +38,8 @@ void setup()
 }
 
 void loop() {
-  if(MsgService.isMsgAvailable()) {
+
+  /*if(MsgService.isMsgAvailable()) {
     Msg* msg = MsgService.receiveMsg();
     Serial.println("RICEVIUTO");
     if(msg->getContent() == "recovered") {
@@ -47,6 +48,6 @@ void loop() {
        MsgService.sendMsg("arigatou");
     }
     delete msg;
-  }
+  }*/
   sched.schedule();
 }
