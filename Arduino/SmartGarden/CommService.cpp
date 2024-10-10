@@ -40,6 +40,7 @@ void serialEvent() {
 
 void SerialService::init(){
   Serial.begin(9600);
+  Serial.setTimeout(1);
   content.reserve(128);
   content = "";
   currentMsg = NULL;
