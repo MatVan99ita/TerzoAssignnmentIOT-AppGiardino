@@ -10,6 +10,7 @@ class Msg {
 public:
   Msg(String content){
     this->content = content;
+    Serial.println(content);
   }
   
   String getContent(){
