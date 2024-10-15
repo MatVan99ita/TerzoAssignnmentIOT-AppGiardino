@@ -68,12 +68,13 @@ def sendCommandToArduino():
     
 
 def readArduinoToTheEnd():
+    conta = 1
     start_time = time.time()  # Registra il tempo di inizio
     while (time.time() - start_time) < 10: # Ogni 5 secondi
         try:
             # Legge la linea dall'Arduino
-            print("sonic sez: " + arduino.readline().decode('utf-8').strip())
-            
+            print(str(conta) + ") sonic sez: " + arduino.readline().decode('utf-8').strip())
+            conta += 1
             # Aspetta 0.5 secondi prima di leggere nuovamente
             time.sleep(0.1)
 

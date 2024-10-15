@@ -23,11 +23,11 @@ void Led::switchOn(){
 
 bool Led::change(){
   if(led_on){
+    Serial.println("Si spengono le luci (Si svegli il lupo)");
     this->switchOff();
-    led_on = false;
   }else{
+    Serial.println("Si accendono le luci (E' morto paolo)");
     this->switchOn();
-    led_on = true;
   }
 }
 
