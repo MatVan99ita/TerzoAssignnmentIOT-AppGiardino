@@ -22,10 +22,12 @@ void Led::switchOn(){
 
 
 bool Led::change(){
-  if(!led_on){
+  if(led_on){
     this->switchOff();
+    led_on = false;
   }else{
     this->switchOn();
+    led_on = true;
   }
 }
 

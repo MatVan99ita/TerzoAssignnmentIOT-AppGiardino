@@ -54,7 +54,7 @@ def readArduinoStatus():
 
 
 def sendCommandToArduino():
-    x = "LEDAUTO_3_" + str(slider.get()) + '\n'
+    x = "LEDAUTO_" + str(slider2.get()) + "_" + str(slider.get()) + '\n'
 
     print(x)
     try:
@@ -105,7 +105,11 @@ root.title("Slider GUI")
 root.geometry("500x300")
 
 # Slider 2: con 8 valori (da 1 a 8), con callback quando cambia valore
-slider = tk.Scale(root, from_=1, to=8, orient='horizontal', label="Slider 2 (8 valori) TEMPERATURA", length=200)
+slider2 = tk.Scale(root, from_=1, to=4, orient='horizontal', label="led", length=200)
+slider2.pack(pady=10)
+
+# Slider 2: con 8 valori (da 1 a 8), con callback quando cambia valore
+slider = tk.Scale(root, from_=0, to=7, orient='horizontal', label="Slider 2 (8 valori) TEMPERATURA", length=200)
 slider.pack(pady=10)
 
 # Pulsante per aggiornare i valori visualizzati
