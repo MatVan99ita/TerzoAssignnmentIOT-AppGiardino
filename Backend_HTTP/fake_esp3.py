@@ -54,7 +54,7 @@ def readArduinoStatus():
 
 
 def sendCommandToArduino():
-    x = "LEDAUTO_1_" + str(slider.get()) + '\n'
+    x = "LEDAUTO_3_" + str(slider.get()) + '\n'
 
     print(x)
     try:
@@ -69,13 +69,13 @@ def sendCommandToArduino():
 
 def readArduinoToTheEnd():
     start_time = time.time()  # Registra il tempo di inizio
-    while (time.time() - start_time) < 5:
+    while (time.time() - start_time) < 10: # Ogni 5 secondi
         try:
             # Legge la linea dall'Arduino
             print("sonic sez: " + arduino.readline().decode('utf-8').strip())
             
             # Aspetta 0.5 secondi prima di leggere nuovamente
-            time.sleep(0.5)
+            time.sleep(0.1)
 
         except serial.SerialException as e:
             print(f"Errore di connessione: {e}")
