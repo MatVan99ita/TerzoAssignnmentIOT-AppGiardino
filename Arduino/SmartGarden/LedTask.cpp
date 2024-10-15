@@ -23,7 +23,7 @@ void LedTask::init(int period){
 }
 
 void LedTask::tick(){
-  Serial.println(".CULOH.");
+  Serial.print(".CULOH.");
   if(led_state == ACTIVE) {
  //<- cambiato in LEDAUTO
  //accendere o spegnere i led e fare fade degli altri 2 in base al valore del calore

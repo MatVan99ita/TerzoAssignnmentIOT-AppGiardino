@@ -22,7 +22,7 @@ void Led::switchOn(){
 
 
 bool Led::change(){
-  if(led_on){
+  if(!led_on){
     Serial.println("Si spengono le luci (Si svegli il lupo)");
     this->switchOff();
   }else{
