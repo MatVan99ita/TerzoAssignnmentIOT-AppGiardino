@@ -50,27 +50,27 @@ void CommTask::init(int period){
 
       case EVALUATE_MESSAGE:
 
-        Serial.print("entro evaluate : ");
+        Serial.println("entro evaluate : ");
 
         msg->getContent().toCharArray(buf, 50);
 
         Serial.println(buf);
         device = String(strtok(buf,"_"));
 
-        if(device == "ERROR"){
+        if(device == "ERROR") {
           MsgServiceBT.sendMsg("ERROR");
-        } else if(device == "LEDAUTO"){
-          led_type=device;
+        } else if(device == "LEDAUTO") {
+          led_type = device;
           String fadeLed = String(strtok(NULL, "_"));
           if(fadeLed == '1')
           {
             Serial.println("Ledf 1");
             led_id=1;
-              //led_f1->fade(String(strtok(NULL, "_")).toInt());
+            //led_f1->fade(String(strtok(NULL, "_")).toInt());
           }else if (fadeLed =='2'){
             Serial.println("Ledf 2");
             led_id=2;
-              //led_f2->fade(String(strtok(NULL, "_")).toInt());
+            //led_f2->fade(String(strtok(NULL, "_")).toInt());
           }else if (fadeLed =='3'){
             Serial.println("Ledf 1&2");
             led_id=3;

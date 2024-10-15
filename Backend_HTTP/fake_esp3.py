@@ -55,7 +55,6 @@ def readArduinoStatus():
 
 def sendCommandToArduino():
     x = "LEDAUTO_1_" + str(slider.get()) + '\n'
-    to_array = [char for char in x]
 
     print(x)
     try:
@@ -70,7 +69,7 @@ def sendCommandToArduino():
 
 def readArduinoToTheEnd():
     start_time = time.time()  # Registra il tempo di inizio
-    while (time.time() - start_time) < 2:  # Continua per 2 secondi
+    while (time.time() - start_time) < 5:
         try:
             # Legge la linea dall'Arduino
             print("sonic sez: " + arduino.readline().decode('utf-8').strip())
@@ -101,7 +100,6 @@ def initializeSerial():
 #MAIN#
 # Crea la finestra principale
 initializeSerial()
-readArduinoToTheEnd()
 root = tk.Tk()
 root.title("Slider GUI")
 root.geometry("500x300")

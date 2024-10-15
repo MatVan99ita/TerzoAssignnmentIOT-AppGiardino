@@ -19,14 +19,7 @@ void serialEvent() {
     } else {
       content += ch;
     }
-  }//*/
-
-  /* reading the whole string*/
-  /*while (Serial.available());
-  String s = Serial.readString();
-  MsgService.currentMsg = new Msg(s);
-  MsgService.msgAvailable = true;
-  //*/
+  }
 }
 
 
@@ -48,6 +41,7 @@ bool SerialService::isMsgAvailable(){
 Msg* SerialService::receiveMsg(){
     if (msgAvailable){
       Msg* msg = currentMsg;
+      Serial.print("RICEVIUTO: ");
       Serial.println(msg->getContent());
       msgAvailable = false;
       currentMsg = NULL;
