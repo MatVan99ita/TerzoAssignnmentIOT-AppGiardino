@@ -15,7 +15,7 @@ Msg* MsgServiceClass::receiveMsg(){
     msgAvailable = false;
     currentMsg = NULL;
     content = "";
-    return msg;  
+    return msg;
   } else {
     return NULL; 
   }

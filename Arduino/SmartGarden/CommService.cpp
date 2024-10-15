@@ -1,41 +1,35 @@
 #include "CommService.h"
 #include "Arduino.h"
 #include "Config.h"
+#include "String.h"
 
 String content;
 
 SerialService MsgService;
 BluetoothService MsgServiceBT;
 
+/*Called after loop() automatically*/
 void serialEvent() {
-  Serial.println("PORCODDIO");
-  /* reading the content */
+  /* reading the content char by char*/
   while (Serial.available()) {
-    Serial.println(Serial.read());
     char ch = (char) Serial.read();
     if (ch == '\n'){
-      if (content.length() > 0) {
-        int index = content.indexOf('$');
-        if (index != -1){
-          
-          Serial.println("c'ho il cazzo storto");
-          /*
-          content = content.substring(0,index);
-          MsgServiceBT.currentMsg = new Msg(content);
-          MsgServiceBT.msgAvailable = true;
-          */
-        } else {
-          
-          Serial.println("CHRI SCARSO SENZA GOLD");
-          MsgService.currentMsg = new Msg(content);
-          MsgService.msgAvailable = true;
-        }
-      }
+      MsgService.currentMsg = new Msg(content);
+      MsgService.msgAvailable = true;
     } else {
       content += ch;
     }
-  }
+  }//*/
+
+  /* reading the whole string*/
+  /*while (Serial.available());
+  String s = Serial.readString();
+  MsgService.currentMsg = new Msg(s);
+  MsgService.msgAvailable = true;
+  //*/
 }
+
+
 
 
 void SerialService::init(){
@@ -45,7 +39,6 @@ void SerialService::init(){
   content = "";
   currentMsg = NULL;
   msgAvailable = false;
-  serialEvent();
 }
 
 bool SerialService::isMsgAvailable(){
@@ -55,12 +48,11 @@ bool SerialService::isMsgAvailable(){
 Msg* SerialService::receiveMsg(){
     if (msgAvailable){
       Msg* msg = currentMsg;
-      Serial.println("AVALEIBOL");
       Serial.println(msg->getContent());
       msgAvailable = false;
       currentMsg = NULL;
       content = "";
-      return msg;  
+      return msg;
   } else {
     Serial.println("not AVALEIBOL");
     return NULL;
@@ -86,7 +78,7 @@ void BluetoothService::init(){
 
 bool BluetoothService::isMsgAvailable(){
     while (channel->available()) {
-    Serial.println("aviable msg");
+    Serial.println("avalaible msg");
     char ch = (char) channel->read();
     if (ch == '\n'){
       Serial.print(content);

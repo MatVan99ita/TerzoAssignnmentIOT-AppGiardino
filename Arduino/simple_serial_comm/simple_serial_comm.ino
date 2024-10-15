@@ -1,15 +1,12 @@
 String x;
-
+char buffer[50];
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.setTimeout(1);
 }
 
 void loop() {
-  while (!Serial.available()){
-    x = Serial.readString();//.toInt();
-    Serial.print("MESSAGGIO: ");
-    Serial.println(x);
-    //Serial.println("irrigazione:PAUSA,mode:AUTO");
-  }
+  while (!Serial.available());
+  x = Serial.readString();
+  Serial.print(x);
 }

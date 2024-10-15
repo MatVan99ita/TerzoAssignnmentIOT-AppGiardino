@@ -9,7 +9,7 @@ CommTask::CommTask(Task *t0, Task *t1){
 
 void CommTask::init(int period){
   Serial.begin(9600);
-  while (!Serial){}
+  while (!Serial.available());
   MsgService.init();
   MsgServiceBT.init();
   Serial.println("ready to go.");
