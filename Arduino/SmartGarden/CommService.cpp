@@ -8,14 +8,26 @@ String content;
 SerialService MsgService;
 BluetoothService MsgServiceBT;
 
+/**Read and delete all remaining data in the buffer */
+void flushSerialBuffer() {
+  while (Serial.available()) {
+    Serial.read();
+  }
+}
+
+
+
 /*Called after loop() automatically*/
 void serialEvent() {
+  content = "";  // Buffer reset
   /* reading the content char by char*/
   while (Serial.available()) {
     char ch = (char) Serial.read();
     if (ch == '\n'){
       MsgService.currentMsg = new Msg(content);
       MsgService.msgAvailable = true;
+      content = "";  // Buffer reset after receiving message
+      break; //End the receiving
     } else {
       content += ch;
     }

@@ -14,6 +14,8 @@ void CommTask::init(int period){
   MsgService.init();
   MsgServiceBT.init();
   Serial.println("ready to go.");
+  Serial.print("Buffer attuale: ");
+  Serial.println(content);
   Task::init(period);
   state = CHECK_NEW_MESSAGE;
 }
