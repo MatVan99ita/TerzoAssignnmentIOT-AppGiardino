@@ -31,7 +31,16 @@ void serialEvent() {
     } else {
       content += ch;
     }
+
+    /** 1 Second timeout for infinite waiting preventing */
+    if (millis() - start_time > 1000) {
+      Serial.println("Timeout: reset del buffer seriale");
+      content = "";  // Buffer reset
+      break;
+    }
   }
+
+
 }
 
 
