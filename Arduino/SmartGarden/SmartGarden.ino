@@ -21,16 +21,17 @@ void setup()
   sched.init(50);
 
   Task* ledTask = new LedTask();
-  Task* irrigationTask = new IrrigationTask();
-  Task* commTask = new CommTask(irrigationTask,ledTask);
-  
   ledTask->init(50);
-  irrigationTask->init(100);
-  commTask->init(300);
-  
   ledTask->setActive(false);
+
+  Task* irrigationTask = new IrrigationTask();
+  irrigationTask->init(100);
   irrigationTask->setActive(false);
+  
+  Task* commTask = new CommTask(irrigationTask,ledTask);
+  commTask->init(100);
   commTask->setActive(true);
+  
   
   sched.addTask(ledTask);
   sched.addTask(irrigationTask);
