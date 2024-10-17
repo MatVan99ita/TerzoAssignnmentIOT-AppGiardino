@@ -13,11 +13,13 @@ Led::Led(int pin) {
 
 void Led::switchOff(){
       digitalWrite(pin, LOW);
+      delay(1);
 }
 
 
 void Led::switchOn(){
       digitalWrite(pin, HIGH);
+      delay(1);
 }
 
 
@@ -34,4 +36,5 @@ bool Led::change(){
 void Led::fade(int val){
       val=(val)*64.00;
       analogWrite(this->pin, val);
+      delay(1);
 }

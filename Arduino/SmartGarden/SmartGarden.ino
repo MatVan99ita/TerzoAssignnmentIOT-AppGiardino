@@ -26,11 +26,11 @@ void setup()
   
   ledTask->init(50);
   irrigationTask->init(100);
-  commTask->init(100);
+  commTask->init(300);
   
   ledTask->setActive(false);
   irrigationTask->setActive(false);
-  irrigationTask->setActive(true);
+  commTask->setActive(true);
   
   sched.addTask(ledTask);
   sched.addTask(irrigationTask);

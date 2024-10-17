@@ -10,12 +10,9 @@ CommTask::CommTask(Task *t0, Task *t1){
 void CommTask::init(int period){
   Serial.begin(9600);
   while (!Serial.available());
-  Serial.println("Disponibile");
   MsgService.init();
   MsgServiceBT.init();
   Serial.println("ready to go.");
-  Serial.print("Buffer attuale: ");
-  Serial.println(content);
   Task::init(period);
   state = CHECK_NEW_MESSAGE;
 }
@@ -53,7 +50,7 @@ void CommTask::init(int period){
 
       case EVALUATE_MESSAGE:
 
-        Serial.println("entro evaluate : ");
+        Serial.print("entro evaluate: ");
 
         msg->getContent().toCharArray(buf, 50);
 
@@ -63,21 +60,24 @@ void CommTask::init(int period){
         if(device == "ERROR") {
           MsgServiceBT.sendMsg("ERROR");
         } else if(device == "LEDAUTO") {
+          Serial.println("LED ATTIVABILI");
           led_type = device;
-          String fadeLed = String(strtok(NULL, "_"));
-          if(fadeLed == '1')
-          {
-            Serial.println("Ledf 1");
-            led_id=1;
-            //led_f1->fade(String(strtok(NULL, "_")).toInt());
-          }else if (fadeLed =='2'){
-            Serial.println("Ledf 2");
-            led_id=2;
-            //led_f2->fade(String(strtok(NULL, "_")).toInt());
-          }else if (fadeLed =='3'){
-            Serial.println("Ledf 1&2");
-            led_id=3;
+          char fadeLed = strtok(NULL, "_");
+          switch (fadeLed) {
+            case '1':
+              Serial.println("Ledf 1");
+              led_id = 1;
+              break;
+            case '2':
+              Serial.println("Ledf 2");
+              led_id = 2;
+              break;
+            case '3':
+              Serial.println("Ledf 1&2");
+              led_id = 3;
+              break;
           }
+          
           servo_speed=String(strtok(NULL, "_")).toInt();
           LedTask->setActive(true);
         } else if(device == "LEDB"){

@@ -19,6 +19,7 @@ void LedTask::init(int period){
     Task::init(period);
     this->led_id = led_id;
     this->led_state = ACTIVE;
+    Serial.println("SESSO E SABAKU");
   
 }
 

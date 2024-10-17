@@ -8,40 +8,24 @@ String content;
 SerialService MsgService;
 BluetoothService MsgServiceBT;
 
-/**Read and delete all remaining data in the buffer */
-void flushSerialBuffer() {
-  while (Serial.available()) {
-    Serial.read();
-  }
-}
-
 
 
 /*Called after loop() automatically*/
 void serialEvent() {
-  content = "";  // Buffer reset
-  /* reading the content char by char*/
+  // reading the content char by char
   while (Serial.available()) {
     char ch = (char) Serial.read();
     if (ch == '\n'){
-      MsgService.currentMsg = new Msg(content);
+      Serial.print("FINITOH: "); Serial.println(content);
       MsgService.msgAvailable = true;
-      content = "";  // Buffer reset after receiving message
-      break; //End the receiving
+      MsgService.currentMsg = new Msg(content);
+      //content = "";
+      break;
     } else {
       content += ch;
     }
-
-    /** 1 Second timeout for infinite waiting preventing */
-    if (millis() - start_time > 1000) {
-      Serial.println("Timeout: reset del buffer seriale");
-      content = "";  // Buffer reset
-      break;
-    }
   }
-
-
-}
+}//*/
 
 
 
@@ -60,16 +44,19 @@ bool SerialService::isMsgAvailable(){
 }
 
 Msg* SerialService::receiveMsg(){
-    if (msgAvailable){
-      Msg* msg = currentMsg;
-      Serial.print("RICEVIUTO: ");
-      Serial.println(msg->getContent());
-      msgAvailable = false;
-      currentMsg = NULL;
-      content = "";
-      return msg;
+  if (msgAvailable){
+    Msg* msg = currentMsg;
+    Serial.print("RICEVIUTO: ");
+    Serial.println(msg->getContent());
+    msgAvailable = false;
+    currentMsg = NULL;
+    content = "";
+    return msg;
   } else {
     Serial.println("not AVALEIBOL");
+    msgAvailable = false;
+    currentMsg = NULL;
+    content = "";
     return NULL;
   }
 }

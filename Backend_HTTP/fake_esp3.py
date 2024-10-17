@@ -56,7 +56,7 @@ def readArduinoStatus():
 def sendCommandToArduino():
     x = "LEDAUTO_3_" + str(slider.get()) + '\n'
 
-    print(x)
+    print("SENDATO: " + x)
     try:
         arduino.write(bytes(x, "UTF-8"))
         sleep(0.5)
@@ -70,7 +70,7 @@ def sendCommandToArduino():
 def readArduinoToTheEnd():
     conta = 1
     start_time = time.time()  # Registra il tempo di inizio
-    while (time.time() - start_time) < 10: # Ogni 5 secondi
+    while (time.time() - start_time) < 15: # Ogni 5 secondi
         try:
             # Legge la linea dall'Arduino
             print(str(conta) + ") sonic sez: " + arduino.readline().decode('utf-8').strip())
@@ -93,7 +93,6 @@ def initializeSerial():
                 timeout=time_out
             )
             print(f"Connesso a {arduino_port}")
-            print(arduino.readline())
         except serial.SerialException:
             print(f"Porta {arduino_port} non disponibile, riprovo...")
             time.sleep(2)  # Aspetta 2 secondi prima di riprovare
