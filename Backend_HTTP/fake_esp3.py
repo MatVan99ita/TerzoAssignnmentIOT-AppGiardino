@@ -70,7 +70,7 @@ def sendCommandToArduino():
 def readArduinoToTheEnd():
     conta = 1
     start_time = time.time()  # Registra il tempo di inizio
-    while (time.time() - start_time) < 15: # Ogni 5 secondi
+    while (time.time() - start_time) < 5: # Ogni 5 secondi
         try:
             # Legge la linea dall'Arduino
             print(str(conta) + ") sonic sez: " + arduino.readline().decode('utf-8').strip())
@@ -105,7 +105,7 @@ root.title("Slider GUI")
 root.geometry("500x300")
 
 # Slider 2: con 8 valori (da 1 a 8), con callback quando cambia valore
-slider = tk.Scale(root, from_=1, to=8, orient='horizontal', label="Slider 2 (8 valori) TEMPERATURA", length=200)
+slider = tk.Scale(root, from_=0, to=7, orient='horizontal', label="Slider 2 (8 valori) TEMPERATURA", length=200)
 slider.pack(pady=10)
 
 # Pulsante per aggiornare i valori visualizzati

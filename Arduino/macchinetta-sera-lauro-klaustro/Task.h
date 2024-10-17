@@ -24,7 +24,7 @@ public:
     }
   }
 
-  bool isActive(){
+  bool isActive() {
     return active;
   }
 

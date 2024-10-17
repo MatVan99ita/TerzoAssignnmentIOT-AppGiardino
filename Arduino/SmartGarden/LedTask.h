@@ -10,7 +10,6 @@ class LedTask: public Task {
   Led* led_f1;
   Led* led_f2;
 
-  enum {ACTIVE} led_state;
   int led_id;
 public:
 

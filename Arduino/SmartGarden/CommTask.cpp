@@ -60,24 +60,21 @@ void CommTask::init(int period){
         if(device == "ERROR") {
           MsgServiceBT.sendMsg("ERROR");
         } else if(device == "LEDAUTO") {
+
           Serial.println("LED ATTIVABILI");
           led_type = device;
-          char fadeLed = strtok(NULL, "_");
-          switch (fadeLed) {
-            case '1':
+          String fadeLed = String(strtok(NULL, "_"));
+          /*
+          if(fadeLed == "1"){
               Serial.println("Ledf 1");
               led_id = 1;
-              break;
-            case '2':
+          } else if(fadeLed == "2"){
               Serial.println("Ledf 2");
               led_id = 2;
-              break;
-            case '3':
+          } else if(fadeLed == "3"){
               Serial.println("Ledf 1&2");
               led_id = 3;
-              break;
-          }
-          
+          }//*/
           servo_speed=String(strtok(NULL, "_")).toInt();
           LedTask->setActive(true);
         } else if(device == "LEDB"){
@@ -99,14 +96,14 @@ void CommTask::init(int period){
             Serial.print("Led ");
             Serial.print(led_id);
             Serial.println(" on");
-            led_on = true;
+            //led_on = true;
           } else if (isOn=="OFF"){
             Serial.print("Led ");
             Serial.print(led_id);
             Serial.println(" off");
-            led_on = false;
+            //led_on = false;
           } else if (isOn==NULL){
-            led_on = !led_on;
+            //led_on = !led_on;
           }
           LedTask->setActive(true);
 

@@ -18,22 +18,16 @@ LedTask::LedTask(){
 void LedTask::init(int period){
     Task::init(period);
     this->led_id = led_id;
-    this->led_state = ACTIVE;
-    Serial.println("SESSO E SABAKU");
-  
 }
 
 void LedTask::tick(){
-  Serial.print(".CULOH.");
-  if(led_state == ACTIVE) {
- //<- cambiato in LEDAUTO
- //accendere o spegnere i led e fare fade degli altri 2 in base al valore del calore
     if(led_type == "LEDAUTO") {
-      Serial.print("AAAAAAAAAAAAAAAAAAAAAAAa");
+      //Automatic light with 2 blink and 2 fade with temperature value
       led_s1->change();
       led_s2->change();
       led_f1->fade(servo_speed);
       led_f2->fade(servo_speed);
+      
     } else if(led_type == "LEDMANUAL"){
       if(led_type == "LEDB")
       {
@@ -56,8 +50,6 @@ void LedTask::tick(){
         }
       }
     }
-
-  }
   
   
   //Terminazione task
