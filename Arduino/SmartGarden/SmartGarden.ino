@@ -1,6 +1,6 @@
 #include "Scheduler.h"
 #include "Arduino.h"
-#include "Config.h"
+#include "Setting.h"
 
 #include "CommService.h"
 #include "CommTask.h"
@@ -11,7 +11,7 @@ SoftwareSerial MyBlue(3, 2); // RX | TX
 
 //LEDAUTO_3_2
 Scheduler sched;
-String led_type; //LEDB - LEDF
+String led_type; //LEDAUTO - IRRIAUTO - LEDB - LEDF - IRRI
 int led_id;
 bool led_on = false;
 bool led_max = false;

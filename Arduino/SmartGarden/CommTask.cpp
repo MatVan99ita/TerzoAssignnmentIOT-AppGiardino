@@ -1,5 +1,5 @@
 #include "CommTask.h"
-#include "Config.h"
+#include "Setting.h"
 
 
 CommTask::CommTask(Task *t0, Task *t1){

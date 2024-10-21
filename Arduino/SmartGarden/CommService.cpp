@@ -1,6 +1,6 @@
 #include "CommService.h"
 #include "Arduino.h"
-#include "Config.h"
+#include "Setting.h"
 #include "String.h"
 
 String content;

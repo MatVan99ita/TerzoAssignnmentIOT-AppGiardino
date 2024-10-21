@@ -1,6 +1,6 @@
 #include "LedTask.h"
 #include "Arduino.h"
-#include "Config.h"
+#include "Setting.h"
 
 #define PIN_LED_SWITCH1 12
 #define PIN_LED_SWITCH2 11

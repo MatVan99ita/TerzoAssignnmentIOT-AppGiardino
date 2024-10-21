@@ -1,6 +1,6 @@
 #include "IrrigationTask.h"
 #include "Arduino.h"
-#include "Config.h"
+#include "Setting.h"
 
 #define SERVO_PIN 7
 

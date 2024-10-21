@@ -1,6 +1,6 @@
 #include "Led.h"
 #include "Arduino.h"
-#include "Config.h"
+#include "Setting.h"
 
 
 #define FADE_VELOCITY 5
