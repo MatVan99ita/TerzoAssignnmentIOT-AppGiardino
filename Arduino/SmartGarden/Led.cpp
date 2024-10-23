@@ -10,7 +10,7 @@ int dilei = 5;
 
 Led::Led(int pin) {
     this->pin = pin;
-    this->led_on = false;
+    led_max_on = false;
     Serial.println(pin);
     pinMode(pin, OUTPUT);
 }
@@ -19,7 +19,7 @@ void Led::switchOff(){
   Serial.println("OFF");
       digitalWrite(pin, LOW);
       delay(30);
-      this->led_on = false;
+      led_max_on = false;
 }
 
 
@@ -27,12 +27,12 @@ void Led::switchOn(){
   Serial.println("ON");
       digitalWrite(pin, HIGH);
       delay(30);
-      this->led_on = true;
+      led_max_on = true;
 }
 
 
 bool Led::change(){
-  if(!this->led_on) {
+  if(!led_max_on) {
     this->switchOff();
   } else {
     this->switchOn();
@@ -45,7 +45,7 @@ void Led::fadein(int val) {
     analogWrite(this->pin, fadeValue);
     delay(30);
   }
-  this->led_on = true;
+  led_max_on = true;
   }
 
 void Led::fadeout(int val) {
@@ -54,7 +54,7 @@ void Led::fadeout(int val) {
     analogWrite(this->pin, fadeValue);
     delay(30);
   }
-  this->led_on = false;
+  led_max_on = false;
   }
 
 
