@@ -5,8 +5,8 @@ import json
 from time import sleep
 import numpy as np
 
-IRRIG_TRESHOLD = 2
 LIGHT_TRESHOLD = 5
+IRRIG_TRESHOLD = 2
 
 msg_sabbiato = False
 

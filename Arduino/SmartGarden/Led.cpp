@@ -10,71 +10,25 @@ int dilei = 5;
 
 Led::Led(int pin) {
     this->pin = pin;
-    led_max_on = false;
-    Serial.println(pin);
     pinMode(pin, OUTPUT);
-}
-
-void Led::switchOff(){
-  Serial.println("OFF");
-      digitalWrite(pin, LOW);
-      delay(30);
-      led_max_on = false;
-}
-
-
-void Led::switchOn(){
-  Serial.println("ON");
-      digitalWrite(pin, HIGH);
-      delay(30);
-      led_max_on = true;
 }
 
 
 bool Led::change(){
-  if(!led_max_on) {
-    this->switchOff();
-  } else {
-    this->switchOn();
+  Serial.println(pin);
+  if(servo_speed > 0) { // is night everybody close theyr eyes... the wolf open his eyes
+    digitalWrite(pin, HIGH);
+  } else { // the wolf close his eyes, is day... genoveffo died
+    digitalWrite(pin, LOW);
   }
 }
-
-void Led::fadein(int val) {
-  Serial.println("fadeIN");
-  for (int fadeValue = 0 ; fadeValue <= val; fadeValue += 1) {
-    analogWrite(this->pin, fadeValue);
-    delay(30);
-  }
-  led_max_on = true;
-  }
-
-void Led::fadeout(int val) {
-  Serial.println("fadeOUT");
-  for (int fadeValue = val ; fadeValue >= 0; fadeValue -= 1) {
-    analogWrite(this->pin, fadeValue);
-    delay(30);
-  }
-  led_max_on = false;
-  }
-
 
 
 
 void Led::fade(int val){
-
-  //Take the mapped value and approximate to a fading value
+  Serial.println(pin);
+  //Take the mapped value and re-approximate to a fading value
   int i = map(val, 0, 7, 0, 255);
-  
-  /*val=(val)*63.75;
-  //Serial.println(val);
-  analogWrite(pin, i);//*/
-
-  Serial.print("->"); Serial.println(this->led_on);
-  if(this->led_on) {
-    Serial.println("RAMARRRO");
-    this->fadeout(i);
-  } else {
-    Serial.println("GALLLINA");
-    this->fadein(i);
-  }//*/
+  Serial.print("Val: "); Serial.print(val); Serial.print(", i: "); Serial.println(i);
+  analogWrite(pin, i);
 }

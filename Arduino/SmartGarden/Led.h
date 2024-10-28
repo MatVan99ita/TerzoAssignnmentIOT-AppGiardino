@@ -4,12 +4,8 @@
 class Led{
   public:
     Led(int pin);
-    void switchOff();
-    void switchOn();
     bool change();
     void fade(int val);
-    void fadein(int val);
-    void fadeout(int val);
 
   private:
     int pin;

@@ -13,8 +13,7 @@ SoftwareSerial MyBlue(3, 2); // RX | TX
 Scheduler sched;
 String led_type; //LEDAUTO - IRRIAUTO - LEDB - LEDF - IRRI
 int led_id;
-bool led_on = false;
-bool led_max = false;
+bool led_max_on = false;
 int servo_speed=0;
 
 void setup() 
