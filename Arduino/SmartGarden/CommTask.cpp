@@ -86,22 +86,22 @@ void CommTask::init(int period){
 
           
         } else if(device == "LEDF"){//fading led manual command
-          led_type=device;
+          led_type = device;
           MsgServiceBT.sendMsg("Blink of an eye");
           Serial.println("Blink of an eye");
           String pin = String(strtok(NULL, "_"));
 
-          if(pin =='1')
+          if(pin == "1")
           {
             Serial.println("Led 1");
             led_id = 1;
-          }else if(pin =='2'){
+          }else if(pin == "2"){
             Serial.println("Led 2");
             led_id = 2;
           } else {//the two fade must coordinate
             led_id = 3;
           }
-          fade_value = String(strtok(buf,"_")).toInt();
+          fade_value = String(strtok(NULL, "_")).toInt();
           LedTask->setActive(true);
         } else if(device == "IRRI"){
 
