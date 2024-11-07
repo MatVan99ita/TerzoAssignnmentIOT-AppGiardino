@@ -109,6 +109,7 @@ Msg* BluetoothService::receiveMsg(){
 }
 
 void BluetoothService::sendMsg(const String& msg){
+    Serial.println(msg);
     channel->println(msg);
 }
 

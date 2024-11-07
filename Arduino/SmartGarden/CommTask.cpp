@@ -20,12 +20,11 @@ void CommTask::init(int period){
 /**
     FORMAT:
     [DEVICE]_[PIN]_[servo_speed]
-    DEVICE: cambiare LEDB/F con LED-AUTO LED-MANUAL 
+    DEVICE:
       LEDAUTO,
-      LEDMB,
-      LEDMF,
-      IRRIA,
-      IRRIM
+      LEDB,
+      LEDF,
+      IRRI
     PIN:
       Only 1, 2 or 3 (=for fading both)
     servo_speed:
@@ -59,56 +58,53 @@ void CommTask::init(int period){
 
         if(device == "ERROR") {
           MsgServiceBT.sendMsg("ERROR");
-        } else if(device == "LEDAUTO") {
-
-          Serial.println("LED ATTIVABILI");
+        } else if(device == "LEDAUTO") {//LEDAUTO_<fade_value> because in auto mode all led must turn on/off
           led_type = device;
-          String fadeLed = String(strtok(NULL, "_"));
-          /*
-          if(fadeLed == "1"){
-              Serial.println("Ledf 1");
-              led_id = 1;
-          } else if(fadeLed == "2"){
-              Serial.println("Ledf 2");
-              led_id = 2;
-          } else if(fadeLed == "3"){
-              Serial.println("Ledf 1&2");
-              led_id = 3;
-          }//*/
-          servo_speed=String(strtok(NULL, "_")).toInt();
+
+          //get the fade value that is setted for the fade leds but also set on the blink leds if is greater than zero
+          fade_value = String(strtok(NULL, "_")).toInt();
           LedTask->setActive(true);
-        } else if(device == "LEDB"){
-          led_type=device;
-          MsgServiceBT.sendMsg("Blink of an eye");
-          Serial.println("Blink of an eye");
-          if(String(strtok(NULL, "_"))=='1')
+        
+        } else if(device == "LEDB"){ // led blink manual command
+          led_type = device;
+          
+          String pin = String(strtok(NULL, "_"));
+          if(pin == "1")
           {
             Serial.println("Led 1");
-            led_id=1;
-          }else{
+            led_id = 1;
+          }else if(pin == "2"){
             Serial.println("Led 2");
-            led_id=2;
+            led_id = 2;
+          } else {//the two blink must coordinate
+            led_id = 3;
           }
-          String isOn = String(strtok(NULL, "_"));
-          Serial.println(isOn);
-          if(isOn=="ON")
-          {
-            Serial.print("Led ");
-            Serial.print(led_id);
-            Serial.println(" on");
-            //led_on = true;
-          } else if (isOn=="OFF"){
-            Serial.print("Led ");
-            Serial.print(led_id);
-            Serial.println(" off");
-            //led_on = false;
-          } else if (isOn==NULL){
-            //led_on = !led_on;
-          }
+          //The app send a value equal to 1 just to turn on the led 
+          fade_value = String(strtok(NULL,"_")).toInt();//also this wont affect the fading one
+          Serial.print("ODIOPORCOH - "); Serial.println(fade_value);
           LedTask->setActive(true);
 
           
+        } else if(device == "LEDF"){//fading led manual command
+          led_type=device;
+          MsgServiceBT.sendMsg("Blink of an eye");
+          Serial.println("Blink of an eye");
+          String pin = String(strtok(NULL, "_"));
+
+          if(pin =='1')
+          {
+            Serial.println("Led 1");
+            led_id = 1;
+          }else if(pin =='2'){
+            Serial.println("Led 2");
+            led_id = 2;
+          } else {//the two fade must coordinate
+            led_id = 3;
+          }
+          fade_value = String(strtok(buf,"_")).toInt();
+          LedTask->setActive(true);
         } else if(device == "IRRI"){
+
           Serial.println("servo");
           String val = String(strtok(NULL, "_"));
           if(val=="ON"){

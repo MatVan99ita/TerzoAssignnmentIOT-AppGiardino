@@ -11,21 +11,23 @@ SoftwareSerial MyBlue(3, 2); // RX | TX
 
 //LEDAUTO_3_2
 Scheduler sched;
-String led_type; //LEDAUTO - IRRIAUTO - LEDB - LEDF - IRRI
+String led_type; //LEDAUTO - IRRI - LEDB - LEDF
 int led_id;
-bool led_max_on = false;
-int servo_speed=0;
+
+int servo_speed;
+int fade_value;
 
 void setup() 
 {
   sched.init(10);
 
   Task* ledTask = new LedTask();
-  ledTask->init(100);
+  ledTask->init(50);
   ledTask->setActive(false);
 
   Task* irrigationTask = new IrrigationTask();
-  irrigationTask->init(100);
+  irrigationTask->init(100
+  );
   irrigationTask->setActive(false);
   
   Task* commTask = new CommTask(irrigationTask, ledTask);

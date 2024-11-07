@@ -9,8 +9,6 @@ class LedTask: public Task {
   Led* led_s2;
   Led* led_f1;
   Led* led_f2;
-
-  int led_id;
 public:
 
   LedTask();

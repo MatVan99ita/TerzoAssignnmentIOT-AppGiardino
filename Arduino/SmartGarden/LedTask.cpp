@@ -17,7 +17,6 @@ LedTask::LedTask(){
 
 void LedTask::init(int period){
     Task::init(period);
-    this->led_id = led_id;
 }
 
 void LedTask::tick(){
@@ -25,12 +24,14 @@ void LedTask::tick(){
       //Automatic light with 2 blink and 2 fade with temperature value
       led_s1->change();
       led_s2->change();
-      led_f1->fade(servo_speed);
-      led_f2->fade(servo_speed);
+      led_f1->fade(fade_value);
+      led_f2->fade(fade_value);
       
-    } else if(led_type == "LEDMANUAL"){
+    } else {
+      Serial.println("ALTRIMENTIH!");
       if(led_type == "LEDB")
       {
+        Serial.print("B - "); Serial.println(led_id);
         if(led_id == 1){
           led_s1->change();
         } else if(led_id == 2) {
@@ -40,13 +41,14 @@ void LedTask::tick(){
           led_s2->change();
         }
       } else if(led_type == "LEDF") {
+        Serial.print("F - "); Serial.println(led_id);
         if(led_id==1){
-          led_f1->fade(servo_speed);
+          led_f1->fade(fade_value);
         } else if (led_id==2) {
-          led_f2->fade(servo_speed);        
+          led_f2->fade(fade_value);        
         } else if (led_id==3) {
-          led_f1->fade(servo_speed);
-          led_f2->fade(servo_speed);
+          led_f1->fade(fade_value);
+          led_f2->fade(fade_value);
         }
       }
     }
