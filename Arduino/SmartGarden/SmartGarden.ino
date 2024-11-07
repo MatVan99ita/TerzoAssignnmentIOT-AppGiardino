@@ -26,8 +26,7 @@ void setup()
   ledTask->setActive(false);
 
   Task* irrigationTask = new IrrigationTask();
-  irrigationTask->init(100
-  );
+  irrigationTask->init(1000);
   irrigationTask->setActive(false);
   
   Task* commTask = new CommTask(irrigationTask, ledTask);

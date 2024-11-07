@@ -103,10 +103,21 @@ void CommTask::init(int period){
           }
           fade_value = String(strtok(NULL, "_")).toInt();
           LedTask->setActive(true);
-        } else if(device == "IRRI"){
 
+        } else if(device == "IRRI"){// IRRI_<servo_speed>
           Serial.println("servo");
+          servo_speed = String(strtok(NULL, "_")).toInt();
+
           String val = String(strtok(NULL, "_"));
+
+          if(servo_speed > 0){
+            IrrigationTask->setActive(true);
+          } else if(servo_speed <= 0){
+            IrrigationTask->setActive(false);
+          } else {
+            System.println("COMMAND ERROR")
+          }
+
           if(val=="ON"){
             Serial.println("on");
             IrrigationTask->setActive(true);

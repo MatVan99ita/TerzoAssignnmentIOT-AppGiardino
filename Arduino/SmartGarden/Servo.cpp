@@ -20,13 +20,16 @@ void Servo::setVelocity(int val) {
 
 void Servo::startRotation() {
     int i;
-    int dilei = 60 - (4 * 10);
-    for(i = 0; i < 180; i+= 1) {
-        motor.write(750+(i*10));
-        delay(dilei);
+    if(servo_speed > 0){//check for the delay equation
+      int dilei = 60 - (servo_speed * 10);
+      for(i = 0; i < 180; i+= 1) {
+          motor.write(750+(i*10));
+          delay(dilei);
+      }
+      for(int i = 180; i >= 0; i-= 1) {
+          motor.write(750+(i*10));
+          delay(dilei);
+      }
     }
-    for(int i = 180; i >= 0; i-= 1) {
-        motor.write(750+(i*10));
-        delay(dilei);
-    }
+    
 }
