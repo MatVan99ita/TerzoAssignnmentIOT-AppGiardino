@@ -30,7 +30,7 @@ void Servo::startRotation() {
       }
 
       for(pos = 180; pos >= 0; pos--) {
-        motor.write(i);
+        motor.write(pos);
         delay(dilei);
       }
     }
