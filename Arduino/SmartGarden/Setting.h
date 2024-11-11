@@ -14,5 +14,5 @@
 extern String led_type; // Used on manual mode
 extern int led_id; // = {1, 2, 3}
 extern bool led_max_on; // Used for led, switched on or max faded
-extern int fade_value; // Led fade value based on light detected
-extern int servo_speed; // Servo speed based on temperature
+extern int fade_value; // = {0, ..., 4} Led fade value based on light detected
+extern int servo_speed; // = {0, ..., 4} Servo speed based on temperature

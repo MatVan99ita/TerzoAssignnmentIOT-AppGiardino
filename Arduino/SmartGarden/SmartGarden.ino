@@ -26,7 +26,7 @@ void setup()
   ledTask->setActive(false);
 
   Task* irrigationTask = new IrrigationTask();
-  irrigationTask->init(1000);
+  irrigationTask->init(100);//Può rimanere 100 percjhè è ogni 100ms che viene controllato cioè ogni 2 tick di commtask poichè è meno frequente come task da eseguire
   irrigationTask->setActive(false);
   
   Task* commTask = new CommTask(irrigationTask, ledTask);

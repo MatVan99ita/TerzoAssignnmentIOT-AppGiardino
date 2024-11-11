@@ -115,7 +115,7 @@ void CommTask::init(int period){
           } else if(servo_speed <= 0){
             IrrigationTask->setActive(false);
           } else {
-            System.println("COMMAND ERROR")
+            Serial.println("COMMAND ERROR");
           }
 
           if(val=="ON"){

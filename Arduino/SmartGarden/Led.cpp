@@ -22,7 +22,7 @@ bool Led::change(){
 void Led::fade(int val){
   Serial.println(pin);
   //Take the mapped value and re-approximate to a fading value
-  int i = map(val, 0, 5, 0, 255);
+  int i = map(val, 0, 4, 0, 255);
   Serial.print("Val: "); Serial.print(val); Serial.print(", i: "); Serial.println(i);
   analogWrite(pin, i);
 }

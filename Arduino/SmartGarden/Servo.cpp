@@ -14,21 +14,24 @@ void Servo::off() {
     motor.detach();
 }
 
-void Servo::setVelocity(int val) {
-    this->velocity = velocity;
+void Servo::setSpeed(int val) {
+    this->speed = val;
 }
 
 void Servo::startRotation() {
-    int i;
-    if(servo_speed > 0){//check for the delay equation
-      int dilei = 60 - (servo_speed * 10);
-      for(i = 0; i < 180; i+= 1) {
-          motor.write(750+(i*10));
-          delay(dilei);
+    int pos = 0;
+    if(this->speed > 0){//check for the delay equation
+
+      int dilei = map(this->speed, 0, 4, MIN_VAL, MAX_VAL);
+      
+      for(pos = 0; pos <= 180; pos++) {
+        motor.write(pos);
+        delay(dilei);
       }
-      for(int i = 180; i >= 0; i-= 1) {
-          motor.write(750+(i*10));
-          delay(dilei);
+
+      for(pos = 180; pos >= 0; pos--) {
+        motor.write(i);
+        delay(dilei);
       }
     }
     

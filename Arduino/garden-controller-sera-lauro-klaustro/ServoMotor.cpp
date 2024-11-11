@@ -52,5 +52,5 @@ void ServoMotor::startIrrigation(){
 
 void ServoMotor::off(){
   //scolleghi il servo
-  motor.detach();   
+  motor.detach();
 }

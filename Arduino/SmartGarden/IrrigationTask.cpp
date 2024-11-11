@@ -22,8 +22,10 @@ quello è la temporizzazzione che ogni secondo lo va a ricontrollare se è attiv
 Il blocco di X minuti lo si mette a monte per evitare casini
 */
 void IrrigationTask::tick(){
-  this -> servo->on();
-  this -> servo->setVelocity(servo_speed);
-  this -> servo->startRotation();
-  this -> servo->off();
+  //Irrigation task start
+  this -> servo->on();// attach the pin
+  this -> servo->setSpeed(servo_speed);// set the speed
+  this -> servo->startRotation(); // body of the task
+  this -> servo->off(); // detach the servo
+  //Irrigation task end
 }
