@@ -151,7 +151,7 @@ def checkLight(val):
     if(val < 2):
         return {"irrigazione": "on", "illuminazione": "on"}
     if(val < 5):
-        return {"irrigazione": "off", "illuminazione": "off"}
+        return {"irrigazione": "off", "illuminazione": "on"}
     return {"ok": "ok"}
 
 def checkTemp(val):
