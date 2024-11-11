@@ -2,7 +2,7 @@ import serial
 import time
 import requests
 import json
-import asyncio
+import threading
 from time import sleep
 import numpy as np
 
@@ -52,14 +52,14 @@ def readArduinoStatus():
     except:
         print("Error occured: cannot read/send properly")
 
-async def start_irrigation_timer():
+def start_irrigation_timer():
     global timer_attivo
 
     timer_attivo = True
     request = server + "/arduino/irrigation/PAUSA"
     r = requests.post(request)
 
-    await asyncio.sleep(IRRIGATION_WAIT_TIME * 60)
+    time.sleep(IRRIGATION_WAIT_TIME * 60)
 
     timer_attivo = False
     request = server + "/arduino/irrigation/ATTIVABILE"
@@ -72,7 +72,7 @@ def sendCommand(x):
         sendCommandToArduino(x)
         request = server + "/arduino/irrigation/MOVIMENTO"
         r = requests.post(request)
-        start_irrigation_timer()
+        threading.Thread(target=start_irrigation_timer).start()
     else:# LED or ERROR
         sendCommandToArduino(x)
 
