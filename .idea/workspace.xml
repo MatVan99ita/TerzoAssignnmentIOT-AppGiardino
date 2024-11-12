@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="6f0021fe-6cf4-4712-baf8-f6df7eea7cf4" name="Changes" comment="" />
+    <list default="true" id="6f0021fe-6cf4-4712-baf8-f6df7eea7cf4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arduino/SmartGarden/Servo.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Arduino/SmartGarden/Servo.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arduino/SmartGarden/Servo.h" beforeDir="false" afterPath="$PROJECT_DIR$/Arduino/SmartGarden/Servo.h" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -23,6 +30,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/vanni/Desktop/SCUOLA/UNIVERSITA/IOT/TerzoAssignnmentIOT-AppGiardino"
   }
 }]]></component>

@@ -1,6 +1,6 @@
 package unibo.btclient
 
-import android.annotation.SuppressLint
+import android.R.attr.value
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -13,16 +13,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AppCompatActivity
-import android.util.AttributeSet
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import unibo.btclient.databinding.ActivityMainBinding
 import java.io.IOException
 import java.io.InputStream
-import java.net.URL
 import java.util.*
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -210,7 +205,22 @@ class MainActivity : AppCompatActivity() {
      */
     private fun switchLed(led_num: Int){
         //INVIO MESSAGGIO BLUETOOTH
-        arduinoCommunication("LEDBM_$led_num")
+        if (led_num == 1 && !isLed1on) {
+            arduinoCommunication("LEDB_1_1")
+            isLed1on = true
+        } else if(led_num == 1 && isLed1on) {
+            arduinoCommunication("LEDB_1_0")
+            isLed1on = false
+        }
+
+        if (led_num == 2 && !isLed2on) {
+            arduinoCommunication("LEDB_2_1")
+            isLed2on = true
+        } else if(led_num == 2 && isLed2on) {
+            arduinoCommunication("LEDB_2_0")
+            isLed2on = false
+        }
+
     }
 
     /**
@@ -218,9 +228,10 @@ class MainActivity : AppCompatActivity() {
      * @param fade_amount 0 .. 255 <-> 0 .. 5
      */
     private fun fadeLed(led_num: Int){
-        var message: String = "LEDFM_"
+        var message: String = "LEDF_"
         message += if (led_num == 3) "1_$fade_amount1"
-                   else if (led_num == 4) "2_$fade_amount2" else "BAnANA"
+                   else if (led_num == 4) "2_$fade_amount2"
+                   else "3_${fade_amount1 + fade_amount2 / 2}"
         //INVIO DEL FADE
         arduinoCommunication(message)
     }
@@ -236,7 +247,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun irrigationStart(){
         val vel = if(irrigation_velocity < 0) 0 else if(irrigation_velocity > 30) 30 else irrigation_velocity
-        val message: String = "IRRIM_$vel"
+        val message: String = "IRRI_$vel"
         //INVIO DELL'IRRIGAZIONE
         arduinoCommunication(message)
     }
@@ -275,6 +286,9 @@ class MainActivity : AppCompatActivity() {
         ConnectToDevice(this).execute()
         binding.switch1.isEnabled = true
         if (!btAdapter.isEnabled) {
+            //val myIntent: Intent = Intent(this@MainActivity, Banana::class.java)
+            //myIntent.putExtra("key", value) //Optional parameters
+            //this@MainActivity.startActivity(myIntent)
             val turnOn = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(turnOn, BLUETOOTH_ON)
         }
