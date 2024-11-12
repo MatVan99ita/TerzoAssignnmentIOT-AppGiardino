@@ -33,12 +33,7 @@ def readArduinoStatus():
     var = arduino.readline()
     str = np.compat.unicode(var, errors='replace')
     irrigazione = ""
-    mode = "" """TODO: cambiare il messaggio invito secondo il nuovo pattern"""
-    """ PATTERN MESSAGGIO
-        <DEVICE>_<ID>_<VALUE>
-        
-        TODO: fare meglio sto backend seriale
-    """
+    mode = ""
     print("arduino statuuuus: " + str)
     try:
         irrigazione = str.split(',')[0].split(':')[1]

@@ -6,7 +6,6 @@
 
 class IrrigationTask: public Task {
   Servo* servo;
-  enum { SPEED, IRRIGATION} servo_state;
 
 public:
   IrrigationTask();

@@ -8,7 +8,7 @@ Servo motor;  // create a servo object
 
 void setup() {
   // put your setup code here, to run once:
-motor.attach(7);
+motor.attach(6);
 }
 
 void loop() {

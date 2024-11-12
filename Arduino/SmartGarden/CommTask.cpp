@@ -110,22 +110,12 @@ void CommTask::init(int period){
 
           String val = String(strtok(NULL, "_"));
 
-          if(servo_speed > 0){
+          if(servo_speed >= 0){
             IrrigationTask->setActive(true);
           } else if(servo_speed <= 0){
             IrrigationTask->setActive(false);
           } else {
             Serial.println("COMMAND ERROR");
-          }
-
-          if(val=="ON"){
-            Serial.println("on");
-            IrrigationTask->setActive(true);
-          }else if(val=="OFF"){
-            IrrigationTask->setActive(false);
-          }else{
-            servo_speed=val.toInt();
-            IrrigationTask->init(1000-(val.toInt()*50));
           }
         }
 

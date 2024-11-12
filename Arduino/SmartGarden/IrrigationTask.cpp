@@ -2,7 +2,7 @@
 #include "Arduino.h"
 #include "Setting.h"
 
-#define SERVO_PIN 7
+#define SERVO_PIN 6
 
 IrrigationTask::IrrigationTask(){
     this -> servo = new Servo(SERVO_PIN);
@@ -27,5 +27,5 @@ void IrrigationTask::tick(){
   this -> servo->setSpeed(servo_speed);// set the speed
   this -> servo->startRotation(); // body of the task
   this -> servo->off(); // detach the servo
-  //Irrigation task end
+  this -> setActive(false);  //Irrigation task end
 }
