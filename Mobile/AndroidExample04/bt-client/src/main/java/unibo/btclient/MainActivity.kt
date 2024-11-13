@@ -1,11 +1,9 @@
 package unibo.btclient
 
-import android.R.attr.value
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
@@ -53,6 +51,9 @@ class MainActivity : AppCompatActivity() {
     private var isLed2on: Boolean = false
     private var irrigation_velocity: Int = 0
 
+    private val MINUTE = 60000
+    private val WAIT_TIME = 2
+
     private lateinit var layout: ConstraintLayout
 
     @OptIn(ExperimentalTime::class)
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
+        addClickEvent()
         /*
             * btnIrrigazione.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,9 +103,9 @@ class MainActivity : AppCompatActivity() {
             *
             * */
 
-        binding.led3View.text = "$fade_amount1"
-        binding.led4View.text = "$fade_amount2"
-        binding.irrigationView.text = "$irrigation_velocity"
+        binding.fadeval1.text = "$fade_amount1"
+        binding.fadeval2.text = "$fade_amount2"
+        //binding.irrigationView.text = "$irrigation_velocity"
 
         //btAdapter = BluetoothAdapter.getDefaultAdapter()
         //lv = findViewById<View>(R.id.listview) as ListView
@@ -113,10 +115,10 @@ class MainActivity : AppCompatActivity() {
         layout = findViewById(R.id.layout_brutto);
         for (el in 0..layout.childCount ){
             val child = layout.getChildAt(el)
-            child?.isEnabled = false
+            child?.isEnabled = true
         }
         this.scan()
-        binding.btConnectionReq.isEnabled = true
+        binding.btConnectionReq.isEnabled = false
 
         this.addClickEvent()
     }
@@ -124,11 +126,8 @@ class MainActivity : AppCompatActivity() {
 
     /**
     FORMAT:
-    [DEVICE]_[PIN]_[VALUE]
-    DEVICE:
-    LEDB,
-    LEDF,
-    IRRI
+    [{LEDB, LEDF}]_[PIN]_[FADE_VALUE]
+    IRRI_[SPEED]
     PIN:
     Only 1, 2 (or 3 for fading both) for ledf
     VALUE:
@@ -155,35 +154,39 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.led3plus.setOnClickListener {
-            setLedIntensity(3, "+")
-        }
-        binding.led3minus.setOnClickListener {
-            setLedIntensity(3, "-")
-        }
+        binding.ledf1Slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
+                fade_amount1 = progress
+                binding.fadeval1.text = "$progress"
+                arduinoCommunication("LEDF_1_$progress")
+            }
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+            override fun onStopTrackingTouch(p0: SeekBar?) {}
+        })
 
-        binding.led4plus.setOnClickListener {
-            setLedIntensity(4, "+")
-        }
-        binding.led4minus.setOnClickListener {
-            setLedIntensity(4, "-")
-        }
+        binding.ledf2Slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
+                fade_amount2 = progress
+                binding.fadeval2.text = "$progress"
+                arduinoCommunication("LEDf_2_$progress")
+            }
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+            override fun onStopTrackingTouch(p0: SeekBar?) {}
+        })
 
-        binding.irrigationPlus.setOnClickListener {
-            setIrrigationVel("+")
-        }
-        binding.irrigationMinus.setOnClickListener {
-            setIrrigationVel("-")
-        }
+        binding.irrigationView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
+                irrigation_velocity = progress
+                binding.irriSpeedTxt.text = "$progress"
+            }
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+            override fun onStopTrackingTouch(p0: SeekBar?) {}
 
-        binding.irrigationOnoff.setOnClickListener {
-            binding.irrigationOnoff.isEnabled = false
+        })
+
+
+        binding.startIrriBtn.setOnClickListener {
             irrigationStart()
-            Handler().postDelayed({
-                // This method will be executed once the timer is over
-                binding.irrigationOnoff.isEnabled = true
-                Log.d(ContentValues.TAG, "resend1")
-            }, TEMPO) // set time as per your requirement
         }
 
         binding.alarmBtn.setOnClickListener {
@@ -192,13 +195,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun setIrrigationVel(s: String) {
-        when(s){
-            "+" -> if(irrigation_velocity < 30) irrigation_velocity++
-            "-" -> if(irrigation_velocity > 0)  irrigation_velocity--
-        }
-        updateTextView()
-    }
 
     /**
      * TODO: rivedere i messaggi manuali
@@ -224,21 +220,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * invio della quantità di fade al led specificato
-     * @param fade_amount 0 .. 255 <-> 0 .. 5
-     */
-    private fun fadeLed(led_num: Int){
-        var message: String = "LEDF_"
-        message += if (led_num == 3) "1_$fade_amount1"
-                   else if (led_num == 4) "2_$fade_amount2"
-                   else "3_${fade_amount1 + fade_amount2 / 2}"
-        //INVIO DEL FADE
-        arduinoCommunication(message)
-    }
-
-
-
-    /**
      * invio dell'attivazione dell'irrigazione
      *
      * (nel controller del bottone va disattivato per n minuti se si ha ancora il controllo)
@@ -246,19 +227,26 @@ class MainActivity : AppCompatActivity() {
      * penso che faccio una roba del tipo da 0 .. 30 anche qui disattivando i bottoni quando vanno avanti e indietro
      */
     private fun irrigationStart(){
-        val vel = if(irrigation_velocity < 0) 0 else if(irrigation_velocity > 30) 30 else irrigation_velocity
-        val message: String = "IRRI_$vel"
+
+        val message: String = "IRRI_$irrigation_velocity"
         //INVIO DELL'IRRIGAZIONE
-        arduinoCommunication(message)
+        //arduinoCommunication("IRRI_$irrigation_velocity")
+        //TODO: far partire il blocco temporaneo del bottone (e anche dello slider)
+        lock_irrigation()
     }
 
-    private fun setLedIntensity(led: Int, operation: String){
-        when(operation){
-            "+" -> if(led == 3 && fade_amount1 < 30) fade_amount1++ else if(led == 4 && fade_amount2 < 30) fade_amount2++
-            "-" -> if(led == 3 && fade_amount1 > 0)  fade_amount1-- else if(led == 4 && fade_amount2 > 0)  fade_amount2--
-        }
-        updateTextView()
-        fadeLed(led)
+    private fun lock_irrigation() {
+
+        binding.irrigationView.isEnabled = false
+        binding.startIrriBtn.isEnabled = false
+
+        Handler().postDelayed(
+            {
+                binding.irrigationView.isEnabled = true
+                binding.startIrriBtn.isEnabled = true
+            },
+            5000 //WAIT_TIME * MINUTE
+        )
     }
 
     /**
@@ -330,13 +318,6 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == BLUETOOTH_ON && resultCode == RESULT_OK) {
             load()
         }
-    }
-
-    private fun updateTextView() {
-        binding.led3View.text = this.fade_amount1.toString()
-        binding.led4View.text = this.fade_amount2.toString()
-        binding.irrigationView.text = this.irrigation_velocity.toString()
-        binding.textResponse.text = response
     }
 
     private fun scan() {
