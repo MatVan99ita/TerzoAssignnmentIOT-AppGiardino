@@ -193,6 +193,7 @@ class MainActivity : AppCompatActivity() {
                 isLed1on = true
             } else if(isLed1on){
                 arduinoCommunication("LEDB_1_0")
+                isLed1on = false
             }
 
             binding.switch1.isEnabled = false
@@ -208,6 +209,7 @@ class MainActivity : AppCompatActivity() {
                 isLed2on = true
             } else if(isLed2on){
                 arduinoCommunication("LEDB_2_0")
+                isLed2on = false
             }
 
             binding.switch2.isEnabled = false
