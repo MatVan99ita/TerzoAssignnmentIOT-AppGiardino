@@ -19,7 +19,7 @@ void serialEvent() {
       Serial.print("FINITOH: "); Serial.println(content);
       MsgService.msgAvailable = true;
       MsgService.currentMsg = new Msg(content);
-      //content = "";
+      content = "";
       break;
     } else {
       content += ch;
@@ -61,9 +61,6 @@ Msg* SerialService::receiveMsg(){
   }
 }
 
-
-
-
 void SerialService::sendMsg(const String& msg){
     Serial.println(msg);
 }
@@ -80,17 +77,15 @@ void BluetoothService::init(){
 
 bool BluetoothService::isMsgAvailable(){
     while (channel->available()) {
-    Serial.println("avalaible msg");
-    char ch = (char) channel->read();
-    if (ch == '\n'){
-      Serial.print(content);
-      currentMsg = new Msg(content); 
-      content = "";
-      msgAvailable=true;    
-      return msgAvailable;  
-    } else {
-      Serial.print(ch);
-      content += ch;      
+    //Serial.println("AVALEIABOL MESSEGJ");
+    String s = channel->readString();
+    Serial.print("BANANE AZZURRE: "); Serial.println(s);
+    //char ch = (char) channel->read();
+    if(s.length() >= 6){
+      currentMsg = new Msg(s);
+      s = "";
+      msgAvailable=true;
+      return msgAvailable;
     }
   }
   return false;
@@ -112,6 +107,3 @@ void BluetoothService::sendMsg(const String& msg){
     Serial.println(msg);
     channel->println(msg);
 }
-
-
-

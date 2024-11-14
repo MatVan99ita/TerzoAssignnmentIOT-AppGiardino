@@ -118,8 +118,7 @@ class MainActivity : AppCompatActivity() {
         binding.ledf1Slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
                 fade_amount1 = progress
-                binding.fadeval1.text = "$progress"
-                arduinoCommunication("LEDF_1_$progress")
+                binding.fadeval1.text = "Send Fade_1: $progress"
             }
             override fun onStartTrackingTouch(p0: SeekBar?) {}
             override fun onStopTrackingTouch(p0: SeekBar?) {}
@@ -128,8 +127,7 @@ class MainActivity : AppCompatActivity() {
         binding.ledf2Slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
                 fade_amount2 = progress
-                binding.fadeval2.text = "$progress"
-                arduinoCommunication("LEDF_2_$progress")
+                binding.fadeval2.text = "Send Fade_2: $progress"
             }
             override fun onStartTrackingTouch(p0: SeekBar?) {}
             override fun onStopTrackingTouch(p0: SeekBar?) {}
@@ -154,30 +152,69 @@ class MainActivity : AppCompatActivity() {
             disableAlarm()
         }
 
+        binding.fadeval1.setOnClickListener {
+            arduinoCommunication("LEDF_1_$fade_amount1")
+
+            binding.fadeval1.isEnabled = false
+            binding.ledf1Slider.isEnabled = false
+
+            Handler().postDelayed(
+                {
+                    binding.fadeval1.isEnabled = true
+                    binding.ledf1Slider.isEnabled = true
+                }, 2000
+            )
+        }
+
+        binding.fadeval2.setOnClickListener {
+            arduinoCommunication("LEDF_2_$fade_amount2")
+
+            binding.fadeval2.isEnabled = false
+            binding.ledf2Slider.isEnabled = false
+
+            Handler().postDelayed(
+                {
+                    binding.fadeval2.isEnabled = true
+                    binding.ledf2Slider.isEnabled = true
+                }, 2000
+            )
+        }
+
     }
 
 
-    /**
-     * TODO: rivedere i messaggi manuali
-     */
     private fun switchLed(led_num: Int){
-        //INVIO MESSAGGIO BLUETOOTH
-        if (led_num == 1 && !isLed1on) {
-            arduinoCommunication("LEDB_1_1")
-            isLed1on = true
-        } else if(led_num == 1 && isLed1on) {
-            arduinoCommunication("LEDB_1_0")
-            isLed1on = false
+
+
+        if(led_num == 1) {
+
+            if(!isLed1on) {
+                arduinoCommunication("LEDB_1_1")
+                isLed1on = true
+            } else if(isLed1on){
+                arduinoCommunication("LEDB_1_0")
+            }
+
+            binding.switch1.isEnabled = false
+            Handler().postDelayed(
+                { binding.switch1.isEnabled = true }, 2000
+            )
+
         }
 
-        if (led_num == 2 && !isLed2on) {
-            arduinoCommunication("LEDB_2_1")
-            isLed2on = true
-        } else if(led_num == 2 && isLed2on) {
-            arduinoCommunication("LEDB_2_0")
-            isLed2on = false
-        }
+        if(led_num == 2) {
+            if(!isLed2on) {
+                arduinoCommunication("LEDB_2_1")
+                isLed2on = true
+            } else if(isLed2on){
+                arduinoCommunication("LEDB_2_0")
+            }
 
+            binding.switch2.isEnabled = false
+            Handler().postDelayed(
+                { binding.switch2.isEnabled = true }, 2000
+            )
+        }
     }
 
     /**
@@ -224,7 +261,7 @@ class MainActivity : AppCompatActivity() {
             val child = layout.getChildAt(el)
             child?.isEnabled = true
         }
-        binding.btConnectionReq.isEnabled = false
+        //binding.btConnectionReq.isEnabled = false
         binding.alarmBtn.isEnabled = false
 
     }

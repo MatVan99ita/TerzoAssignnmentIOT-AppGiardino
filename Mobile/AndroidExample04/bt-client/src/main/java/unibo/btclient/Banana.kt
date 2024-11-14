@@ -22,6 +22,7 @@ import android.widget.Toast
 import unibo.btclient.MainActivity
 import unibo.btclient.databinding.BananaBinding
 
+/**Classe creata per capire il mac-address del device(non usata)*/
 class Banana : AppCompatActivity() {
 
     private var bluetoothAdapter: BluetoothAdapter? = null
