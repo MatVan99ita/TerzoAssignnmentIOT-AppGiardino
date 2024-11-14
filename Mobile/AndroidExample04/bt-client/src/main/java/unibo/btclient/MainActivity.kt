@@ -22,24 +22,19 @@ import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
 
-/**
- * TODO:
- *      • finire le funzioni per i vari btn
- *      • creare un modo visivo per vedere i led accesi anche dall'app
- *      • sistemare i messaggi da inviare all'arduino
- *
- */
+
 
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val BLUETOOTH_ON = 1000
-        private const val hc05_address: String = "00:14:03:05:F2:D9"
+        private const val hc05_address: String = "98:D3:61:F6:6F:D3"
         private val mUUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
         private var btAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         private var dispositivi: Set<BluetoothDevice> = HashSet()
         private val hc05: BluetoothDevice = btAdapter.getRemoteDevice(hc05_address);
         private lateinit var adapter: ArrayAdapter<Any?>
         private var socket: BluetoothSocket? = null
+        private var pairing_code = 1234
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -69,40 +64,6 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        addClickEvent()
-        /*
-            * btnIrrigazione.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn.setEnabled(false);
-
-             new Handler().postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-                    // This method will be executed once the timer is over
-                        btn.setEnabled(true);
-                        Log.d(TAG,"resend1");
-
-                }
-            },2000);// set time as per your requirement
-            }
-            });
-            *
-            *
-            *
-            * btn.setOnClickListener(View.OnClickListener { v: View? ->
-            btn.setEnabled(false)
-            Handler().postDelayed({
-
-                // This method will be executed once the timer is over
-                btn.setEnabled(true)
-                Log.d(ContentValues.TAG, "resend1")
-            }, 2000) // set time as per your requirement
-        })
-            *
-            * */
-
         binding.fadeval1.text = "$fade_amount1"
         binding.fadeval2.text = "$fade_amount2"
         //binding.irrigationView.text = "$irrigation_velocity"
@@ -115,10 +76,10 @@ class MainActivity : AppCompatActivity() {
         layout = findViewById(R.id.layout_brutto);
         for (el in 0..layout.childCount ){
             val child = layout.getChildAt(el)
-            child?.isEnabled = true
+            child?.isEnabled = false
         }
         this.scan()
-        binding.btConnectionReq.isEnabled = false
+        binding.btConnectionReq.isEnabled = true
 
         this.addClickEvent()
     }
@@ -168,7 +129,7 @@ class MainActivity : AppCompatActivity() {
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
                 fade_amount2 = progress
                 binding.fadeval2.text = "$progress"
-                arduinoCommunication("LEDf_2_$progress")
+                arduinoCommunication("LEDF_2_$progress")
             }
             override fun onStartTrackingTouch(p0: SeekBar?) {}
             override fun onStopTrackingTouch(p0: SeekBar?) {}
@@ -230,8 +191,7 @@ class MainActivity : AppCompatActivity() {
 
         val message: String = "IRRI_$irrigation_velocity"
         //INVIO DELL'IRRIGAZIONE
-        //arduinoCommunication("IRRI_$irrigation_velocity")
-        //TODO: far partire il blocco temporaneo del bottone (e anche dello slider)
+        arduinoCommunication("IRRI_$irrigation_velocity")
         lock_irrigation()
     }
 
@@ -271,6 +231,10 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun pairDevices() {
+
+        //val myIntent: Intent = Intent(this@MainActivity, Banana::class.java)
+        //this@MainActivity.startActivity(myIntent)
+
         ConnectToDevice(this).execute()
         binding.switch1.isEnabled = true
         if (!btAdapter.isEnabled) {
@@ -290,6 +254,15 @@ class MainActivity : AppCompatActivity() {
 
             Log.i("coomutazzio", "NOH")
             e.printStackTrace()
+            // Chiudi il socket e prova a riconnettere
+            try {
+                socket?.close()
+            } catch (closeException: IOException) {
+                Log.i("coomutazzio", "Errore nella chiusura del socket")
+                closeException.printStackTrace()
+            }
+            socket = null  // Imposta il socket a null in modo da poterlo riconnettere in seguito
+
         }
     }
 
@@ -354,6 +327,8 @@ class MainActivity : AppCompatActivity() {
                 if (socket == null || !socket?.isConnected!!) {
                     btAdapter = BluetoothAdapter.getDefaultAdapter()
                     val device: BluetoothDevice = btAdapter.getRemoteDevice(hc05_address)
+                    device.setPin("1234".toByteArray())
+                    device.createBond()
                     socket = device.createInsecureRfcommSocketToServiceRecord(mUUID)
                     Log.i("CONNESSO", socket.toString())
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery()

@@ -1,6 +1,6 @@
 
 #include <SoftwareSerial.h>
-SoftwareSerial bt(2,3);
+SoftwareSerial bt(3,2);
 
 byte data;
 char Incoming_value = 0;

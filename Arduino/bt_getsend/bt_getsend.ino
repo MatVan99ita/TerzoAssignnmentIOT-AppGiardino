@@ -2,7 +2,7 @@
 /* pin 2 -> txd
    pin 3 -> rxd
 */
-SoftwareSerial mySerial(2,3);
+SoftwareSerial mySerial(3,2);
 
 void setup() {
   Serial.begin(9600); //open the serial port
