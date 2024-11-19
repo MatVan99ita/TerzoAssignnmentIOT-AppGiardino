@@ -8,7 +8,7 @@ import numpy as np
 
 LIGHT_TRESHOLD = 5
 IRRIG_TRESHOLD = 2
-IRRIGATION_WAIT_TIME = 0.1 #Wait time per usare il servo che deve essere di qualche minuto
+IRRIGATION_WAIT_TIME = 1 #Wait time per usare il servo che deve essere di qualche minuto
 
 msg_sabbiato = False
 timer_attivo = False
@@ -53,25 +53,30 @@ def start_irrigation_timer():
     timer_attivo = True
     request = server + "/arduino/irrigation/PAUSA"
     r = requests.post(request)
+    print(timer_attivo)
+
 
     time.sleep(IRRIGATION_WAIT_TIME * 60)
-
     timer_attivo = False
+    print(timer_attivo)
     request = server + "/arduino/irrigation/ATTIVABILE"
     r = requests.post(request)
 
 
 def sendCommand(x):
     print("arduino cummand: " + str(x))
-    if("IRRI" in x and not timer_attivo):
+    if "IRRI" in str(x) and not timer_attivo:
+        print("ENTERO, ", timer_attivo)
         sendCommandToArduino(x)
+        print("ALURA")
         request = server + "/arduino/irrigation/MOVIMENTO"
         r = requests.post(request)
         threading.Thread(target=start_irrigation_timer).start()
-    else:# LED or ERROR
+    elif "IRRI" not in str(x):# LED or ERROR
         sendCommandToArduino(x)
 
-async def sendCommandToArduino(device, x):
+
+def sendCommandToArduino(x):
     print("arduino cummand: " + str(x))
     try:
         arduino.write(bytes(x+'\n', "UTF-8"))
@@ -85,12 +90,13 @@ async def sendCommandToArduino(device, x):
         print(f"Errore generico: {e}")
 
 def readArduinoToTheEnd():
+    global status
     start_time = time.time()  # Registra il tempo di inizio
     while (time.time() - start_time) < 10:  # Continua per 10 secondi
         try:
             # Legge la linea dall'Arduino
             print("sonic sez: " + arduino.readline().decode('utf-8').strip())
-            
+
             # Aspetta 0.5 secondi prima di leggere nuovamente
             time.sleep(0.5)
 
@@ -107,7 +113,10 @@ def readServerStatus():
     request2 = server + "/esp/data/"
     r2 = requests.get(request2)
 
-    return r1.content.decode('utf-8'), r2.content.decode('utf-8')
+    request3 = server + "/arduino/irrigation/"
+    r3 = requests.get(request3)
+
+    return r1.content.decode('utf-8'), r2.content.decode('utf-8'), r3.content.decode('utf-8')
 
 def initializeSerial():
      global arduino
@@ -130,9 +139,9 @@ while True:
 
     initializeSerial()
 
-    irriStatus, espData = readServerStatus()
+    irriStatus, espData, status = readServerStatus()
     
-    print("BANANA " + irriStatus + " " + espData + "\n") 
+    print("BANANA " + irriStatus + " " + espData + " " + status + "\n") 
     jStatus = json.loads(irriStatus)
     jEsp = json.loads(espData) 
  
@@ -149,17 +158,24 @@ while True:
         Se luce < 2(=BUISSIMO) -> Accendi irrigatore con vel equivalente alla temperatura
     """
     print(jStatus)
-    if(jEsp["temperatura"] == 5 and irriStatus == "RELOAD"): # || PAUSE
-        print("ERROR")
-        sendCommand("ERROR")
-    else:
-        if(jEsp["lux"] < LIGHT_TRESHOLD): # Fai giochi di luce
-            msg1 = "LEDAUTO_1_"+str(jEsp["temperatura"])
-            sendCommand(msg1)
 
-            #TODO: capire come bloccare questo comando per un tot (funzione per led e una per irri -> irri ha un thread/timer che parte e quando finisce può essere riutilizzata(metodo godot))
-        elif(jEsp["lux"] < IRRIG_TRESHOLD): # Fai giochi d'acqua
-            msg = "IRRI_"+str(jEsp["temperatura"])
-            sendCommand(msg)
+
+    if(status != "MANUAL"):
+        if(jEsp["temperatura"] == 5 and irriStatus == "PAUSA"): # || PAUSE
+            print("ERROR")
+            sendCommand("ERROR")
+            status = "ERROR"
+        else:
+            if(jEsp["lux"] < LIGHT_TRESHOLD): # Fai giochi di luce
+                msg1 = "LEDAUTO_"+str(jEsp["temperatura"])
+                sendCommand(msg1)
+            elif(jEsp["lux"] >= LIGHT_TRESHOLD):
+                msg2 = "LEDAUTO_0" #Ci stanno tracciando STACCA STACCA
+                sendCommand(msg2)
+            
+            if(jEsp["lux"] < IRRIG_TRESHOLD): # Fai giochi d'acqua
+                msg = "IRRI_"+str(jEsp["temperatura"])
+                sendCommand(msg)
+        
     
     sleep(1)

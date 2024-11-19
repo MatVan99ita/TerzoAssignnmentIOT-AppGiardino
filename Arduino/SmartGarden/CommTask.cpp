@@ -21,15 +21,14 @@ void CommTask::init(int period){
     FORMAT:
     [DEVICE]_[PIN]_[servo_speed]
     DEVICE:
-      LEDAUTO,
-      LEDB,
-      LEDF,
-      IRRI
+      LEDAUTO_<val>,
+      LEDB_<pin>_<val>,
+      LEDF_<pin>_<val>,
+      IRRI_<val>
     PIN:
       Only 1, 2 or 3 (=for fading both)
     servo_speed:
       Light intensity for fading -> <servo_speed>
-      Intensity of irrigation or activation/deactivation -> ON/OFF/<servo_speed>
   */
   void CommTask::tick(){
     switch (state)
@@ -43,7 +42,8 @@ void CommTask::init(int period){
         if (MsgServiceBT.isMsgAvailable()) {
           this->msg = MsgServiceBT.receiveMsg();
           this->state = EVALUATE_MESSAGE;
-          MsgServiceBT.sendMsg("BT Ricevuto");
+          Serial.println("APPORCODIO");
+          MsgServiceBT.sendMsg("{ARDUINO MANUAL MODE}");
         }
         break;
 

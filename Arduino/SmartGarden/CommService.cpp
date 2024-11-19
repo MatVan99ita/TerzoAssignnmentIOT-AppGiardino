@@ -79,7 +79,7 @@ bool BluetoothService::isMsgAvailable(){
     while (channel->available()) {
     //Serial.println("AVALEIABOL MESSEGJ");
     String s = channel->readString();
-    Serial.print("BANANE AZZURRE: "); Serial.println(s);
+    MsgServiceBT.sendMsg("{ARDUINO MANUAL MODE}");
     //char ch = (char) channel->read();
     if(s.length() >= 6){
       currentMsg = new Msg(s);
@@ -93,6 +93,7 @@ bool BluetoothService::isMsgAvailable(){
 
 Msg* BluetoothService::receiveMsg(){
     if (msgAvailable){
+      
     Msg* msg = currentMsg;
     msgAvailable = false;
     currentMsg = NULL;

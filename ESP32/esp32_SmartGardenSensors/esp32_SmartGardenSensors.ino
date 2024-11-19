@@ -22,7 +22,7 @@
 const char *ssid = "ilGabbibbo";
 const char *password = "P4p3r1ss1m4";
 
-const char *serviceURI = "http://192.168.79.158:8000/";
+const char *serviceURI = "http://192.168.11.158:8000/";
 
 int lightInit = 0;
 String status = "";
@@ -100,7 +100,7 @@ void setup() {
 #if DEBUG == 0
   pinMode(LED_PIN, OUTPUT);
   pinMode(PHOTO_PIN, INPUT);
-  digitalWrite(LED_PIN, LOW);
+  digitalWrite(LED_PIN, HIGH);
   dht.begin();
   pinMode(DHT11PIN, INPUT);
 #endif
@@ -117,16 +117,9 @@ void loop() {
 #else
     temp = readTemperature();
     light = readLight();
-    /*Serial.print("BOTH");
-    Serial.print(temp);
-    Serial.print(" ");
-    Serial.print(dht.readTemperature());
-    Serial.print(" & ");
-    Serial.print(light);
-    Serial.print(" ");
-    Serial.println(analogRead(PHOTO_PIN));*/
 
 #endif
+    
     int code = sendData(String(serviceURI), temp, light);
     if (code == 200){
       Serial.println("ok");

@@ -13,6 +13,8 @@ import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.*
+import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import unibo.btclient.databinding.ActivityMainBinding
 import java.io.IOException
 import java.io.InputStream
@@ -21,11 +23,12 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
-
+import okhttp3.Request
 
 
 class MainActivity : AppCompatActivity() {
     companion object {
+        private const val SERVER_SOCKET = "http://192.168.11.158:8000/"
         private const val BLUETOOTH_ON = 1000
         private const val hc05_address: String = "98:D3:61:F6:6F:D3"
         private val mUUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -73,9 +76,9 @@ class MainActivity : AppCompatActivity() {
         adapter = ArrayAdapter<Any?>(this, android.R.layout.simple_list_item_1)
         //lv!!.adapter = adapter
 
-        layout = findViewById(R.id.layout_brutto);
-        for (el in 0..layout.childCount ){
-            val child = layout.getChildAt(el)
+
+        for (el in 0..binding.layoutBrutto.childCount ){
+            val child = binding.layoutBrutto.getChildAt(el)
             child?.isEnabled = false
         }
         this.scan()
@@ -113,6 +116,15 @@ class MainActivity : AppCompatActivity() {
             } catch (e: IOException) {
                 e.printStackTrace();
             }
+        }
+
+        binding.btConnectionSreq.setOnClickListener {
+            ConnectToDevice.disconnect()
+            for (el in 0..binding.layoutBrutto.childCount ){
+                val child = binding.layoutBrutto.getChildAt(el)
+                child?.isEnabled = false
+            }
+            binding.btConnectionReq.isEnabled = true
         }
 
         binding.ledf1Slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
@@ -265,7 +277,34 @@ class MainActivity : AppCompatActivity() {
         }
         //binding.btConnectionReq.isEnabled = false
         binding.alarmBtn.isEnabled = false
+        binding.btConnectionReq.isEnabled = true
 
+    }
+
+    fun sendStaticRequest(endpoint: String): String? {
+        // Crea il client OkHttp
+        val client = OkHttpClient()
+
+        // Costruisci la richiesta
+        val request = Request.Builder()
+            .url("$SERVER_SOCKET$endpoint") // Sostituisci con l'endpoint corretto
+            .post(RequestBody.create(null, ByteArray(0))) // Corpo vuoto per POST
+            .build()
+
+        return try {
+            // Esegui la richiesta
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    throw IOException("Errore della richiesta: ${response.code}")
+                }
+
+                // Restituisci la risposta come stringa
+                response.body?.string()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null // Restituisce null in caso di errore
+        }
     }
 
 
@@ -275,11 +314,12 @@ class MainActivity : AppCompatActivity() {
         //this@MainActivity.startActivity(myIntent)
 
         ConnectToDevice(this).execute()
+
         binding.switch1.isEnabled = true
+
+
         if (!btAdapter.isEnabled) {
-            //val myIntent: Intent = Intent(this@MainActivity, Banana::class.java)
-            //myIntent.putExtra("key", value) //Optional parameters
-            //this@MainActivity.startActivity(myIntent)
+            sendStaticRequest("arduino/status/MANUAL")
             val turnOn = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(turnOn, BLUETOOTH_ON)
         }
@@ -340,6 +380,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun load() {
+
         dispositivi = btAdapter.bondedDevices
         adapter.clear()
         for (bt in dispositivi){
@@ -388,6 +429,13 @@ class MainActivity : AppCompatActivity() {
                 Log.i("data", "BELIN"+ socket.toString())
             }
             m_progress.dismiss()
+        }
+
+
+        companion object {
+            fun disconnect() {
+                socket?.close()
+            }
         }
     }
 }

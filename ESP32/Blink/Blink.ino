@@ -8,19 +8,18 @@
 
   Note that this sketch uses LED_BUILTIN to find the pin with the internal LED
 */
-int pin = 42;//sul d2
+int pin = 26;//sul d2
 int angle = 0;
 int lightValue;
 double tempValue = 0.0;
 void setup() {
   Serial.begin(115200);
   pinMode(pin, OUTPUT);     // Initialize the LED_BUILTIN pin as an output
-  pinMode(LED_BUILTIN, OUTPUT);
+
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  analogWrite(LED_BUILTIN, 5);
   Serial.println("si");
   digitalWrite(pin, HIGH);
   lightValue = analogRead(4); // read analog input pin 0
