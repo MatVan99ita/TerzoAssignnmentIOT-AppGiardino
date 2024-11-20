@@ -11,13 +11,17 @@
 #include <HTTPClient.h>
 #include "DHT.h"
 
-#define DEBUG 0
+
+#define DEBUG 0 //used for beginning testing with the server
+#define TESTING 1
+
 #define ADC_VREF_mV    3300.0 // in millivolt
 #define ADC_RESOLUTION 4096.0
 #define DHT11PIN 32
 #define PHOTO_PIN 34 //A7
 #define LED_PIN 26
 #define DHT_TYPE DHT11
+#define THERMISTORPIN 32
 
 const char *ssid = "ilGabbibbo";
 const char *password = "P4p3r1ss1m4";
@@ -68,10 +72,10 @@ int receiveData(String address){
   if(retCode > 0){
     Serial.print(String(retCode));
     String payload = http.getString();
-    Serial.print("Payload - ");
-    Serial.println(payload);
+    Serial.print("Payload - "); Serial.println(payload);
+
     status = payload;
-    if(status == "\"ERROR\""){
+    if(status == "{\"status\":\"ERROR\"}"){
       digitalWrite(LED_PIN, LOW);
     } else {
       digitalWrite(LED_PIN, HIGH);
@@ -85,40 +89,45 @@ int receiveData(String address){
 }
 
 int readLight(){
-  float l = analogRead(PHOTO_PIN);
-  return map(l, 0, 4095, 7, 0);
+  float light = analogRead(PHOTO_PIN);
+  return map(light, 0, 4095, 7, 0);
 }
 
-int readTemperature(){
+int readTemperature2() {
   float temp = dht.readTemperature();
-  return map(temp, 0, 40, 0, 4);
+  return map(temp, 0, 50, 1, 5);
 }
+
+
+
+int readTemperature() {
+  int temp = analogRead(THERMISTORPIN);
+  Serial.println(temp);
+  return map(temp, 500, 3000, 1, 5);
+}
+
+
+
 
 void setup() {
   Serial.begin(115200);
-  //analogReadResolution(12);
-#if DEBUG == 0
   pinMode(LED_PIN, OUTPUT);
+
   pinMode(PHOTO_PIN, INPUT);
+  pinMode(THERMISTORPIN, INPUT);
+
   digitalWrite(LED_PIN, HIGH);
-  dht.begin();
-  pinMode(DHT11PIN, INPUT);
-#endif
   connectToWifi(ssid, password);
 }
 
 void loop() {
   int temp;
   int light;
+
   if (WiFi.status()== WL_CONNECTED){
-#if DEBUG == 1
-    light = map(random(0, 4095), 0, 4095, 0, 7);
-    temp = map(random(0, 4095), 0, 4095, 0, 4);
-#else
     temp = readTemperature();
     light = readLight();
-
-#endif
+    
     
     int code = sendData(String(serviceURI), temp, light);
     if (code == 200){
@@ -138,4 +147,5 @@ void loop() {
     Serial.println("WiFi Disconnected... Reconnect.");
     connectToWifi(ssid, password);
   }
+
 }

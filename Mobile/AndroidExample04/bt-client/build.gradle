@@ -34,6 +34,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation project(path: ':bt-lib')
     implementation("com.squareup.okhttp3:okhttp:4.10.0") // OkHttp compatibile con Kotlin 1.7.1
+    implementation 'com.google.code.gson:gson:2.11.0'
 
 
 }

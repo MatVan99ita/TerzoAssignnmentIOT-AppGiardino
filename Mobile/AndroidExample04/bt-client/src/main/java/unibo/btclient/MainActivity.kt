@@ -9,12 +9,17 @@ import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
 import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.*
+import com.google.gson.Gson
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import unibo.btclient.databinding.ActivityMainBinding
 import java.io.IOException
 import java.io.InputStream
@@ -22,8 +27,6 @@ import java.util.*
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
-
-import okhttp3.Request
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,9 +39,13 @@ class MainActivity : AppCompatActivity() {
         private var dispositivi: Set<BluetoothDevice> = HashSet()
         private val hc05: BluetoothDevice = btAdapter.getRemoteDevice(hc05_address);
         private lateinit var adapter: ArrayAdapter<Any?>
+        private var arduino_status = "AUTO"
         private var socket: BluetoothSocket? = null
         private var pairing_code = 1234
+
     }
+
+    inner class ArduinoStatus(val status: String = "NULL")
 
     private lateinit var binding: ActivityMainBinding
     private var response: String = ""
@@ -62,6 +69,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val policy = ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
@@ -111,8 +120,26 @@ class MainActivity : AppCompatActivity() {
 
         binding.btConnectionReq.setOnClickListener {
             try {
+                val statuuus = Gson()
+                    .fromJson (
+                        getArduinoStatus("arduino/status/").toString(),
+                        ArduinoStatus::class.java
+                    )
+
+                Log.e("PORCADDIO", "$statuuus")
+
+                Log.e("PORCADDIO", statuuus.status)
+
                 pairDevices();
-                enable_disable_Buttons()
+                if(statuuus.status != "ERROR") {
+                    enable_disable_Buttons()
+                    sendStaticRequest("arduino/status/MANUAL")
+                }
+                else {
+                    binding.alarmBtn.isEnabled = true
+                }
+
+
             } catch (e: IOException) {
                 e.printStackTrace();
             }
@@ -125,6 +152,7 @@ class MainActivity : AppCompatActivity() {
                 child?.isEnabled = false
             }
             binding.btConnectionReq.isEnabled = true
+            sendStaticRequest("arduino/status/AUTO")
         }
 
         binding.ledf1Slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
@@ -264,15 +292,16 @@ class MainActivity : AppCompatActivity() {
      * Funzione per l'allarme
      */
     private fun disableAlarm(){
-        arduinoCommunication("disable_alarm{1}")
+        sendStaticRequest("arduino/status/MANUAL")
+        enable_disable_Buttons()
     }
 
     /**
      * Funzione per controllare la disponibilità dei tasti se il sistema è in allarme, non si è ancora connesso o se è connesso
      */
     private fun enable_disable_Buttons(){
-        for (el in 0..layout.childCount ){
-            val child = layout.getChildAt(el)
+        for (el in 0..binding.layoutBrutto.childCount ){
+            val child = binding.layoutBrutto.getChildAt(el)
             child?.isEnabled = true
         }
         //binding.btConnectionReq.isEnabled = false
@@ -281,29 +310,39 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+
+
+    @Throws(IOException::class)
+    fun getArduinoStatus(endpoint: String): String? {
+
+        val client: OkHttpClient = OkHttpClient()
+
+        val url = "$SERVER_SOCKET$endpoint"
+
+        val request = Request.Builder()
+            .url(url).get().build()
+
+        client.newCall(request).execute().use { response ->
+            return response.body?.string()
+        }
+
+    }
+
+
+
     fun sendStaticRequest(endpoint: String): String? {
         // Crea il client OkHttp
         val client = OkHttpClient()
 
         // Costruisci la richiesta
         val request = Request.Builder()
-            .url("$SERVER_SOCKET$endpoint") // Sostituisci con l'endpoint corretto
-            .post(RequestBody.create(null, ByteArray(0))) // Corpo vuoto per POST
+            .url("$SERVER_SOCKET$endpoint")
+            .post("".toRequestBody(null)) // Corpo vuoto per POST
             .build()
 
-        return try {
-            // Esegui la richiesta
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    throw IOException("Errore della richiesta: ${response.code}")
-                }
-
-                // Restituisci la risposta come stringa
-                response.body?.string()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null // Restituisce null in caso di errore
+        client.newCall(request).execute().use { response ->
+            return response.body?.string()
         }
     }
 
@@ -319,7 +358,10 @@ class MainActivity : AppCompatActivity() {
 
 
         if (!btAdapter.isEnabled) {
-            sendStaticRequest("arduino/status/MANUAL")
+            if(arduino_status != "ERROR") {
+                Log.e("MADIOBELVA", arduino_status)
+                sendStaticRequest("arduino/status/MANUAL")
+            }
             val turnOn = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(turnOn, BLUETOOTH_ON)
         }
@@ -399,6 +441,7 @@ class MainActivity : AppCompatActivity() {
         private lateinit var m_progress: ProgressDialog
         override fun onPreExecute() {
             super.onPreExecute()
+
             m_progress = ProgressDialog.show(context, "Connecting...", "please wait")
         }
 

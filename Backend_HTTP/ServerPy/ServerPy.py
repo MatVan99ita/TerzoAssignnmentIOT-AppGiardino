@@ -108,15 +108,15 @@ def readArduinoToTheEnd():
 
 def readServerStatus():
     request1 = server + "/arduino/status/"
-    r1 = requests.get(request1)
+    r1 = requests.get(request1).json()
 
     request2 = server + "/esp/data/"
-    r2 = requests.get(request2)
+    r2 = requests.get(request2).json()
 
     request3 = server + "/arduino/irrigation/"
-    r3 = requests.get(request3)
+    r3 = requests.get(request3).json()
 
-    return r1.content.decode('utf-8'), r2.content.decode('utf-8'), r3.content.decode('utf-8')
+    return r1["status"], r2, r3["irrigazione"]
 
 def initializeSerial():
      global arduino
@@ -139,11 +139,9 @@ while True:
 
     initializeSerial()
 
-    irriStatus, espData, status = readServerStatus()
-    
-    print("BANANA " + irriStatus + " " + espData + " " + status + "\n") 
-    jStatus = json.loads(irriStatus)
-    jEsp = json.loads(espData) 
+    status, espData, irriStatus = readServerStatus()
+    print(readServerStatus())
+    # r1["status"], [r2["temperatura"], r2["lux"]], r3["irrigazione"]
  
 
     if(msg_sabbiato):
@@ -157,25 +155,27 @@ while True:
         Se luce < 5(=Buio) -> Accendi luci, i fade vanno messi in base alla temperatura
         Se luce < 2(=BUISSIMO) -> Accendi irrigatore con vel equivalente alla temperatura
     """
-    print(jStatus)
 
 
-    if(status != "MANUAL"):
-        if(jEsp["temperatura"] == 5 and irriStatus == "PAUSA"): # || PAUSE
+    if status == "AUTO":
+        if(espData["temperatura"] >= 5 and irriStatus == "PAUSA"): # || PAUSE
             print("ERROR")
+            sendCommand("LEDAUTO_0") #deactivate everything
             sendCommand("ERROR")
             status = "ERROR"
+            requests.post(server+"/arduino/status/ERROR")
         else:
-            if(jEsp["lux"] < LIGHT_TRESHOLD): # Fai giochi di luce
-                msg1 = "LEDAUTO_"+str(jEsp["temperatura"])
+            if(espData["lux"] < LIGHT_TRESHOLD): # Fai giochi di luce
+                msg1 = "LEDAUTO_"+str(espData["temperatura"])
                 sendCommand(msg1)
-            elif(jEsp["lux"] >= LIGHT_TRESHOLD):
+            elif(espData["lux"] >= LIGHT_TRESHOLD):
                 msg2 = "LEDAUTO_0" #Ci stanno tracciando STACCA STACCA
                 sendCommand(msg2)
             
-            if(jEsp["lux"] < IRRIG_TRESHOLD): # Fai giochi d'acqua
-                msg = "IRRI_"+str(jEsp["temperatura"])
+            if(espData["lux"] < IRRIG_TRESHOLD): # Fai giochi d'acqua
+                msg = "IRRI_"+str(espData["temperatura"])
                 sendCommand(msg)
-        
+    else:
+        print("STATUUUUUS : " + status)
     
     sleep(1)

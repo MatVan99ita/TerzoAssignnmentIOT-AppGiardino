@@ -99,5 +99,7 @@
     <orderEntry type="library" name="Gradle: com.android.support.constraint:constraint-layout-solver:2.0.4" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:4.10.0" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio-jvm:3.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.11.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.errorprone:error_prone_annotations:2.27.0" level="project" />
   </component>
 </module>
