@@ -49,7 +49,7 @@ void CommTask::init(int period){
 
       case EVALUATE_MESSAGE:
 
-        Serial.print("entro evaluate: ");
+        Serial.print("Evaluating message: ");
 
         msg->getContent().toCharArray(buf, 50);
 
@@ -81,22 +81,20 @@ void CommTask::init(int period){
           }
           //The app send a value equal to 1 just to turn on the led 
           fade_value = String(strtok(NULL,"_")).toInt();//also this wont affect the fading one
-          Serial.print("ODIOPORCOH - "); Serial.println(fade_value);
+          Serial.print("Fade value - "); Serial.println(fade_value);
           LedTask->setActive(true);
 
           
         } else if(device == "LEDF"){//fading led manual command
           led_type = device;
-          MsgServiceBT.sendMsg("Blink of an eye");
-          Serial.println("Blink of an eye");
           String pin = String(strtok(NULL, "_"));
 
           if(pin == "1")
           {
-            Serial.println("Led 1");
+            Serial.println("Led 3");
             led_id = 1;
           }else if(pin == "2"){
-            Serial.println("Led 2");
+            Serial.println("Led 4");
             led_id = 2;
           } else {//the two fade must coordinate
             led_id = 3;
@@ -105,7 +103,6 @@ void CommTask::init(int period){
           LedTask->setActive(true);
 
         } else if(device == "IRRI"){// IRRI_<servo_speed>
-          Serial.println("servo");
           servo_speed = String(strtok(NULL, "_")).toInt();
 
           String val = String(strtok(NULL, "_"));
