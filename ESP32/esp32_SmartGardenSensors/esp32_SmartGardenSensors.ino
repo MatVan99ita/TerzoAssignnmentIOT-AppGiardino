@@ -23,10 +23,10 @@
 #define DHT_TYPE DHT11
 #define THERMISTORPIN 32
 
-const char *ssid = "ilGabbibbo";
-const char *password = "P4p3r1ss1m4";
-
-const char *serviceURI = "http://192.168.11.158:8000/";
+//Just censoring
+const char *ssid = "*";
+const char *password = "*";
+const char *serviceURI = "http://192.168.*.*:8000/";
 
 int lightInit = 0;
 String status = "";
@@ -99,7 +99,6 @@ int readTemperature2() {
 }
 
 
-
 int readTemperature() {
   int temp = analogRead(THERMISTORPIN);
   Serial.println(temp);
@@ -112,13 +111,14 @@ int readTemperature() {
 void setup() {
   Serial.begin(115200);
   pinMode(LED_PIN, OUTPUT);
-
+  
   pinMode(PHOTO_PIN, INPUT);
   pinMode(THERMISTORPIN, INPUT);
 
   digitalWrite(LED_PIN, HIGH);
   connectToWifi(ssid, password);
 }
+
 
 void loop() {
   int temp;

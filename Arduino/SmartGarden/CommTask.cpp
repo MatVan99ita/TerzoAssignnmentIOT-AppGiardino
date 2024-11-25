@@ -42,7 +42,6 @@ void CommTask::init(int period){
         if (MsgServiceBT.isMsgAvailable()) {
           this->msg = MsgServiceBT.receiveMsg();
           this->state = EVALUATE_MESSAGE;
-          Serial.println("APPORCODIO");
           MsgServiceBT.sendMsg("{ARDUINO MANUAL MODE}");
         }
         break;

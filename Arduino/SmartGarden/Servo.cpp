@@ -20,7 +20,7 @@ void Servo::setSpeed(int val) {
 
 void Servo::startRotation() {
     int pos = 0;
-    if(this->speed >= 0){//check for the delay equation
+    if(this->speed > 0){//check for the delay equation
 
       int dilei = map(this->speed, 0, 4, MIN_VAL, MAX_VAL);
       int angle = 0;

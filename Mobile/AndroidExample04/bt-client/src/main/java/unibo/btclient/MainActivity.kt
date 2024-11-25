@@ -31,7 +31,7 @@ import kotlin.time.ExperimentalTime
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        private const val SERVER_SOCKET = "http://192.168.11.158:8000/"
+        private const val SERVER_SOCKET = "http://192.168.*.*:8000/"
         private const val BLUETOOTH_ON = 1000
         private const val hc05_address: String = "98:D3:61:F6:6F:D3"
         private val mUUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    inner class ArduinoStatus(val status: String = "NULL")
+    inner class ArduinoStatus(val status: String = "NULL") // Simple kotlin inner class
 
     private lateinit var binding: ActivityMainBinding
     private var response: String = ""
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     private var irrigation_velocity: Int = 0
 
     private val MINUTE = 60000
-    private val WAIT_TIME = 2
+    private val WAIT_TIME = 1
 
     private lateinit var layout: ConstraintLayout
 
@@ -69,23 +69,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //For http communication
         val policy = ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
+        //Set the layout view
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
 
         binding.fadeval1.text = "$fade_amount1"
         binding.fadeval2.text = "$fade_amount2"
-        //binding.irrigationView.text = "$irrigation_velocity"
 
-        //btAdapter = BluetoothAdapter.getDefaultAdapter()
-        //lv = findViewById<View>(R.id.listview) as ListView
         adapter = ArrayAdapter<Any?>(this, android.R.layout.simple_list_item_1)
-        //lv!!.adapter = adapter
 
-
+        //disable all buttons before connecting
         for (el in 0..binding.layoutBrutto.childCount ){
             val child = binding.layoutBrutto.getChildAt(el)
             child?.isEnabled = false
@@ -102,7 +100,7 @@ class MainActivity : AppCompatActivity() {
     [{LEDB, LEDF}]_[PIN]_[FADE_VALUE]
     IRRI_[SPEED]
     PIN:
-    Only 1, 2 (or 3 for fading both) for ledf
+    Only 1, 2 (or 3 for both)
     VALUE:
     Light intensity for fading -> <value>
     Intensity of irrigation or activation/deactivation -> ON/OFF/<value>
@@ -111,6 +109,7 @@ class MainActivity : AppCompatActivity() {
      * Funzione per assegnare ai vari bottoni la propria funzione
      */
     private fun addClickEvent() {
+
         binding.switch1.setOnClickListener {
             switchLed(1)
         }
@@ -120,15 +119,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.btConnectionReq.setOnClickListener {
             try {
-                val statuuus = Gson()
+                val statuuus = Gson() //Gson() powerful class that convert automatically a json file/input in a selected class
                     .fromJson (
                         getArduinoStatus("arduino/status/").toString(),
                         ArduinoStatus::class.java
                     )
-
-                Log.e("PORCADDIO", "$statuuus")
-
-                Log.e("PORCADDIO", statuuus.status)
 
                 pairDevices();
                 if(statuuus.status != "ERROR") {
@@ -145,6 +140,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        /**
+         * Connect to the bt device
+         * */
         binding.btConnectionSreq.setOnClickListener {
             ConnectToDevice.disconnect()
             for (el in 0..binding.layoutBrutto.childCount ){
@@ -155,6 +153,10 @@ class MainActivity : AppCompatActivity() {
             sendStaticRequest("arduino/status/AUTO")
         }
 
+
+        /**
+         * LEDF_1 intensity slider
+         * */
         binding.ledf1Slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
                 fade_amount1 = progress
@@ -164,6 +166,9 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(p0: SeekBar?) {}
         })
 
+        /**
+         * LEDF_2 intensity slider
+         * */
         binding.ledf2Slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
                 fade_amount2 = progress
@@ -173,6 +178,9 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(p0: SeekBar?) {}
         })
 
+        /**
+         * IRRI speed slider
+         * */
         binding.irrigationView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
                 irrigation_velocity = progress
@@ -192,6 +200,9 @@ class MainActivity : AppCompatActivity() {
             disableAlarm()
         }
 
+        /**
+         * Fading of LEDF_1
+         * */
         binding.fadeval1.setOnClickListener {
             arduinoCommunication("LEDF_1_$fade_amount1")
 
@@ -206,6 +217,9 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        /**
+         * Fading of LEDF_2
+         * */
         binding.fadeval2.setOnClickListener {
             arduinoCommunication("LEDF_2_$fade_amount2")
 
@@ -223,9 +237,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * For the blinks
+     * */
     private fun switchLed(led_num: Int){
-
-
         if(led_num == 1) {
 
             if(!isLed1on) {
@@ -240,7 +255,6 @@ class MainActivity : AppCompatActivity() {
             Handler().postDelayed(
                 { binding.switch1.isEnabled = true }, 2000
             )
-
         }
 
         if(led_num == 2) {
@@ -260,20 +274,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * invio dell'attivazione dell'irrigazione
-     *
-     * (nel controller del bottone va disattivato per n minuti se si ha ancora il controllo)
-     *
-     * penso che faccio una roba del tipo da 0 .. 30 anche qui disattivando i bottoni quando vanno avanti e indietro
-     */
+     * For the servo
+     * */
     private fun irrigationStart(){
-
-        val message: String = "IRRI_$irrigation_velocity"
         //INVIO DELL'IRRIGAZIONE
         arduinoCommunication("IRRI_$irrigation_velocity")
         lock_irrigation()
     }
 
+    /**
+     * Lock the possibility to send irrigation command for an amount of time
+     * */
     private fun lock_irrigation() {
 
         binding.irrigationView.isEnabled = false
@@ -284,20 +295,18 @@ class MainActivity : AppCompatActivity() {
                 binding.irrigationView.isEnabled = true
                 binding.startIrriBtn.isEnabled = true
             },
-            5000 //WAIT_TIME * MINUTE
+            (MINUTE * WAIT_TIME).toLong()
         )
     }
 
-    /**
-     * Funzione per l'allarme
-     */
+
     private fun disableAlarm(){
         sendStaticRequest("arduino/status/MANUAL")
         enable_disable_Buttons()
     }
 
     /**
-     * Funzione per controllare la disponibilità dei tasti se il sistema è in allarme, non si è ancora connesso o se è connesso
+     * Check the avalaibility of the buttons if the system is in alarm, not yet connected or connected
      */
     private fun enable_disable_Buttons(){
         for (el in 0..binding.layoutBrutto.childCount ){
@@ -312,7 +321,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
+    /**
+     * HTTP function to check the status of teh system
+     * */
     @Throws(IOException::class)
     fun getArduinoStatus(endpoint: String): String? {
 
@@ -330,9 +341,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
+    /**
+     * HTTP function for sending request with OkHttp3 - a simple library for http/https communication
+     * */
     fun sendStaticRequest(endpoint: String): String? {
-        // Crea il client OkHttp
+        // Create the OkHttp
         val client = OkHttpClient()
 
         // Costruisci la richiesta
@@ -347,10 +360,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * Pairing the mobile to the hc-05
+     * */
     private fun pairDevices() {
-
-        //val myIntent: Intent = Intent(this@MainActivity, Banana::class.java)
-        //this@MainActivity.startActivity(myIntent)
 
         ConnectToDevice(this).execute()
 
@@ -367,19 +380,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sends the command directly to the arduino
+     * */
     private fun arduinoCommunication(input: String) {
         try{
             Log.i("BELIN", input.toByteArray().toString())
             socket!!.outputStream.write(input.toByteArray())
         } catch(e: IOException) {
 
-            Log.i("coomutazzio", "NOH")
+            Log.i("commutazzio", "NOH")
             e.printStackTrace()
             // Chiudi il socket e prova a riconnettere
             try {
                 socket?.close()
             } catch (closeException: IOException) {
-                Log.i("coomutazzio", "Errore nella chiusura del socket")
+                Log.i("commutazzio", "Errore nella chiusura del socket")
                 closeException.printStackTrace()
             }
             socket = null  // Imposta il socket a null in modo da poterlo riconnettere in seguito
@@ -387,32 +403,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getArduinoStatus(){
-        var buffer = ByteArray(256)
-        val inputStream: InputStream = socket!!.inputStream
-        var bytes: Int
-        try{
-            bytes = inputStream.read(buffer)
-            val readMessage: String = String(buffer, 1, bytes);
-            // Send the obtained bytes to the UI Activity via handler
-            Log.i("logging", readMessage + "");
-            this.response = readMessage
-        } catch (e: IOException) {
-            Log.e("ERROR", e.toString())
-        }
-    }
 
+    /**
+     * Funciton called by the android debugger after some activity has ended what are doing
+     * */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        /*led3.setText(Integer.toString(fade_amount1))
-        led4.setText(Integer.toString(fade_amount2))
-        irrigazione.setText(Integer.toString(irrigation_velocity))*/
 
         if (requestCode == BLUETOOTH_ON && resultCode == RESULT_OK) {
             load()
         }
     }
+
 
     private fun scan() {
         if (!btAdapter.isEnabled) {
@@ -435,7 +437,9 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
+    /**
+     * Private class for asynchronous connection to the bluetooth - required
+     * */
     private class ConnectToDevice(val context: Context) : AsyncTask<Void, Void, String>() {
         private var connectSuccess: Boolean = true
         private lateinit var m_progress: ProgressDialog
